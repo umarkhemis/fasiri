@@ -22,7 +22,7 @@ Response:
 ```
 
 !!! warning "Save your key"
-    The plain-text key is returned **once only**. Store it securely - it cannot be retrieved again.
+    The plain-text key is returned **once only**. Store it securely — it cannot be retrieved again.
 
 ## Using Your Key
 

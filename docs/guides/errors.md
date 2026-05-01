@@ -41,7 +41,7 @@ except UnsupportedLanguageError as e:
     print(f"Not supported: {e}")
 
 except ProviderError as e:
-    # All providers failed - transient error
+    # All providers failed — transient error
     print(f"Provider error: {e}")
 
 except FasiriError as e:

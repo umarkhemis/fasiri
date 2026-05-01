@@ -1,6 +1,6 @@
 # Fasiri
 
-> **Fasiri** (*Swahili: to interpret*) - Unified translation and speech API for 30+ African languages.
+> **Fasiri** (*Swahili: to interpret*) — Unified translation and speech API for 30+ African languages.
 
 Fasiri brings together the best African language AI providers behind a single consistent interface. One API key. One endpoint. 30+ languages.
 

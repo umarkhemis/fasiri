@@ -1,6 +1,6 @@
 # Batch Translation
 
-Translate multiple texts in a single API call - more efficient than calling `/translate` in a loop.
+Translate multiple texts in a single API call — more efficient than calling `/translate` in a loop.
 
 ## Usage
 
