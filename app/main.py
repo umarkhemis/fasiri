@@ -92,7 +92,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Fasiri API",
     description=(
-        "**Fasiri** – Unified translation and speech API for African languages.\n\n"
+        "**Fasiri** - Unified translation and speech API for African languages.\n\n"
         "A single endpoint to translate, transcribe, and synthesise speech across "
         "30+ African languages, powered by Sunbird AI (Ugandan languages), "
         "Khaya AI (West African languages), and Helsinki-NLP (global fallback).\n\n"

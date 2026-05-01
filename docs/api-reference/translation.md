@@ -22,8 +22,8 @@ Authorization: Bearer fsri_...
 
     | Field | Type | Required | Description |
     |---|---|---|---|
-    | `text` | `string` | ✅ | Text to translate. Max 5,000 characters. |
-    | `target_lang` | `string` | ✅ | Target language code, e.g. `"lug"`, `"sw"`, `"yo"` |
+    | `text` | `string` |  | Text to translate. Max 5,000 characters. |
+    | `target_lang` | `string` |  | Target language code, e.g. `"lug"`, `"sw"`, `"yo"` |
     | `source_lang` | `string` | - | Source language code. Auto-detected if omitted. |
     | `provider` | `string` | - | `"auto"` (default), `"sunbird"`, or `"huggingface"` |
 

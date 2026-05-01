@@ -19,14 +19,14 @@ Translate text, transcribe audio, and synthesise speech across Luganda, Yoruba, 
 
 ## Features
 
-- 🌍 **30+ African languages** — Ugandan, West African, East African, North African
-- ⚡ **Multi-provider routing** — Sunbird → Khaya → HuggingFace with automatic fallback
-- 🔄 **Translation** — single and batch, with auto language detection
-- 🎙️ **Speech-to-Text** — transcribe audio in Luganda, Acholi, Swahili, and more
-- 🔊 **Text-to-Speech** — synthesise natural speech in Ugandan languages
-- 🐍 **Python SDK** — sync and async, installable via `pip install fasiri`
-- 📖 **OpenAPI docs** — interactive Swagger UI at `/docs`
-- 🔑 **API key auth** — issue keys instantly, no OAuth required
+-  **30+ African languages** — Ugandan, West African, East African, North African
+-  **Multi-provider routing** — Sunbird → Khaya → HuggingFace with automatic fallback
+-  **Translation** — single and batch, with auto language detection
+-  **Speech-to-Text** — transcribe audio in Luganda, Acholi, Swahili, and more
+-  **Text-to-Speech** — synthesise natural speech in Ugandan languages
+-  **Python SDK** — sync and async, installable via `pip install fasiri`
+-  **OpenAPI docs** — interactive Swagger UI at `/docs`
+-  **API key auth** — issue keys instantly, no OAuth required
 
 ---
 
@@ -338,4 +338,4 @@ pytest tests/
 
 ## License
 
-MIT © [Beta-Tech Labs](https://betatechlabs.io)
+MIT © [Beta-Tech Labs](https://beta-techlabs.com)

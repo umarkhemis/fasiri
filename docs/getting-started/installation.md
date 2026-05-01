@@ -17,7 +17,7 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
-Then fill in your provider API keys in `.env` — see [Environment Variables](../self-hosting/env.md).
+Then fill in your provider API keys in `.env` - see [Environment Variables](../self-hosting/env.md).
 
 Start the server:
 

@@ -2,7 +2,7 @@
 
 Complete reference for every Fasiri REST endpoint.
 
-**Base URL:** `https://api.fasiri.betatechlabs.io`
+<!-- **Base URL:** `https://api.fasiri.betatechlabs.io` -->
 
 All endpoints (except `GET /languages` and `POST /auth/keys`) require:
 ```

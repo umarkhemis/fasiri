@@ -1,6 +1,6 @@
 # Building a Multilingual App
 
-This guide walks through adding African language support to a real web application — a customer support platform that needs to serve users in Uganda, Nigeria, and Tanzania.
+This guide walks through adding African language support to a real web application - a customer support platform that needs to serve users in Uganda, Nigeria, and Tanzania.
 
 ## The goal
 

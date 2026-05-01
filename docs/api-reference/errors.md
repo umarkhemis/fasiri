@@ -80,7 +80,7 @@ See [Rate Limits](../guides/rate-limits.md) for details.
 }
 ```
 
-This means both the primary provider and the fallback failed. Usually a transient issue — retry with exponential backoff.
+This means both the primary provider and the fallback failed. Usually a transient issue - retry with exponential backoff.
 
 ## Handling errors in Python
 
@@ -117,7 +117,7 @@ This means both the primary provider and the fallback failed. Usually a transien
         print(f"Language error: {e}")
 
     except ProviderError as e:
-        # All providers failed — retry later
+        # All providers failed - retry later
         print(f"Provider error: {e}")
 
     except FasiriError as e:
