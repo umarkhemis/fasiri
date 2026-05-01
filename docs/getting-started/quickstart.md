@@ -70,4 +70,4 @@ for lang in client.languages():
 - [Translation guide](../guides/translation.md)
 - [Batch translation](../guides/batch.md)
 - [Error handling](../guides/errors.md)
-- [Async usage](../sdk/async.md)
+- [Async usage](../sdk-reference/async.md)
