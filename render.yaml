@@ -1,0 +1,40 @@
+# ============================================================
+# Fasiri – Render Deployment Configuration
+# https://render.com
+#
+# Deploy:
+#   1. Push repo to GitHub
+#   2. render.com → New → Web Service → connect repo
+#   3. Render auto-detects render.yaml
+# ============================================================
+
+services:
+  - type: web
+    name: fasiri-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: starter              # free tier — upgrade for production
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: 8000
+      - key: WORKERS
+        value: 1
+      - key: HUGGINGFACE_API_KEY
+        sync: false            # set manually in Render dashboard
+      - key: SUNBIRD_API_KEY
+        sync: false
+      - key: FASIRI_SECRET_KEY
+        generateValue: true    # Render auto-generates a secure value
+      - key: REDIS_URL
+        fromService:
+          name: fasiri-redis
+          type: redis
+          property: connectionString
+      - key: BASE_URL
+        sync: false            # set to your Render public URL
+
+  - type: redis
+    name: fasiri-redis
+    plan: starter
+    maxmemoryPolicy: allkeys-lru
