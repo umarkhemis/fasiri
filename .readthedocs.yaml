@@ -1,0 +1,111 @@
+site_name: Fasiri Documentation
+site_description: Unified translation and speech API for 30+ African languages
+site_url: https://umarkhemis.github.io/fasiri
+repo_url: https://github.com/umarkhemis/fasiri
+repo_name: umarkhemis/fasiri
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: green
+      accent: teal
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: green
+      accent: teal
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.expand
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [sdk]
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Installation: getting-started/installation.md
+      - Authentication: getting-started/authentication.md
+      - Quick Start: getting-started/quickstart.md
+      - Languages: getting-started/languages.md
+  - Guides:
+      - Translation: guides/translation.md
+      - Batch Translation: guides/batch.md
+      - Batch at Scale: guides/batch-at-scale.md
+      - Speech Workflows: guides/speech-workflows.md
+      - Provider Routing: guides/provider-routing.md
+      - Rate Limits: guides/rate-limits.md
+      - Error Handling: guides/error-handling.md
+      - Multilingual Apps: guides/multilingual-app.md
+  - API Reference:
+      - Overview: api-reference/index.md
+      - Translation: api-reference/translation.md
+      - Batch: api-reference/batch.md
+      - Speech-to-Text: api-reference/stt.md
+      - Text-to-Speech: api-reference/tts.md
+      - Languages: api-reference/languages.md
+      - Auth: api-reference/auth.md
+      - Errors: api-reference/errors.md
+  - Python SDK:
+      - Overview: sdk-reference/index.md
+      - Fasiri Client: sdk-reference/client.md
+      - Async Usage: sdk-reference/async.md
+      - Translate: sdk-reference/translate.md
+      - Batch: sdk-reference/batch.md
+      - Speech: sdk-reference/speech.md
+      - Data Types: sdk-reference/types.md
+      - Exceptions: sdk-reference/exceptions.md
+  - Providers:
+      - Overview: providers/overview.md
+  - Examples:
+      - Overview: examples/index.md
+      - FastAPI Integration: examples/fastapi.md
+      - Django Integration: examples/django.md
+      - Chatbot: examples/chatbot.md
+      - Document Translation: examples/document-translation.md
+      - Transcribe Audio: examples/transcribe-audio.md
+  - Self-Hosting:
+      - Docker: self-hosting/docker.md
+      - Environment Variables: self-hosting/env.md
+  - Contributing: contributing.md
+  - Changelog: changelog.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/umarkhemis/fasiri
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/fasiri
+
+# Remove logo/favicon refs since those files don't exist yet
+# Add them back when you have the actual image files
