@@ -41,20 +41,18 @@ dev   = ["pytest>=8.0", "pytest-asyncio>=0.23", "respx>=0.21"]
 
 [project.urls]
 Homepage      = "https://fasiri.ai"
-Documentation = "https://docs.fasiri.ai"
+Documentation = "https://umarkhemis.github.io/fasiri"
 Repository    = "https://github.com/umarkhemis/fasiri"
 "Bug Tracker" = "https://github.com/umarkhemis/fasiri/issues"
 Changelog     = "https://github.com/umarkhemis/fasiri/blob/main/CHANGELOG.md"
 
 [tool.hatch.build.targets.wheel]
-packages = ["sdk/fasiri_sdk"]
-
-[tool.hatch.build.targets.wheel.sources]
-"sdk/fasiri_sdk" = "fasiri"
+packages = ["fasiri"]
 
 [tool.hatch.build.targets.sdist]
 include = [
-    "sdk/",
+    "fasiri/",
+    "sdk/README_SDK.md",
     "README.md",
     "LICENSE",
     "pyproject.toml",
