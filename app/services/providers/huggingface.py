@@ -48,7 +48,6 @@ import time
 import httpx
 
 from app.core.config import settings
-from app.core.registry import LANGUAGE_REGISTRY
 from app.services.providers.base import BaseProvider, TranslationResult
 
 logger = logging.getLogger(__name__)
