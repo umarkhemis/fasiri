@@ -1,5 +1,5 @@
 """
-Fasiri – Production Rate Limiter
+Fasiri - Production Rate Limiter
 
 Uses Redis sliding-window when REDIS_URL is set (production).
 Falls back to in-memory sliding-window for local dev.
@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import time
 from collections import defaultdict, deque
-from typing import Dict
+from typing import Dict, Deque
 import logging
 
 from fastapi import HTTPException, status

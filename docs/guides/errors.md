@@ -4,10 +4,10 @@
 
 ```
 FasiriError
-├── AuthenticationError     # 401 — invalid or missing API key
-├── RateLimitError          # 429 — too many requests
-├── UnsupportedLanguageError # 422 — language pair not supported
-└── ProviderError           # 503 — all providers failed
+├── AuthenticationError     # 401 - invalid or missing API key
+├── RateLimitError          # 429 - too many requests
+├── UnsupportedLanguageError # 422 - language pair not supported
+└── ProviderError           # 503 - all providers failed
 ```
 
 ## Handling Errors
@@ -32,7 +32,7 @@ except AuthenticationError as e:
     print(f"Auth failed: {e}")
 
 except RateLimitError as e:
-    # Rate limit exceeded — wait and retry
+    # Rate limit exceeded - wait and retry
     import time
     time.sleep(e.retry_after)
 
@@ -41,7 +41,7 @@ except UnsupportedLanguageError as e:
     print(f"Not supported: {e}")
 
 except ProviderError as e:
-    # All providers failed — transient error
+    # All providers failed - transient error
     print(f"Provider error: {e}")
 
 except FasiriError as e:

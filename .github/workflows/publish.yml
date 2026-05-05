@@ -1,8 +1,8 @@
 # ============================================================
-# Fasiri – PyPI Publish Workflow
+# Fasiri - PyPI Publish Workflow
 #
 # Triggers when you push a version tag: git tag v1.0.1 && git push --tags
-# Uses PyPI Trusted Publishing (no API token needed — more secure)
+# Uses PyPI Trusted Publishing (no API token needed - more secure)
 #
 # Setup (one-time):
 #   1. Go to pypi.org → Your projects → Fasiri → Publishing

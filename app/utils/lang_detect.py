@@ -1,5 +1,5 @@
 """
-Fasiri – language auto-detection.
+Fasiri - language auto-detection.
 
 Primary:  langdetect (works offline, fast)
 Fallback: Sunbird /tasks/language_id (better for Ugandan languages)
@@ -9,6 +9,7 @@ Returns a BCP-47 code compatible with LANGUAGE_REGISTRY.
 from __future__ import annotations
 
 import logging
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -56,13 +57,13 @@ def detect_language(text: str) -> str:
     Falls back to 'en' if detection fails.
     """
     try:
-        from langdetect import detect  # type: ignore
+        from langdetect import detect, LangDetectException  # type: ignore
         raw = detect(text)
         mapped = _LANGDETECT_MAP.get(raw, raw)
         logger.debug("langdetect: %s -> %s", raw, mapped)
         return mapped
     except Exception as exc:
-        logger.warning("Language detection failed: %s – defaulting to 'en'", exc)
+        logger.warning("Language detection failed: %s - defaulting to 'en'", exc)
         return "en"
 
 

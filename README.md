@@ -1,156 +1,70 @@
 <div align="center">
-  <h1>🌍 Fasiri</h1>
+  <img src="docs/assets/fasiri-logo.png" alt="Fasiri" width="280"/>
   <p><strong>Unified translation and speech API for 30+ African languages</strong></p>
   <p>
-    <a href="https://pypi.org/project/fasiri"><img src="https://img.shields.io/pypi/v/fasiri?color=blue&label=PyPI" alt="PyPI"></a>
+    <a href="https://pypi.org/project/fasiri"><img src="https://img.shields.io/pypi/v/fasiri?color=2D7D46&label=PyPI" alt="PyPI"></a>
     <a href="https://pypi.org/project/fasiri"><img src="https://img.shields.io/pypi/pyversions/fasiri" alt="Python versions"></a>
     <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="MIT License"></a>
-    <a href="https://docs.fasiri.ai"><img src="https://img.shields.io/badge/docs-fasiri.ai-blue" alt="Docs"></a>
+    <a href="https://umarkhemis.github.io/fasiri"><img src="https://img.shields.io/badge/docs-GitHub%20Pages-blue" alt="Docs"></a>
+    <a href="https://fasiri-bu9u.onrender.com/health"><img src="https://img.shields.io/badge/API-live-2D7D46" alt="API status"></a>
   </p>
 </div>
 
 ---
 
-**Fasiri** (*Swahili: to interpret*) is a unified REST API and Python SDK that brings together the best African language AI providers — [Sunbird AI](https://sunbird.ai), [Khaya AI](https://khaya.ai), and [Helsinki-NLP](https://huggingface.co/Helsinki-NLP) — behind a single, consistent interface.
+**Fasiri** (Swahili: *to interpret*) is a unified REST API and Python SDK that brings together the best African language AI providers behind a single, consistent interface.
 
 Translate text, transcribe audio, and synthesise speech across Luganda, Yoruba, Swahili, Acholi, Twi, and 25+ more African languages with one API key and one endpoint.
+
+- **API base URL:** `https://fasiri-bu9u.onrender.com`
+- **Interactive docs:** `https://fasiri-bu9u.onrender.com/docs`
+- **Documentation:** `https://umarkhemis.github.io/fasiri`
 
 ---
 
 ## Features
 
-- 🌍 **30+ African languages** — Ugandan, West African, East African, North African
-- ⚡ **Multi-provider routing** — Sunbird → Khaya → HuggingFace with automatic fallback
-- 🔄 **Translation** — single and batch, with auto language detection
-- 🎙️ **Speech-to-Text** — transcribe audio in Luganda, Acholi, Swahili, and more
-- 🔊 **Text-to-Speech** — synthesise natural speech in Ugandan languages
-- 🐍 **Python SDK** — sync and async, installable via `pip install fasiri`
-- 📖 **OpenAPI docs** — interactive Swagger UI at `/docs`
-- 🔑 **API key auth** — issue keys instantly, no OAuth required
+- 30+ African languages - Ugandan, West African, East African, North African
+- Multi-provider routing - Sunbird AI, Khaya AI, HuggingFace with automatic fallback
+- Translation - single and batch, with auto language detection
+- Speech-to-Text - transcribe audio in Luganda, Acholi, Swahili, and more
+- Text-to-Speech - synthesise natural speech in Ugandan languages
+- Python SDK - sync and async, installable via `pip install fasiri`
+- OpenAPI docs - interactive Swagger UI at `/docs`
+- API key auth - issue keys instantly, no OAuth required
 
 ---
 
 ## Supported Languages
 
-| Code  | Language   | Region       | Translate | STT | TTS |
-|-------|------------|--------------|:---------:|:---:|:---:|
-| `lug` | Luganda    | East Africa  | ✅        | ✅  | ✅  |
-| `ach` | Acholi     | East Africa  | ✅        | ✅  | ✅  |
-| `teo` | Ateso      | East Africa  | ✅        | ✅  | ✅  |
-| `nyn` | Runyankore | East Africa  | ✅        | ✅  | ✅  |
-| `lgg` | Lugbara    | East Africa  | ✅        | ✅  | ✅  |
-| `yo`  | Yoruba     | West Africa  | ✅        | ❌  | ❌  |
-| `tw`  | Twi        | West Africa  | ✅        | ❌  | ❌  |
-| `ee`  | Ewe        | West Africa  | ✅        | ❌  | ❌  |
-| `gaa` | Ga         | West Africa  | ✅        | ❌  | ❌  |
-| `dag` | Dagbani    | West Africa  | ✅        | ❌  | ❌  |
-| `ki`  | Kikuyu     | East Africa  | ✅        | ❌  | ❌  |
-| `luo` | Luo        | East Africa  | ✅        | ❌  | ❌  |
-| `mer` | Kimeru     | East Africa  | ✅        | ❌  | ❌  |
-| `kus` | Kusaal     | West Africa  | ✅        | ❌  | ❌  |
-| `sw`  | Swahili    | East Africa  | ✅        | ✅  | ❌  |
-| `fr`  | French     | Francophone  | ✅        | ❌  | ❌  |
-| `ar`  | Arabic     | North Africa | ✅        | ❌  | ❌  |
-| `af`  | Afrikaans  | South Africa | ✅        | ❌  | ❌  |
-| `en`  | English    | Global       | ✅        | ✅  | ❌  |
+| Code | Language | Region | Translate | STT | TTS | Provider |
+|---|---|---|:---:|:---:|:---:|---|
+| `lug` | Luganda | East Africa | Yes | Yes | Yes | Sunbird AI |
+| `ach` | Acholi | East Africa | Yes | Yes | Yes | Sunbird AI |
+| `teo` | Ateso | East Africa | Yes | Yes | Yes | Sunbird AI |
+| `nyn` | Runyankore | East Africa | Yes | Yes | Yes | Sunbird AI |
+| `lgg` | Lugbara | East Africa | Yes | Yes | Yes | Sunbird AI |
+| `yo` | Yoruba | West Africa | Yes | No | No | Khaya AI |
+| `tw` | Twi | West Africa | Yes | No | No | Khaya AI |
+| `ee` | Ewe | West Africa | Yes | No | No | Khaya AI |
+| `gaa` | Ga | West Africa | Yes | No | No | Khaya AI |
+| `dag` | Dagbani | West Africa | Yes | No | No | Khaya AI |
+| `ki` | Kikuyu | East Africa | Yes | No | No | Khaya AI |
+| `luo` | Luo | East Africa | Yes | No | No | Khaya AI |
+| `sw` | Swahili | East Africa | Yes | Yes | No | HuggingFace |
+| `fr` | French | Francophone | Yes | No | No | HuggingFace |
+| `ar` | Arabic | North Africa | Yes | No | No | HuggingFace |
+| `af` | Afrikaans | South Africa | Yes | No | No | HuggingFace |
+| `en` | English | Global | Yes | Yes | No | All |
 
 ---
 
 ## Provider Architecture
 
 ```
-Request (en→lug)          Request (en→yo)          Request (en→sw)
-       │                         │                         │
-       ▼                         ▼                         ▼
-  ┌─────────┐              ┌─────────┐              ┌─────────────┐
-  │ Sunbird │              │  Khaya  │              │ HuggingFace │
-  │   AI    │              │   AI    │              │ Helsinki-NLP│
-  └────┬────┘              └────┬────┘              └──────┬──────┘
-       │ fail?                  │ fail?                    │ fail?
-       ▼                        ▼                          ▼
-  ┌─────────┐              ┌─────────────┐           ┌──────────┐
-  │  Khaya  │              │ HuggingFace │           │   503    │
-  │fallback │              │  fallback   │           │ returned │
-  └─────────┘              └─────────────┘           └──────────┘
-```
-
----
-
-## API Quick Start
-
-### 1. Start the server
-
-```bash
-git clone https://github.com/umarkhemis/fasiri
-cd fasiri
-cp .env.example .env
-# Fill in your provider keys in .env
-
-pip install -r requirements.txt
-uvicorn app.main:app --reload
-```
-
-Open **http://localhost:8000/docs** for interactive API docs.
-
-### 2. Issue an API key
-
-```bash
-curl -X POST http://localhost:8000/api/v1/auth/keys \
-  -H "Content-Type: application/json" \
-  -d '{"name": "my-app"}'
-```
-
-Response:
-```json
-{
-  "api_key": "fsri_abc123...",
-  "name": "my-app",
-  "expires_at": "2027-05-01T00:00:00Z"
-}
-```
-
-### 3. Translate
-
-```bash
-curl -X POST http://localhost:8000/api/v1/translate \
-  -H "Authorization: Bearer fsri_abc123..." \
-  -H "Content-Type: application/json" \
-  -d '{
-    "text": "Good morning",
-    "target_lang": "lug",
-    "source_lang": "en",
-    "provider": "auto"
-  }'
-```
-
-Response:
-```json
-{
-  "translated_text": "Wasuze otya",
-  "detected_source_lang": "en",
-  "target_lang": "lug",
-  "model_used": "sunbird/nllb_translate",
-  "provider": "sunbird",
-  "quality_score": 0.92,
-  "latency_ms": 1823,
-  "characters_translated": 12
-}
-```
-
-### 4. Batch translate
-
-```bash
-curl -X POST http://localhost:8000/api/v1/translate/batch \
-  -H "Authorization: Bearer fsri_abc123..." \
-  -H "Content-Type: application/json" \
-  -d '{
-    "items": [
-      {"id": "1", "text": "Good morning", "target_lang": "lug"},
-      {"id": "2", "text": "How are you?", "target_lang": "yo"},
-      {"id": "3", "text": "Thank you",    "target_lang": "tw"}
-    ],
-    "provider": "auto"
-  }'
+Request: en -> lug   ->  Sunbird AI (primary)  ->  Khaya/HuggingFace (fallback)
+Request: en -> yo    ->  Khaya AI (primary)     ->  HuggingFace (fallback)
+Request: en -> sw    ->  HuggingFace Helsinki   ->  multilingual fallback
 ```
 
 ---
@@ -174,7 +88,7 @@ client = Fasiri(api_key="fsri_...")
 result = client.translate("Good morning", target="lug")
 print(result)  # "Wasuze otya"
 
-# Batch
+# Batch translation
 batch = client.translate_batch([
     {"id": "1", "text": "Hello",      "target": "yo"},
     {"id": "2", "text": "Thank you",  "target": "tw"},
@@ -191,16 +105,8 @@ print(stt.transcript)
 tts = client.synthesise("Oli otya?", language="lug")
 print(tts.audio_url)
 
-# List languages
-for lang in client.languages():
-    print(lang)
-```
-
-### Async
-
-```python
+# Async
 import asyncio
-from fasiri import Fasiri
 
 async def main():
     async with Fasiri(api_key="fsri_...") as client:
@@ -214,8 +120,11 @@ asyncio.run(main())
 
 ```python
 from fasiri import (
-    Fasiri, AuthenticationError, RateLimitError,
-    UnsupportedLanguageError, ProviderError
+    Fasiri,
+    AuthenticationError,
+    RateLimitError,
+    UnsupportedLanguageError,
+    ProviderError,
 )
 
 try:
@@ -227,62 +136,60 @@ except RateLimitError as e:
 except UnsupportedLanguageError:
     print("Language pair not supported")
 except ProviderError:
-    print("All providers failed — try again later")
+    print("All providers failed - try again later")
 ```
 
 ---
 
-## REST API Reference
+## REST API Quick Start
 
-| Method | Endpoint                   | Description               | Auth |
-|--------|----------------------------|---------------------------|------|
-| `POST` | `/api/v1/translate`        | Translate text            | ✅   |
-| `POST` | `/api/v1/translate/batch`  | Batch translate            | ✅   |
-| `POST` | `/api/v1/speech/stt`       | Speech-to-Text            | ✅   |
-| `POST` | `/api/v1/speech/tts`       | Text-to-Speech            | ✅   |
-| `GET`  | `/api/v1/languages`        | List supported languages  | ✅   |
-| `POST` | `/api/v1/auth/keys`        | Issue API key             | ❌   |
-| `GET`  | `/api/v1/auth/keys/me`     | Inspect current key       | ✅   |
-| `GET`  | `/health`                  | Health check              | ❌   |
+### 1. Start the server (or use the hosted version)
 
-Full interactive docs at **`/docs`** (Swagger UI) and **`/redoc`** (ReDoc).
+```bash
+git clone https://github.com/umarkhemis/fasiri
+cd fasiri
+cp .env.example .env
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+```
+
+Or use the hosted API at `https://fasiri-bu9u.onrender.com`.
+
+### 2. Issue an API key
+
+```bash
+curl -X POST https://fasiri-bu9u.onrender.com/api/v1/auth/keys \
+  -H "Content-Type: application/json" \
+  -d '{"name": "my-app"}'
+```
+
+### 3. Translate
+
+```bash
+curl -X POST https://fasiri-bu9u.onrender.com/api/v1/translate \
+  -H "Authorization: Bearer fsri_..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "text": "Good morning",
+    "target_lang": "lug",
+    "source_lang": "en"
+  }'
+```
 
 ---
 
 ## Environment Variables
 
-| Variable                | Required | Description                                     |
-|-------------------------|----------|-------------------------------------------------|
-| `SUNBIRD_API_KEY`       | ✅       | JWT token from api.sunbird.ai (Ugandan langs)   |
-| `KHAYA_API_KEY`         | ✅       | Subscription key from translation.ghananlp.org  |
-| `KHAYA_API_KEY_SECONDARY` | —      | Secondary Khaya key for rate-limit failover     |
-| `HUGGINGFACE_API_KEY`   | ✅       | Free token from huggingface.co/settings/tokens  |
-| `FASIRI_SECRET_KEY`     | ✅       | Random secret for API key signing               |
-| `REDIS_URL`             | —        | Redis URL for distributed rate limiting         |
-| `DEBUG`                 | —        | Enable debug logging (default: `false`)         |
-| `HTTP_TIMEOUT`          | —        | Request timeout in seconds (default: `30`)      |
+| Variable | Required | Description |
+|---|---|---|
+| `SUNBIRD_API_KEY` | Yes | JWT from api.sunbird.ai (Ugandan languages) |
+| `KHAYA_API_KEY` | Yes | Subscription key from translation.ghananlp.org |
+| `HUGGINGFACE_API_KEY` | Yes | Free token from huggingface.co/settings/tokens |
+| `FASIRI_SECRET_KEY` | Yes | Secret for API key signing (openssl rand -hex 32) |
+| `REDIS_URL` | No | Redis for distributed rate limiting |
+| `DEBUG` | No | Enable debug logging (default: false) |
 
 See `.env.example` for the full list.
-
----
-
-## Deployment
-
-### Docker
-
-```bash
-docker-compose up --build
-```
-
-### Manual
-
-```bash
-# Production (4 workers)
-uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
-
-# Development (auto-reload)
-uvicorn app.main:app --reload
-```
 
 ---
 
@@ -290,52 +197,29 @@ uvicorn app.main:app --reload
 
 ```
 fasiri/
-├── app/
-│   ├── api/                  # FastAPI route handlers
-│   │   ├── auth.py           # API key issuance
-│   │   ├── translate.py      # Translation endpoints
-│   │   ├── speech.py         # STT / TTS endpoints
-│   │   └── languages.py      # Language listing
-│   ├── core/
-│   │   ├── config.py         # Settings (pydantic-settings)
-│   │   ├── registry.py       # Language & model registry
-│   │   └── security.py       # API key generation & validation
-│   ├── middleware/
-│   │   └── auth.py           # Auth dependency
-│   ├── services/
-│   │   ├── routing.py        # Provider selection & fallback
-│   │   └── providers/
-│   │       ├── base.py       # BaseProvider ABC
-│   │       ├── sunbird.py    # Sunbird AI adapter
-│   │       ├── khaya.py      # Khaya AI adapter
-│   │       └── huggingface.py # HuggingFace adapter
-│   └── main.py               # FastAPI app & lifespan
-├── sdk/
-│   └── fasiri_sdk/
-│       ├── __init__.py       # Public API exports
-│       └── client.py         # Fasiri Python client
-├── docs/                     # MkDocs documentation source
-├── tests/                    # Pytest test suite
-├── .env.example              # Environment variable template
-├── pyproject.toml            # PyPI package config
-├── docker-compose.yml
-└── README.md
-```
-
----
-
-## Contributing
-
-```bash
-git clone https://github.com/umarkhemis/fasiri
-cd fasiri
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt -r requirements-dev.txt
-pytest tests/
+|-- app/
+|   |-- api/              # FastAPI route handlers
+|   |-- core/             # Config, registry, security
+|   |-- middleware/       # Auth dependency
+|   |-- services/
+|   |   |-- routing.py    # Provider selection and fallback
+|   |   +-- providers/
+|   |       |-- sunbird.py
+|   |       |-- khaya.py
+|   |       +-- huggingface.py
+|   +-- main.py
+|-- fasiri/               # Python SDK package
+|   |-- __init__.py
+|   +-- client.py
+|-- docs/                 # MkDocs documentation
+|-- tests/
+|-- .env.example
+|-- pyproject.toml
++-- README.md
 ```
 
 ---
 
 ## License
 
-MIT © [Beta-Tech Labs](https://betatechlabs.io)
+MIT - Beta-Tech Labs

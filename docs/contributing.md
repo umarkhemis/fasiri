@@ -4,12 +4,12 @@ Thank you for your interest in contributing to Fasiri. This guide covers everyth
 
 ## Ways to contribute
 
-- **Report bugs** — [open an issue](https://github.com/umarkhemis/fasiri/issues/new?template=bug_report.md)
-- **Request features** — [open a feature request](https://github.com/umarkhemis/fasiri/issues/new?template=feature_request.md)
-- **Add a language** — see [Adding a new language](#adding-a-new-language) below
-- **Improve documentation** — edit any `.md` file in `docs/` and open a PR
-- **Fix a bug** — pick an issue labelled `good first issue`
-- **Add tests** — improve coverage in `tests/`
+- **Report bugs** - [open an issue](https://github.com/umarkhemis/fasiri/issues/new?template=bug_report.md)
+- **Request features** - [open a feature request](https://github.com/umarkhemis/fasiri/issues/new?template=feature_request.md)
+- **Add a language** - see [Adding a new language](#adding-a-new-language) below
+- **Improve documentation** - edit any `.md` file in `docs/` and open a PR
+- **Fix a bug** - pick an issue labelled `good first issue`
+- **Add tests** - improve coverage in `tests/`
 
 ## Development setup
 
@@ -39,8 +39,8 @@ pytest tests/ -v
 
 ```bash
 uvicorn app.main:app --reload
-# API at http://localhost:8000
-# Docs at http://localhost:8000/docs
+# API at https://fasiri-bu9u.onrender.com
+# Docs at https://fasiri-bu9u.onrender.com/docs
 ```
 
 ## Code style

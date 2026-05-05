@@ -1,5 +1,5 @@
 """
-Fasiri – Authentication dependency.
+Fasiri - Authentication dependency.
 
 Every protected endpoint injects `require_api_key` as a FastAPI dependency.
 The client sends the key in the Authorization header:
@@ -8,7 +8,7 @@ The client sends the key in the Authorization header:
 """
 from __future__ import annotations
 
-from fastapi import HTTPException, Security, status
+from fastapi import Depends, HTTPException, Security, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from app.core.security import lookup_key, increment_key_counter

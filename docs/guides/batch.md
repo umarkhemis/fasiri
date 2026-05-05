@@ -1,6 +1,6 @@
 # Batch Translation
 
-Translate multiple texts in a single API call — more efficient than calling `/translate` in a loop.
+Translate multiple texts in a single API call - more efficient than calling `/translate` in a loop.
 
 ## Usage
 
@@ -37,7 +37,7 @@ for item in results.errors():
 ## REST API
 
 ```bash
-curl -X POST http://localhost:8000/api/v1/translate/batch \
+curl -X POST https://fasiri-bu9u.onrender.com/api/v1/translate/batch \
   -H "Authorization: Bearer fsri_..." \
   -H "Content-Type: application/json" \
   -d '{

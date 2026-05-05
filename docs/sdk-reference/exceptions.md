@@ -1,18 +1,6 @@
 # Exceptions
 
-Fasiri raises typed exceptions so you can handle different failure modes precisely.
-
-## Exception hierarchy
-
-```
-FasiriError (base)
-├── AuthenticationError     HTTP 401
-├── RateLimitError          HTTP 429
-├── UnsupportedLanguageError HTTP 422
-└── ProviderError           HTTP 503
-```
-
-## Import
+All Fasiri exceptions can be imported from the top-level `fasiri` package:
 
 ```python
 from fasiri import (
@@ -24,104 +12,85 @@ from fasiri import (
 )
 ```
 
----
-
 ## FasiriError
 
 Base class for all Fasiri exceptions.
 
-```python
-class FasiriError(Exception):
-    message:     str
-    code:        str   # machine-readable error code
-    status_code: int   # HTTP status code
-```
+**Attributes:**
 
----
+| Attribute | Type | Description |
+|---|---|---|
+| `message` | str | Human-readable error description. |
+| `code` | str | Machine-readable error code, e.g. `"INVALID_API_KEY"`. |
+| `status_code` | int | HTTP status code from the API. |
 
 ## AuthenticationError
 
 Raised when the API key is missing, invalid, or expired.
 
+**HTTP status:** 401
+
+**Error codes:**
+- `MISSING_API_KEY` - No Authorization header provided
+- `INVALID_API_KEY` - Key does not exist or has expired
+
 ```python
-try:
-    client = Fasiri()  # no key set
-except AuthenticationError as e:
-    print(e.code)  # "MISSING_API_KEY"
+from fasiri import Fasiri, AuthenticationError
 
 try:
+    client = Fasiri(api_key="fsri_invalid")
     result = client.translate("Hello", target="lug")
 except AuthenticationError as e:
-    print(e.code)         # "INVALID_API_KEY"
+    print(e.code)    # "INVALID_API_KEY"
     print(e.status_code)  # 401
 ```
-
----
 
 ## RateLimitError
 
 Raised when the rate limit is exceeded.
 
-```python
-class RateLimitError(FasiriError):
-    retry_after: int   # seconds to wait before retrying
-```
+**HTTP status:** 429
+
+**Additional attribute:** `retry_after` (int) - seconds to wait before retrying.
 
 ```python
+from fasiri import Fasiri, RateLimitError
 import time
-from fasiri import RateLimitError
 
 try:
     result = client.translate("Hello", target="lug")
 except RateLimitError as e:
-    print(f"Rate limited. Retry after {e.retry_after}s")
+    print(f"Rate limited. Wait {e.retry_after} seconds.")
     time.sleep(e.retry_after)
-    result = client.translate("Hello", target="lug")  # retry
 ```
-
----
 
 ## UnsupportedLanguageError
 
-Raised when a language or language pair is not supported.
+Raised when a language code is not recognised or a language pair is not supported.
+
+**HTTP status:** 422
 
 ```python
-from fasiri import UnsupportedLanguageError
+from fasiri import Fasiri, UnsupportedLanguageError
 
 try:
-    result = client.translate("Hello", target="xx")
+    result = client.translate("Hello", target="xyz")
 except UnsupportedLanguageError as e:
-    print(e)  # "Language not supported..."
+    print(f"Language not supported: {e}")
 ```
-
----
 
 ## ProviderError
 
-Raised when all providers fail to translate the text. Usually transient — retry with exponential backoff.
+Raised when all providers fail to translate the requested text. This is typically a transient error caused by provider outages or network issues.
+
+**HTTP status:** 503
 
 ```python
-import time
-from fasiri import ProviderError
-
-for attempt in range(3):
-    try:
-        result = client.translate("Hello", target="lug")
-        break
-    except ProviderError:
-        time.sleep(2 ** attempt)
-```
-
----
-
-## Catching all Fasiri errors
-
-```python
-from fasiri import FasiriError
+from fasiri import Fasiri, ProviderError
 
 try:
     result = client.translate("Hello", target="lug")
-except FasiriError as e:
-    print(f"Fasiri error [{e.code}]: {e}")
-    print(f"HTTP status: {e.status_code}")
+except ProviderError as e:
+    # Show original text or cached result to user
+    print(f"Translation temporarily unavailable: {e}")
 ```

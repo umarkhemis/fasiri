@@ -1,239 +1,30 @@
-/* ============================================================
-   Fasiri Documentation - Custom Styles
-   Brand: Beta-Tech Labs
-   Primary: #0d5fa0 (deep blue from BTL logo)
-   Accent:  #1e7fd4 (BTL blue)
-   ============================================================ */
-
-/* ── Brand colors ─────────────────────────────────────────── */
+/* Fasiri brand colors */
 :root {
-  --md-primary-fg-color:        #0d5fa0;
-  --md-primary-fg-color--light: #1e7fd4;
-  --md-primary-fg-color--dark:  #0a4a7a;
-  --md-primary-bg-color:        #ffffff;
-  --md-accent-fg-color:         #1e7fd4;
-  --md-accent-fg-color--transparent: rgba(30, 127, 212, 0.1);
-
-  /* Code block */
-  --md-code-bg-color:           #f6f8fa;
-  --md-code-fg-color:           #1c2020;
-
-  /* Custom */
-  --fasiri-green:    #1a5c38;
-  --fasiri-gold:     #92580a;
-  --fasiri-border:   #e2e4dd;
+  --md-primary-fg-color:        #2D7D46;
+  --md-primary-fg-color--light: #3a9e58;
+  --md-primary-fg-color--dark:  #1f5c32;
+  --md-accent-fg-color:         #E8A020;
 }
 
-[data-md-color-scheme="slate"] {
-  --md-primary-fg-color:        #1e7fd4;
-  --md-accent-fg-color:         #38c8f0;
-  --md-code-bg-color:           #1a1f2e;
-  --fasiri-border:   #2a3040;
-}
-
-/* ── Header ───────────────────────────────────────────────── */
-.md-header {
-  box-shadow: 0 1px 0 0 rgba(0,0,0,0.08);
-}
-
+/* Wordmark in header */
 .md-header__title {
+  font-family: Georgia, serif;
   font-weight: 700;
   letter-spacing: -0.3px;
 }
 
-/* ── Navigation ───────────────────────────────────────────── */
-.md-nav__title {
-  font-weight: 700;
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--md-default-fg-color--light);
-}
-
-.md-nav__item--active > .md-nav__link {
-  font-weight: 600;
-}
-
-/* ── Content ──────────────────────────────────────────────── */
-.md-content__inner {
-  max-width: 860px;
-}
-
-/* Tighter heading spacing */
-.md-typeset h1 {
-  font-weight: 800;
-  letter-spacing: -0.5px;
-  line-height: 1.15;
-  margin-bottom: 0.4em;
-}
-
-.md-typeset h2 {
-  font-weight: 700;
-  letter-spacing: -0.3px;
-  border-bottom: 1px solid var(--fasiri-border);
-  padding-bottom: 0.3em;
-  margin-top: 2em;
-}
-
-.md-typeset h3 {
-  font-weight: 600;
-}
-
-/* ── Code blocks ──────────────────────────────────────────── */
-.md-typeset code {
-  border-radius: 3px;
-  padding: 0.1em 0.35em;
+/* Code blocks */
+.highlight code {
   font-size: 0.85em;
 }
 
-.md-typeset pre > code {
-  padding: 0;
-  font-size: 0.83em;
-  line-height: 1.7;
-}
-
-/* Copy button */
-.md-clipboard {
-  color: var(--md-default-fg-color--lighter);
-}
-
-/* ── Admonitions ──────────────────────────────────────────── */
-.md-typeset .admonition,
-.md-typeset details {
+/* Admonition tweaks */
+.md-typeset .admonition {
   border-radius: 4px;
-  border-left-width: 4px;
-  font-size: 0.9rem;
 }
 
-/* ── Tables ───────────────────────────────────────────────── */
-.md-typeset table:not([class]) {
-  font-size: 0.875rem;
-  border: 1px solid var(--fasiri-border);
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.md-typeset table:not([class]) thead tr {
-  background: var(--md-code-bg-color);
-}
-
+/* Table styling */
 .md-typeset table:not([class]) th {
-  font-weight: 700;
-  font-size: 0.8rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--md-default-fg-color--light);
-}
-
-/* ── Home page hero ───────────────────────────────────────── */
-.fasiri-hero {
-  text-align: center;
-  padding: 3rem 1rem;
-  margin-bottom: 2rem;
-}
-
-.fasiri-hero h1 {
-  font-size: 3rem;
-  font-weight: 900;
-  letter-spacing: -1.5px;
-  line-height: 1;
-  margin-bottom: 1rem;
-}
-
-.fasiri-hero p {
-  font-size: 1.15rem;
-  color: var(--md-default-fg-color--light);
-  max-width: 560px;
-  margin: 0 auto 2rem;
-  line-height: 1.6;
-}
-
-.fasiri-hero .md-button {
-  margin: 0.25rem;
-}
-
-.fasiri-hero .md-button--primary {
-  background: var(--md-primary-fg-color);
-  border-color: var(--md-primary-fg-color);
-}
-
-/* ── Feature grid ─────────────────────────────────────────── */
-.feature-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1rem;
-  margin: 2rem 0;
-}
-
-.feature-card {
-  border: 1px solid var(--fasiri-border);
-  border-radius: 6px;
-  padding: 1.25rem;
-  background: var(--md-code-bg-color);
-}
-
-.feature-card h3 {
-  font-size: 0.95rem;
-  font-weight: 700;
-  margin: 0.5rem 0 0.4rem;
-  border: none;
-  padding: 0;
-}
-
-.feature-card p {
-  font-size: 0.85rem;
-  color: var(--md-default-fg-color--light);
-  margin: 0;
-  line-height: 1.5;
-}
-
-.feature-icon {
-  font-size: 1.5rem;
-  line-height: 1;
-}
-
-/* ── Language badges ──────────────────────────────────────── */
-.badge-sunbird {
-  background: #edf5f0;
-  color: #1a5c38;
-  border: 1px solid #b0ccbc;
-  padding: 2px 8px;
-  border-radius: 2px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.badge-hf {
-  background: #eef1f5;
-  color: #2c3e50;
-  border: 1px solid #b0bcc8;
-  padding: 2px 8px;
-  border-radius: 2px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-/* ── Provider cards ───────────────────────────────────────── */
-.provider-card {
-  border: 1px solid var(--fasiri-border);
-  border-radius: 6px;
-  padding: 1rem 1.25rem;
-  margin: 0.5rem 0;
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-}
-
-.provider-card code {
-  font-size: 0.78rem;
-}
-
-/* ── Responsive ───────────────────────────────────────────── */
-@media (max-width: 768px) {
-  .fasiri-hero h1 { font-size: 2rem; }
-  .feature-grid { grid-template-columns: 1fr; }
+  background-color: #2D7D46;
+  color: white;
 }

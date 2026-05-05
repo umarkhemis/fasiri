@@ -1,10 +1,10 @@
 # ============================================================
-# Fasiri – Docker Compose (Production)
+# Fasiri - Docker Compose (Production)
 #
 # Services:
-#   api     – FastAPI application (2 workers)
-#   redis   – Rate limiting + caching
-#   nginx   – Reverse proxy, SSL termination, gzip
+#   api     - FastAPI application (2 workers)
+#   redis   - Rate limiting + caching
+#   nginx   - Reverse proxy, SSL termination, gzip
 #
 # Usage:
 #   cp env.example .env && nano .env      # fill in your keys
@@ -37,7 +37,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    # Don't expose Redis externally — internal only
+    # Don't expose Redis externally - internal only
     expose:
       - "6379"
 
@@ -58,7 +58,7 @@ services:
       # Rate limiting
       RATE_LIMIT_RPM:        ${RATE_LIMIT_RPM:-60}
       RATE_LIMIT_BATCH_RPM:  ${RATE_LIMIT_BATCH_RPM:-10}
-      # Redis — use internal service name
+      # Redis - use internal service name
       REDIS_URL:             redis://redis:6379/0
       # Provider URLs
       SUNBIRD_BASE_URL:      ${SUNBIRD_BASE_URL:-https://api.sunbird.ai}
@@ -81,7 +81,7 @@ services:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "python", "-c",
-             "import httpx; r=httpx.get('http://localhost:8000/health',timeout=8); exit(0 if r.status_code==200 else 1)"]
+             "import httpx; r=httpx.get('https://fasiri-bu9u.onrender.com/health',timeout=8); exit(0 if r.status_code==200 else 1)"]
       interval: 30s
       timeout: 15s
       start_period: 30s

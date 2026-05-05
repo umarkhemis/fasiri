@@ -2,7 +2,7 @@
 
 All notable changes to Fasiri are documented here.
 
-## [1.0.0] — 2026-05-01
+## [1.0.0] - 2026-05-01
 
 ### Added
 - Khaya AI provider for West/East African language translation

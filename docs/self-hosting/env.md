@@ -10,10 +10,10 @@ cp .env.example .env
 
 | Variable                  | Required | Description                                       |
 |---------------------------|----------|---------------------------------------------------|
-| `SUNBIRD_API_KEY`         | ✅       | JWT from `POST https://api.sunbird.ai/auth/token` |
-| `KHAYA_API_KEY`           | ✅       | Subscription key from translation.ghananlp.org    |
-| `KHAYA_API_KEY_SECONDARY` | —        | Secondary Khaya key for rate-limit failover       |
-| `HUGGINGFACE_API_KEY`     | ✅       | Free token from huggingface.co/settings/tokens    |
+| `SUNBIRD_API_KEY`         | Yes       | JWT from `POST https://api.sunbird.ai/auth/token` |
+| `KHAYA_API_KEY`           | Yes       | Subscription key from translation.ghananlp.org    |
+| `KHAYA_API_KEY_SECONDARY` | -        | Secondary Khaya key for rate-limit failover       |
+| `HUGGINGFACE_API_KEY`     | Yes       | Free token from huggingface.co/settings/tokens    |
 
 ## Security
 
@@ -28,13 +28,13 @@ cp .env.example .env
 |------------------------|---------|-----------------------------------------|
 | `RATE_LIMIT_RPM`       | `60`    | Requests per minute per API key         |
 | `RATE_LIMIT_BATCH_RPM` | `10`    | Batch requests per minute per API key   |
-| `REDIS_URL`            | —       | Redis for multi-worker rate limiting    |
+| `REDIS_URL`            | -       | Redis for multi-worker rate limiting    |
 
 ## Server
 
 | Variable           | Default                 | Description             |
 |--------------------|-------------------------|-------------------------|
-| `BASE_URL`         | `http://localhost:8000` | Public base URL         |
+| `BASE_URL`         | `https://fasiri-bu9u.onrender.com` | Public base URL         |
 | `DEBUG`            | `false`                 | Enable debug logging    |
 | `HTTP_TIMEOUT`     | `30`                    | Provider timeout (secs) |
 | `HTTP_TIMEOUT_STT` | `60`                    | STT timeout (secs)      |

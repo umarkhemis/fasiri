@@ -1,5 +1,5 @@
 # ============================================================
-# Fasiri – Deploy Documentation to GitHub Pages
+# Fasiri - Deploy Documentation to GitHub Pages
 #
 # Triggers on every push to main that changes docs/ or mkdocs.yml
 # Also runs on manual trigger (workflow_dispatch)
@@ -7,7 +7,7 @@
 # Setup (one-time):
 #   1. GitHub repo → Settings → Pages
 #   2. Source: "GitHub Actions"
-#   3. That's it — this workflow handles the rest
+#   3. That's it - this workflow handles the rest
 #
 # Your docs will be live at:
 #   https://umarkhemis.github.io/fasiri/

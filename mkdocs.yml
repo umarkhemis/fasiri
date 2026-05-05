@@ -7,16 +7,18 @@ edit_uri: edit/main/docs/
 
 theme:
   name: material
+  logo: assets/fasiri-icon.png
+  favicon: assets/favicon.png
   palette:
     - scheme: default
-      primary: green
-      accent: teal
+      primary: custom
+      accent: custom
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
     - scheme: slate
-      primary: green
-      accent: teal
+      primary: custom
+      accent: custom
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
@@ -25,17 +27,23 @@ theme:
     - navigation.sections
     - navigation.top
     - navigation.expand
+    - navigation.indexes
     - search.highlight
     - search.share
+    - search.suggest
     - content.code.copy
     - content.code.annotate
+    - content.tabs.link
+
+extra_css:
+  - assets/stylesheets/extra.css
 
 plugins:
   - search
   - mkdocstrings:
       handlers:
         python:
-          paths: [sdk]
+          paths: [.]
 
 markdown_extensions:
   - admonition
@@ -50,6 +58,8 @@ markdown_extensions:
   - tables
   - toc:
       permalink: true
+  - attr_list
+  - md_in_html
 
 nav:
   - Home: index.md
@@ -57,7 +67,7 @@ nav:
       - Installation: getting-started/installation.md
       - Authentication: getting-started/authentication.md
       - Quick Start: getting-started/quickstart.md
-      - Languages: getting-started/languages.md
+      - Supported Languages: getting-started/languages.md
   - Guides:
       - Translation: guides/translation.md
       - Batch Translation: guides/batch.md
@@ -70,17 +80,17 @@ nav:
   - API Reference:
       - Overview: api-reference/index.md
       - Translation: api-reference/translation.md
-      - Batch: api-reference/batch.md
+      - Batch Translation: api-reference/batch.md
       - Speech-to-Text: api-reference/stt.md
       - Text-to-Speech: api-reference/tts.md
       - Languages: api-reference/languages.md
-      - Auth: api-reference/auth.md
+      - Authentication: api-reference/auth.md
       - Errors: api-reference/errors.md
   - Python SDK:
       - Overview: sdk-reference/index.md
       - Fasiri Client: sdk-reference/client.md
       - Async Usage: sdk-reference/async.md
-      - Translate: sdk-reference/translate.md
+      - Translation: sdk-reference/translate.md
       - Batch: sdk-reference/batch.md
       - Speech: sdk-reference/speech.md
       - Data Types: sdk-reference/types.md
@@ -104,8 +114,12 @@ extra:
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/umarkhemis/fasiri
+      name: GitHub
     - icon: fontawesome/brands/python
       link: https://pypi.org/project/fasiri
+      name: PyPI
 
-# Remove logo/favicon refs since those files don't exist yet
-# Add them back when you have the actual image files
+extra_css:
+  - assets/stylesheets/extra.css
+
+copyright: Copyright &copy; 2026 Beta-Tech Labs

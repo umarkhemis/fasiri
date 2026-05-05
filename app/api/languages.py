@@ -1,7 +1,7 @@
 """
-Fasiri – Languages endpoint.
+Fasiri - Languages endpoint.
 
-GET /api/v1/languages  – list all supported languages with capabilities
+GET /api/v1/languages  - list all supported languages with capabilities
 """
 from __future__ import annotations
 

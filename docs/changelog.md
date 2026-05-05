@@ -3,8 +3,8 @@
 ## v1.0.0 (2026-05-01)
 
 ### Added
-- **Khaya AI provider** — West/East African language translation (Yoruba, Twi, Ewe, Ga, Dagbani, Kikuyu, Luo, Kimeru, Kusaal)
-- **Three-provider routing** — Sunbird → Khaya → HuggingFace with automatic fallback
+- **Khaya AI provider** - West/East African language translation (Yoruba, Twi, Ewe, Ga, Dagbani, Kikuyu, Luo, Kimeru, Kusaal)
+- **Three-provider routing** - Sunbird → Khaya → HuggingFace with automatic fallback
 - **Python SDK** (`pip install fasiri`) with sync and async support
 - **Batch translation** endpoint (`POST /api/v1/translate/batch`)
 - **Health check** endpoint (`GET /health`) with provider status

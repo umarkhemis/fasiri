@@ -1,6 +1,6 @@
 
 """
-Fasiri – GhanaNLP / Khaya AI provider adapter.
+Fasiri - GhanaNLP / Khaya AI provider adapter.
 
 API spec: khaya-translation-api-v2.json (OpenAPI 3.0.1)
 Register:  https://translation.ghananlp.org/signup
@@ -14,23 +14,23 @@ Translation endpoint:
     { "in": "<text>", "lang": "<src>-<tgt>" }
     Max input length: 1000 characters
   Response:
-    Plain string — the translated text (not a JSON object)
+    Plain string - the translated text (not a JSON object)
   Errors:
     400: { "type": "...", "message": "..." }
 
 Supported language codes (from /v2/languages):
-  en  – English
-  tw  – Twi
-  ee  – Ewe
-  gaa – Ga
-  fat – Fante
-  yo  – Yoruba
-  dag – Dagbani
-  ki  – Kikuyu
-  gur – Gurune
-  luo – Luo
-  mer – Kimeru
-  kus – Kusaal
+  en  - English
+  tw  - Twi
+  ee  - Ewe
+  gaa - Ga
+  fat - Fante
+  yo  - Yoruba
+  dag - Dagbani
+  ki  - Kikuyu
+  gur - Gurune
+  luo - Luo
+  mer - Kimeru
+  kus - Kusaal
 
 Authentication:
   Set KHAYA_API_KEY to the subscription key from your Khaya dashboard.
@@ -99,7 +99,7 @@ class KhayaProvider(BaseProvider):
     Set KHAYA_API_KEY to the subscription key from your Khaya dashboard
     (register at https://translation.ghananlp.org/signup).
 
-    Note: Uses Ocp-Apim-Subscription-Key header — NOT a Bearer token.
+    Note: Uses Ocp-Apim-Subscription-Key header - NOT a Bearer token.
     """
 
     def __init__(self) -> None:
@@ -107,7 +107,7 @@ class KhayaProvider(BaseProvider):
         self._stub = not bool(self._key)
         if self._stub:
             logger.warning(
-                "KHAYA_API_KEY not set – Khaya provider in stub mode.\n"
+                "KHAYA_API_KEY not set - Khaya provider in stub mode.\n"
                 "To get a key:\n"
                 "  1. Register: https://translation.ghananlp.org/signup\n"
                 "  2. Copy your subscription key into KHAYA_API_KEY in your .env"
@@ -174,23 +174,23 @@ class KhayaProvider(BaseProvider):
                         headers=self._headers(),
                     )
 
-                # 401/403 = bad API key — don't retry
+                # 401/403 = bad API key - don't retry
                 if resp.status_code in {401, 403}:
                     raise httpx.HTTPStatusError(
-                        f"HTTP {resp.status_code} – Khaya auth failed. "
+                        f"HTTP {resp.status_code} - Khaya auth failed. "
                         f"Check your KHAYA_API_KEY in .env",
                         request=resp.request,
                         response=resp,
                     )
 
-                # 400 = bad request — don't retry, log body for diagnosis
+                # 400 = bad request - don't retry, log body for diagnosis
                 if resp.status_code == 400:
                     logger.error(
-                        "Khaya 400 Bad Request — payload: %s — body: %s",
+                        "Khaya 400 Bad Request - payload: %s - body: %s",
                         payload, resp.text,
                     )
                     raise httpx.HTTPStatusError(
-                        f"HTTP 400 – Khaya rejected request for '{lang_code}'. "
+                        f"HTTP 400 - Khaya rejected request for '{lang_code}'. "
                         f"Body: {resp.text}",
                         request=resp.request,
                         response=resp,
@@ -200,7 +200,7 @@ class KhayaProvider(BaseProvider):
                 if resp.status_code in _RETRY_STATUSES:
                     wait = 2 ** attempt
                     logger.warning(
-                        "Khaya HTTP %s (attempt %d/%d) – retrying in %ds",
+                        "Khaya HTTP %s (attempt %d/%d) - retrying in %ds",
                         resp.status_code, attempt, _MAX_RETRIES, wait,
                     )
                     await asyncio.sleep(wait)
@@ -214,7 +214,7 @@ class KhayaProvider(BaseProvider):
                 # Log unexpected failures
                 if not resp.is_success:
                     logger.error(
-                        "Khaya unexpected %s — body: %s",
+                        "Khaya unexpected %s - body: %s",
                         resp.status_code, resp.text,
                     )
 
@@ -286,7 +286,7 @@ class KhayaProvider(BaseProvider):
 
 
 # """
-# Fasiri – GhanaNLP / Khaya AI provider adapter.
+# Fasiri - GhanaNLP / Khaya AI provider adapter.
 
 # API docs: https://translation.ghananlp.org/
 # Register:  https://translation.ghananlp.org/signup
@@ -379,7 +379,7 @@ class KhayaProvider(BaseProvider):
 #         self._stub = not bool(self._key)
 #         if self._stub:
 #             logger.warning(
-#                 "KHAYA_API_KEY not set – Khaya provider in stub mode.\n"
+#                 "KHAYA_API_KEY not set - Khaya provider in stub mode.\n"
 #                 "To get a key:\n"
 #                 "  1. Register: https://translation.ghananlp.org/signup\n"
 #                 "  2. Copy your subscription key into KHAYA_API_KEY in your .env"
@@ -441,20 +441,20 @@ class KhayaProvider(BaseProvider):
 #                 # 401/403 = bad API key
 #                 if resp.status_code in {401, 403}:
 #                     raise httpx.HTTPStatusError(
-#                         f"HTTP {resp.status_code} – Khaya auth failed. "
+#                         f"HTTP {resp.status_code} - Khaya auth failed. "
 #                         f"Check your KHAYA_API_KEY in .env",
 #                         request=resp.request,
 #                         response=resp,
 #                     )
 
-#                 # 400 = bad request — unsupported lang pair or malformed payload
+#                 # 400 = bad request - unsupported lang pair or malformed payload
 #                 if resp.status_code == 400:
 #                     logger.error(
-#                         "Khaya 400 Bad Request — payload: %s — body: %s",
+#                         "Khaya 400 Bad Request - payload: %s - body: %s",
 #                         payload, resp.text,
 #                     )
 #                     raise httpx.HTTPStatusError(
-#                         f"HTTP 400 – Khaya rejected the request. "
+#                         f"HTTP 400 - Khaya rejected the request. "
 #                         f"Lang pair '{lang_code}' may not be supported. "
 #                         f"Body: {resp.text}",
 #                         request=resp.request,
@@ -465,7 +465,7 @@ class KhayaProvider(BaseProvider):
 #                 if resp.status_code in _RETRY_STATUSES:
 #                     wait = 2 ** attempt
 #                     logger.warning(
-#                         "Khaya HTTP %s (attempt %d/%d) – retrying in %ds",
+#                         "Khaya HTTP %s (attempt %d/%d) - retrying in %ds",
 #                         resp.status_code, attempt, _MAX_RETRIES, wait,
 #                     )
 #                     await asyncio.sleep(wait)
@@ -479,7 +479,7 @@ class KhayaProvider(BaseProvider):
 #                 # Log body on any unexpected failure
 #                 if not resp.is_success:
 #                     logger.error(
-#                         "Khaya %s — body: %s", resp.status_code, resp.text
+#                         "Khaya %s - body: %s", resp.status_code, resp.text
 #                     )
 
 #                 resp.raise_for_status()

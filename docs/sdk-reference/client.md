@@ -28,7 +28,7 @@ Fasiri(
 
 ### Raises
 
-- `AuthenticationError` — if no API key is provided and `FASIRI_API_KEY` is not set
+- `AuthenticationError` - if no API key is provided and `FASIRI_API_KEY` is not set
 
 ### Examples
 
@@ -72,8 +72,8 @@ Translate text to a target language.
 
 | Parameter | Type | Required | Description |
 |---|---|---|---|
-| `text` | `str` | ✅ | Text to translate (max 5,000 chars) |
-| `target` | `str` | ✅ | Target language code, e.g. `"lug"`, `"sw"` |
+| `text` | `str` | Yes | Text to translate (max 5,000 chars) |
+| `target` | `str` | Yes | Target language code, e.g. `"lug"`, `"sw"` |
 | `source` | `str` | - | Source language code. Auto-detected if omitted. |
 | `provider` | `str` | - | `"auto"`, `"sunbird"`, or `"huggingface"` |
 
@@ -103,16 +103,16 @@ Translate multiple texts in a single request (up to 50 items).
 
 | Parameter | Type | Required | Description |
 |---|---|---|---|
-| `items` | `list[dict]` | ✅ | List of translation items. Each dict needs `id`, `text`, `target` |
+| `items` | `list[dict]` | Yes | List of translation items. Each dict needs `id`, `text`, `target` |
 | `provider` | `str` | - | Provider override |
 
 Each item must have:
 
 | Key | Type | Required | Description |
 |---|---|---|---|
-| `id` | `str` | ✅ | Client-supplied ID to match results to inputs |
-| `text` | `str` | ✅ | Text to translate |
-| `target` | `str` | ✅ | Target language code (also accepts `target_lang`) |
+| `id` | `str` | Yes | Client-supplied ID to match results to inputs |
+| `text` | `str` | Yes | Text to translate |
+| `target` | `str` | Yes | Target language code (also accepts `target_lang`) |
 | `source` | `str` | - | Source language code (also accepts `source_lang`) |
 
 **Returns:** [`BatchResult`](types.md#batchresult)

@@ -1,14 +1,15 @@
 """
-Fasiri – Speech endpoints.
+Fasiri - Speech endpoints.
 
-POST /api/v1/speech/stt  – Speech-to-Text  (multipart audio upload)
-POST /api/v1/speech/tts  – Text-to-Speech  (returns audio URL or base64)
+POST /api/v1/speech/stt  - Speech-to-Text  (multipart audio upload)
+POST /api/v1/speech/tts  - Text-to-Speech  (returns audio URL or base64)
 """
 from __future__ import annotations
 
 import logging
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
+from fastapi.responses import JSONResponse
 
 from app.middleware.auth import require_api_key
 from app.middleware.ratelimit import check_rate_limit

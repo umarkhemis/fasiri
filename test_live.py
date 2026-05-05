@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-Fasiri API – Live Test Script
+Fasiri API - Live Test Script
 ================================
 Tests every endpoint against your running server.
 
 Usage:
     python test_live.py                          # uses defaults
-    python test_live.py --url http://localhost:8000
+    python test_live.py --url https://fasiri-bu9u.onrender.com
     python test_live.py --key fsri_yourkey
     python test_live.py --url https://your-deployed-api.com --key fsri_...
 
@@ -39,7 +39,7 @@ except ImportError:
 # Helpers
 # ═══════════════════════════════════════════════════════════════════════════════
 
-BASE_URL = "http://localhost:8000"
+BASE_URL = "https://fasiri-bu9u.onrender.com"
 API_KEY  = None   # set via --key or auto-issued below
 
 PASS = "✅ PASS"
@@ -253,7 +253,7 @@ def test_translation():
                   ms)
         elif code == 503:
             log(WARN, desc,
-                f"503 – provider unavailable (check your API keys): "
+                f"503 - provider unavailable (check your API keys): "
                 f"{body.get('detail', {}).get('message', '')[:100]}", ms)
         else:
             log(FAIL, desc, f"HTTP {code}: {json.dumps(body)[:120]}", ms)
@@ -293,7 +293,7 @@ def test_batch():
     if not check(code == 200, "POST /translate/batch",
                  f"HTTP {code}", ms):
         if code == 503:
-            log(WARN, "Batch skipped", "Provider unavailable — check API keys")
+            log(WARN, "Batch skipped", "Provider unavailable - check API keys")
         return
 
     check(body["total"] == len(items),
@@ -319,7 +319,7 @@ def test_batch():
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 6. Speech – TTS
+# 6. Speech - TTS
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def test_tts():
@@ -349,7 +349,7 @@ def test_tts():
         elif code == 422:
             log(WARN, f"TTS {lang_name} ({lang})", f"Unsupported language (422)", ms)
         elif code == 503:
-            log(WARN, f"TTS {lang_name} ({lang})", f"Provider unavailable (503) — check SUNBIRD_API_KEY", ms)
+            log(WARN, f"TTS {lang_name} ({lang})", f"Provider unavailable (503) - check SUNBIRD_API_KEY", ms)
         else:
             log(FAIL, f"TTS {lang_name} ({lang})", f"HTTP {code}: {json.dumps(body)[:100]}", ms)
 
@@ -362,7 +362,7 @@ def test_tts():
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 7. Speech – STT
+# 7. Speech - STT
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def test_stt():
@@ -403,7 +403,7 @@ def test_stt():
                   f'transcript="{transcript[:50]}"  provider={body.get("provider")}',
                   ms)
         elif r.status_code == 503:
-            log(WARN, f"STT {lang}", f"Provider unavailable (503) — check SUNBIRD_API_KEY", ms)
+            log(WARN, f"STT {lang}", f"Provider unavailable (503) - check SUNBIRD_API_KEY", ms)
         else:
             log(FAIL, f"STT {lang}", f"HTTP {r.status_code}: {r.text[:120]}", ms)
 
@@ -631,8 +631,8 @@ def summary():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Fasiri API live test script")
-    parser.add_argument("--url",  default="http://localhost:8000",
-                        help="API base URL (default: http://localhost:8000)")
+    parser.add_argument("--url",  default="https://fasiri-bu9u.onrender.com",
+                        help="API base URL (default: https://fasiri-bu9u.onrender.com)")
     parser.add_argument("--key",  default=None,
                         help="Fasiri API key (auto-issued if not provided)")
     parser.add_argument("--skip", nargs="*", default=[],
@@ -645,7 +645,7 @@ if __name__ == "__main__":
     API_KEY  = args.key
 
     print(f"\n{'═'*60}")
-    print(f"  Fasiri API – Live Test Suite")
+    print(f"  Fasiri API - Live Test Suite")
     print(f"{'═'*60}")
     print(f"  Target:  {BASE_URL}")
     print(f"  Key:     {'provided' if API_KEY else 'will auto-issue'}")

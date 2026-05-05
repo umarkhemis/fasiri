@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-Fasiri API – Stress / Load Test
+Fasiri API - Stress / Load Test
 ====================================
 Fires concurrent requests to measure throughput, latency, and error rates.
 
 Usage:
     python stress_test.py                          # 10 concurrent, 50 total
     python stress_test.py --concurrency 20 --total 200
-    python stress_test.py --url http://localhost:8000 --key fsri_...
+    python stress_test.py --url https://fasiri-bu9u.onrender.com --key fsri_...
     python stress_test.py --endpoint batch         # stress batch endpoint only
 """
 from __future__ import annotations
@@ -22,7 +22,7 @@ from typing import List
 
 import httpx
 
-BASE_URL    = "http://localhost:8000"
+BASE_URL    = "https://fasiri-bu9u.onrender.com"
 API_KEY     = None
 CONCURRENCY = 10
 TOTAL       = 50
@@ -241,14 +241,14 @@ def print_stats(stats: Stats):
         # Latency histogram
         print(f"\n  Latency distribution:")
         buckets = [(0,500), (500,1000), (1000,2000), (2000,5000), (5000,99999)]
-        labels  = ["<500ms", "500ms–1s", "1s–2s", "2s–5s", ">5s"]
+        labels  = ["<500ms", "500ms-1s", "1s-2s", "2s-5s", ">5s"]
         for (lo, hi), label in zip(buckets, labels):
             count = sum(1 for l in stats.latencies if lo <= l < hi)
             pct   = count / len(stats.latencies) * 100
             bar   = "█" * int(pct / 2)
             print(f"    {label:<12}  {bar:<25}  {count:3d} ({pct:.0f}%)")
     else:
-        print(f"\n  ⚠️  No successful requests — check your API keys and server.")
+        print(f"\n  ⚠️  No successful requests - check your API keys and server.")
 
     # Provider breakdown
     providers = {}
@@ -273,7 +273,7 @@ def print_stats(stats: Stats):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Fasiri stress test")
-    parser.add_argument("--url",         default="http://localhost:8000")
+    parser.add_argument("--url",         default="https://fasiri-bu9u.onrender.com")
     parser.add_argument("--key",         default=None)
     parser.add_argument("--concurrency", type=int, default=10)
     parser.add_argument("--total",       type=int, default=50)
@@ -301,11 +301,11 @@ if __name__ == "__main__":
                 print(f"❌ Could not auto-issue key: HTTP {r.status_code}")
                 sys.exit(1)
         except httpx.ConnectError:
-            print(f"❌ Cannot connect to {BASE_URL} — is the server running?")
+            print(f"❌ Cannot connect to {BASE_URL} - is the server running?")
             sys.exit(1)
 
     print(f"\n{'═'*55}")
-    print(f"  Fasiri API – Stress Test")
+    print(f"  Fasiri API - Stress Test")
     print(f"{'═'*55}")
 
     stats = asyncio.run(run_stress(args.endpoint, CONCURRENCY, TOTAL))
@@ -313,7 +313,7 @@ if __name__ == "__main__":
 
     # Exit code
     success_rate = stats.passed / stats.total if stats.total else 0
-    # Account for 503s as "not our fault" — only count hard errors
+    # Account for 503s as "not our fault" - only count hard errors
     hard_fail_rate = stats.failed / stats.total if stats.total else 0
     if hard_fail_rate > 0.05:
         print(f"\n  ❌ Hard failure rate {hard_fail_rate*100:.1f}% exceeds 5% threshold")

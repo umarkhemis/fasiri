@@ -1,6 +1,6 @@
 # Building a Multilingual App
 
-This guide walks through adding African language support to a real web application — a customer support platform that needs to serve users in Uganda, Nigeria, and Tanzania.
+This guide walks through adding African language support to a real web application - a customer support platform that needs to serve users in Uganda, Nigeria, and Tanzania.
 
 ## The goal
 
@@ -39,7 +39,7 @@ def receive_ticket(user_id: str, message: str) -> dict:
     """
     try:
         # Translate to English for the support team
-        # source_lang omitted — Fasiri auto-detects
+        # source_lang omitted - Fasiri auto-detects
         translation = client.translate(message, target="en")
 
         return {
@@ -134,7 +134,7 @@ def process_overnight_tickets(tickets: list[dict]) -> list[dict]:
             "id":     ticket["id"],
             "text":   ticket["original_text"],
             "target": "en",
-            # source omitted — auto-detect
+            # source omitted - auto-detect
         }
         for ticket in tickets
         if ticket.get("user_language") != "en"

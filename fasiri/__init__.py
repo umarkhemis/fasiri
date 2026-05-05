@@ -1,5 +1,5 @@
 """
-fasiri – Official Python SDK for the Fasiri African Language API.
+fasiri - Official Python SDK for the Fasiri African Language API.
 
 Quick start::
 

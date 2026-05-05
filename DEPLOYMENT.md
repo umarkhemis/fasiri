@@ -1,4 +1,4 @@
-# Fasiri – Production Deployment Guide
+# Fasiri - Production Deployment Guide
 
 ## Choose your deployment path
 
@@ -11,7 +11,7 @@
 
 ---
 
-## Option A — Railway (Recommended - Fastest)
+## Option A - Railway (Recommended - Fastest)
 
 Railway auto-detects the Dockerfile and deploys in minutes.
 
@@ -36,13 +36,13 @@ Your API is live at: `https://your-project.up.railway.app`
 
 ---
 
-## Option B — Render
+## Option B - Render
 
 ```bash
 # 1. Push your repo to GitHub
 
 # 2. Go to render.com → New → Blueprint
-#    Connect your GitHub repo — Render reads render.yaml automatically
+#    Connect your GitHub repo - Render reads render.yaml automatically
 
 # 3. Set these manually in the Render dashboard (Environment tab):
 #    HUGGINGFACE_API_KEY
@@ -54,17 +54,17 @@ Your API is live at: `https://your-project.up.railway.app`
 
 ---
 
-## Option C — DigitalOcean VPS ($6/month)
+## Option C - DigitalOcean VPS ($6/month)
 
-### Step 1 — Create a Droplet
+### Step 1 - Create a Droplet
 
 - Go to cloud.digitalocean.com → Create Droplet
 - **Image:** Ubuntu 22.04 LTS
-- **Size:** Basic, $6/month (1 vCPU, 1GB RAM) — enough for Fasiri
+- **Size:** Basic, $6/month (1 vCPU, 1GB RAM) - enough for Fasiri
 - **Region:** Choose closest to your users (Frankfurt for Africa works well)
 - **Auth:** SSH key (add your public key)
 
-### Step 2 — Point your domain
+### Step 2 - Point your domain
 
 In your domain registrar (Namecheap, Cloudflare, etc.):
 ```
@@ -72,7 +72,7 @@ A record:  api.yourdomain.com  →  YOUR_DROPLET_IP
 ```
 Wait 5 minutes for DNS to propagate.
 
-### Step 3 — Run the setup script
+### Step 3 - Run the setup script
 
 SSH into your droplet and run:
 ```bash
@@ -83,7 +83,7 @@ curl -sL https://raw.githubusercontent.com/umarkhemis/fasiri/main/scripts/setup_
   | DOMAIN=api.yourdomain.com bash
 ```
 
-### Step 4 — Add your API keys
+### Step 4 - Add your API keys
 
 ```bash
 nano /opt/fasiri/.env
@@ -98,7 +98,7 @@ REDIS_URL=redis://redis:6379/0
 BASE_URL=https://api.yourdomain.com
 ```
 
-### Step 5 — Get SSL certificate
+### Step 5 - Get SSL certificate
 
 ```bash
 # Stop any running containers first (Certbot needs port 80)
@@ -115,7 +115,7 @@ cp /etc/letsencrypt/live/api.yourdomain.com/privkey.pem   /opt/fasiri/nginx/ssl/
 sed -i 's/YOUR_DOMAIN/api.yourdomain.com/g' /opt/fasiri/nginx/conf.d/fasiri.conf
 ```
 
-### Step 6 — Start everything
+### Step 6 - Start everything
 
 ```bash
 cd /opt/fasiri
@@ -128,7 +128,7 @@ docker compose ps
 docker compose logs -f api
 ```
 
-### Step 7 — Verify
+### Step 7 - Verify
 
 ```bash
 curl https://api.yourdomain.com/health
@@ -140,7 +140,7 @@ python smoke_test.py --url https://api.yourdomain.com
 
 ---
 
-## Option D — Any Docker host (generic)
+## Option D - Any Docker host (generic)
 
 ```bash
 # 1. Clone the repo on your server
@@ -161,7 +161,7 @@ curl http://localhost/health
 
 ---
 
-## CI/CD — GitHub Actions (auto-deploy on push)
+## CI/CD - GitHub Actions (auto-deploy on push)
 
 ### Setup
 
@@ -176,7 +176,7 @@ curl http://localhost/health
 | `DEPLOY_USER` | SSH user (e.g. `ubuntu`) |
 | `DEPLOY_SSH_KEY` | Your private SSH key (full contents) |
 
-3. Push to `main` — the pipeline runs automatically:
+3. Push to `main` - the pipeline runs automatically:
    - Tests (52 unit tests)
    - Docker build + push to Docker Hub
    - SSH deploy to your server

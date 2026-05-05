@@ -1,5 +1,5 @@
 """
-Fasiri – Sunbird AI provider adapter.
+Fasiri - Sunbird AI provider adapter.
 
 Correct endpoints (from https://salt.sunbird.ai/API/ and https://docs.sunbird.ai):
 
@@ -78,12 +78,12 @@ _STT_LANG_MAP: dict[str, str] = {
 # Fasiri code → Sunbird TTS speaker_id
 # Source: https://salt.sunbird.ai/API/ Supported Languages & Voices table
 _TTS_SPEAKER_IDS: dict[str, int] = {
-    "ach": 241,   # Acholi     – Female
-    "teo": 242,   # Ateso      – Female
-    "nyn": 243,   # Runyankole – Female
-    "lgg": 245,   # Lugbara    – Female
-    "sw":  246,   # Swahili    – Male
-    "lug": 248,   # Luganda    – Female (default)
+    "ach": 241,   # Acholi     - Female
+    "teo": 242,   # Ateso      - Female
+    "nyn": 243,   # Runyankole - Female
+    "lgg": 245,   # Lugbara    - Female
+    "sw":  246,   # Swahili    - Male
+    "lug": 248,   # Luganda    - Female (default)
 }
 
 _MAX_RETRIES = 3
@@ -109,7 +109,7 @@ class SunbirdProvider(BaseProvider):
         self._stub = not bool(self._token)
         if self._stub:
             logger.warning(
-                "SUNBIRD_API_KEY not set – Sunbird provider in stub mode.\n"
+                "SUNBIRD_API_KEY not set - Sunbird provider in stub mode.\n"
                 "To get a token:\n"
                 "  1. Register: POST https://api.sunbird.ai/auth/register\n"
                 "  2. Login:    POST https://api.sunbird.ai/auth/token\n"
@@ -119,7 +119,7 @@ class SunbirdProvider(BaseProvider):
             )
         elif not self._token.startswith("ey"):
             logger.warning(
-                "SUNBIRD_API_KEY looks wrong – it should be a JWT starting with 'ey...'. "
+                "SUNBIRD_API_KEY looks wrong - it should be a JWT starting with 'ey...'. "
                 "A 405 error from Sunbird usually means your token is missing or invalid. "
                 "Re-run: POST https://api.sunbird.ai/auth/token to get a fresh JWT."
             )
@@ -131,7 +131,7 @@ class SunbirdProvider(BaseProvider):
         }
 
     def _multipart_headers(self) -> dict[str, str]:
-        # No Content-Type here – httpx sets the multipart boundary automatically
+        # No Content-Type here - httpx sets the multipart boundary automatically
         return {"Authorization": f"Bearer {self._token}"}
 
     # ── Retry helper ─────────────────────────────────────────────────────────
@@ -152,12 +152,12 @@ class SunbirdProvider(BaseProvider):
                         url, json=payload, headers=self._json_headers()
                     )
 
-                # 405 = Method Not Allowed — almost always a bad/missing token
+                # 405 = Method Not Allowed - almost always a bad/missing token
                 # Sunbird's auth middleware returns 405 before the route handler
-                # when auth fails. Do NOT retry — fail immediately with clear message.
+                # when auth fails. Do NOT retry - fail immediately with clear message.
                 if resp.status_code == 405:
                     raise httpx.HTTPStatusError(
-                        f"HTTP 405 on {path} — this usually means your "
+                        f"HTTP 405 on {path} - this usually means your "
                         f"SUNBIRD_API_KEY is missing, expired, or not a valid JWT. "
                         f"Get a fresh token: POST https://api.sunbird.ai/auth/token",
                         request=resp.request, response=resp,
@@ -166,7 +166,7 @@ class SunbirdProvider(BaseProvider):
                 # 401/403 = explicit auth failure
                 if resp.status_code in {401, 403}:
                     raise httpx.HTTPStatusError(
-                        f"HTTP {resp.status_code} — Sunbird auth failed. "
+                        f"HTTP {resp.status_code} - Sunbird auth failed. "
                         f"Check your SUNBIRD_API_KEY in .env",
                         request=resp.request, response=resp,
                     )
@@ -174,7 +174,7 @@ class SunbirdProvider(BaseProvider):
                 if resp.status_code in _RETRY_STATUSES:
                     wait = 2 ** attempt
                     logger.warning(
-                        "Sunbird %s HTTP %s (attempt %d/%d) – retrying in %ds",
+                        "Sunbird %s HTTP %s (attempt %d/%d) - retrying in %ds",
                         path, resp.status_code, attempt, _MAX_RETRIES, wait,
                     )
                     await asyncio.sleep(wait)
@@ -188,7 +188,7 @@ class SunbirdProvider(BaseProvider):
                 return resp.json()
 
             except httpx.HTTPStatusError:
-                raise   # don't swallow — let routing fallback handle it
+                raise   # don't swallow - let routing fallback handle it
             except httpx.RequestError as exc:
                 logger.error("Sunbird network error on %s: %s", path, exc)
                 last_exc = exc

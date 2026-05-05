@@ -1,6 +1,6 @@
 
 """
-Fasiri – HuggingFace Inference API provider.
+Fasiri - HuggingFace Inference API provider.
 
 IMPORTANT: Not all Helsinki-NLP models are deployed on the HF Inference API.
 A model existing on HuggingFace Hub !== it is callable via the Inference API.
@@ -20,20 +20,20 @@ VERIFIED DEPLOYED models (confirmed callable via router.huggingface.co):
 NOT deployed on Inference API (model exists but returns 404/400/410 on API):
   - opus-mt-en-ha, opus-mt-ha-en  (Hausa)
   - opus-mt-en-ig, opus-mt-ig-en  (Igbo)
-  - opus-mt-en-yo                 (English → Yoruba — not confirmed deployed)
+  - opus-mt-en-yo                 (English → Yoruba - not confirmed deployed)
   - opus-mt-en-zu, opus-mt-zu-en  (Zulu)
   - opus-mt-en-rw, opus-mt-rw-en  (Kinyarwanda)
   - opus-mt-en-amh / opus-mt-en-am (Amharic)
 
 NLLB STATUS: facebook/nllb-200-distilled-600M was dropped by hf-inference
-  provider in 2025. Do NOT use it — it returns 400 "Model not supported".
+  provider in 2025. Do NOT use it - it returns 400 "Model not supported".
 
 STRATEGY:
-  1. Verified deployed Helsinki-NLP model — best quality for that pair
-  2. opus-mt-mul-en (any → English) or opus-mt-en-mul (English → any) — last resort
+  1. Verified deployed Helsinki-NLP model - best quality for that pair
+  2. opus-mt-mul-en (any → English) or opus-mt-en-mul (English → any) - last resort
 
 West African languages (yo, tw, ee, gaa, fat, dag, ki, gur, luo, mer, kus)
-are handled by Khaya provider in routing.py — HuggingFace is only a fallback
+are handled by Khaya provider in routing.py - HuggingFace is only a fallback
 for those if Khaya itself fails.
 
 HF Inference API URL (2025+):
@@ -48,6 +48,7 @@ import time
 import httpx
 
 from app.core.config import settings
+from app.core.registry import LANGUAGE_REGISTRY
 from app.services.providers.base import BaseProvider, TranslationResult
 
 logger = logging.getLogger(__name__)
@@ -85,11 +86,11 @@ _HF_BASE = "https://router.huggingface.co/hf-inference/models"
 def _pick_strategy(source_lang: str, target_lang: str) -> tuple[str, str]:
     """
     Returns (model_id, strategy) where strategy is:
-      'helsinki'  — use verified Helsinki-NLP model directly
-      'mul_en'    — use opus-mt-mul-en (any → English)
-      'en_mul'    — use opus-mt-en-mul (English → any)
+      'helsinki'  - use verified Helsinki-NLP model directly
+      'mul_en'    - use opus-mt-mul-en (any → English)
+      'en_mul'    - use opus-mt-en-mul (English → any)
 
-    NOTE: NLLB removed — it is no longer supported by hf-inference provider.
+    NOTE: NLLB removed - it is no longer supported by hf-inference provider.
     West African langs (yo, ha, ig etc.) should be routed to Khaya first
     in routing.py; this is the last-resort fallback only.
     """
@@ -121,7 +122,7 @@ class HuggingFaceProvider(BaseProvider):
         self._stub = not bool(self._key)
         if self._stub:
             logger.warning(
-                "HUGGINGFACE_API_KEY not set – HuggingFace provider in stub mode.\n"
+                "HUGGINGFACE_API_KEY not set - HuggingFace provider in stub mode.\n"
                 "  → Get a free token: https://huggingface.co/settings/tokens"
             )
 
@@ -153,7 +154,7 @@ class HuggingFaceProvider(BaseProvider):
                     except Exception:
                         wait = 20
                     logger.info(
-                        "HF model '%s' loading – waiting %.0fs (attempt %d/%d)",
+                        "HF model '%s' loading - waiting %.0fs (attempt %d/%d)",
                         model_id, wait, attempt, _MAX_RETRIES,
                     )
                     await asyncio.sleep(wait)
@@ -165,7 +166,7 @@ class HuggingFaceProvider(BaseProvider):
                 # Rate limited
                 if resp.status_code == 429:
                     retry_after = int(resp.headers.get("Retry-After", 10))
-                    logger.warning("HF rate limited – waiting %ds", retry_after)
+                    logger.warning("HF rate limited - waiting %ds", retry_after)
                     await asyncio.sleep(retry_after)
                     last_exc = httpx.HTTPStatusError(
                         "429 rate limited", request=resp.request, response=resp
@@ -176,7 +177,7 @@ class HuggingFaceProvider(BaseProvider):
                 if resp.status_code in {500, 502, 504}:
                     wait = 2 ** attempt
                     logger.warning(
-                        "HF HTTP %s on %s (attempt %d) – retrying in %ds",
+                        "HF HTTP %s on %s (attempt %d) - retrying in %ds",
                         resp.status_code, model_id, attempt, wait,
                     )
                     await asyncio.sleep(wait)
@@ -189,7 +190,7 @@ class HuggingFaceProvider(BaseProvider):
                 # Log body on unexpected failures before raising
                 if not resp.is_success:
                     logger.error(
-                        "HF %s returned %s — body: %s",
+                        "HF %s returned %s - body: %s",
                         model_id, resp.status_code, resp.text,
                     )
 
@@ -224,7 +225,7 @@ class HuggingFaceProvider(BaseProvider):
         # Always re-pick strategy based on actual language pair
         actual_model, strategy = _pick_strategy(source_lang, target_lang)
 
-        # All strategies use plain text input — NLLB special params no longer needed
+        # All strategies use plain text input - NLLB special params no longer needed
         payload = {"inputs": text}
 
         # Try primary model
@@ -232,7 +233,7 @@ class HuggingFaceProvider(BaseProvider):
             data = await self._call_hf(actual_model, payload)
         except Exception as primary_exc:
             logger.error(
-                "HF primary model '%s' failed: %s — trying mul fallback",
+                "HF primary model '%s' failed: %s - trying mul fallback",
                 actual_model, primary_exc,
             )
             # Fallback to multilingual model

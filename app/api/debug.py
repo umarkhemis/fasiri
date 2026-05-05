@@ -1,8 +1,8 @@
 """
-Fasiri – Provider diagnostics endpoint.
+Fasiri - Provider diagnostics endpoint.
 
-GET /api/v1/debug/providers  – live connectivity check for all providers
-GET /api/v1/debug/env        – show which env vars are set (values masked)
+GET /api/v1/debug/providers  - live connectivity check for all providers
+GET /api/v1/debug/env        - show which env vars are set (values masked)
 
 Only available when DEBUG=true in .env
 """
@@ -84,7 +84,7 @@ async def check_providers():
                 "http_status": 503,
                 "latency_ms": latency_ms,
                 "model_tested": hf_model,
-                "message": "Model is cold-starting — retry in 20s",
+                "message": "Model is cold-starting - retry in 20s",
                 "hf_body": resp.json() if resp.content else {},
             }
         else:
@@ -96,7 +96,7 @@ async def check_providers():
                 "url": hf_url,
                 "body": resp.text[:300],
                 "fix": (
-                    "404 → wrong URL. Check HUGGINGFACE_BASE_URL in .env — "
+                    "404 → wrong URL. Check HUGGINGFACE_BASE_URL in .env - "
                     "must be https://router.huggingface.co/hf-inference/models\n"
                     "401 → bad token. Check HUGGINGFACE_API_KEY in .env"
                 ),

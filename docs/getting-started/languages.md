@@ -1,106 +1,85 @@
 # Supported Languages
 
-Fasiri supports 30+ African languages across translation, speech-to-text (STT), and text-to-speech (TTS).
+Fasiri supports 19+ African languages across translation, speech-to-text, and text-to-speech capabilities.
 
-## Language table
+## Full Language Table
 
-| Code | Language | Native Name | Region | Translate | STT | TTS | Provider |
-|---|---|---|---|---|---|---|---|
-| `lug` | Luganda | Oluganda | East Africa | ✅ | ✅ | ✅ | <span class="badge-sunbird">SUNBIRD</span> |
-| `ach` | Acholi | Acholi | East Africa | ✅ | ✅ | ✅ | <span class="badge-sunbird">SUNBIRD</span> |
-| `nyn` | Runyankole | Runyankore | East Africa | ✅ | ✅ | ✅ | <span class="badge-sunbird">SUNBIRD</span> |
-| `teo` | Ateso | Ateso | East Africa | ✅ | ✅ | ✅ | <span class="badge-sunbird">SUNBIRD</span> |
-| `lgg` | Lugbara | Lugbara | East Africa | ✅ | ✅ | ✅ | <span class="badge-sunbird">SUNBIRD</span> |
-| `sw` | Swahili | Kiswahili | East Africa | ✅ | ✅ | ✅ | <span class="badge-sunbird">SUNBIRD</span> / <span class="badge-hf">HF</span> |
-| `rw` | Kinyarwanda | Ikinyarwanda | East Africa | ✅ | ✅ | - | <span class="badge-hf">HF</span> |
-| `xog` | Lusoga | Olusoga | East Africa | ✅ | ✅ | - | <span class="badge-sunbird">SUNBIRD</span> |
-| `myx` | Lumasaba | Lumasaaba | East Africa | ✅ | ✅ | - | <span class="badge-sunbird">SUNBIRD</span> |
-| `laj` | Lango | Lango | East Africa | ✅ | ✅ | - | <span class="badge-sunbird">SUNBIRD</span> |
-| `adh` | Jopadhola | Dhopadhola | East Africa | ✅ | ✅ | - | <span class="badge-sunbird">SUNBIRD</span> |
-| `am` | Amharic | አማርኛ | East Africa | ✅ | - | - | <span class="badge-hf">HF</span> |
-| `so` | Somali | Soomaali | East Africa | ✅ | - | - | <span class="badge-hf">HF</span> |
-| `om` | Oromo | Oromoo | East Africa | ✅ | - | - | <span class="badge-hf">HF</span> |
-| `yo` | Yoruba | Yorùbá | West Africa | ✅ | - | - | <span class="badge-hf">HF</span> |
-| `ha` | Hausa | Hausa | West Africa | ✅ | - | - | <span class="badge-hf">HF</span> |
-| `ig` | Igbo | Igbo | West Africa | ✅ | - | - | <span class="badge-hf">HF</span> |
-| `tw` | Twi | Twi | West Africa | ✅ | - | - | <span class="badge-hf">HF</span> |
-| `wo` | Wolof | Wolof | West Africa | ✅ | - | - | <span class="badge-hf">HF</span> |
-| `ff` | Fula | Fulfulde | West Africa | ✅ | - | - | <span class="badge-hf">HF</span> |
-| `zu` | Zulu | IsiZulu | Southern Africa | ✅ | - | - | <span class="badge-hf">HF</span> |
-| `xh` | Xhosa | IsiXhosa | Southern Africa | ✅ | - | - | <span class="badge-hf">HF</span> |
-| `af` | Afrikaans | Afrikaans | Southern Africa | ✅ | - | - | <span class="badge-hf">HF</span> |
-| `sn` | Shona | ChiShona | Southern Africa | ✅ | - | - | <span class="badge-hf">HF</span> |
-| `st` | Sotho | Sesotho | Southern Africa | ✅ | - | - | <span class="badge-hf">HF</span> |
-| `tn` | Tswana | Setswana | Southern Africa | ✅ | - | - | <span class="badge-hf">HF</span> |
-| `ar` | Arabic | العربية | North Africa | ✅ | - | - | <span class="badge-hf">HF</span> |
-| `en` | English | English | Global | ✅ | ✅ | - | All |
-| `fr` | French | Français | Global | ✅ | - | - | <span class="badge-hf">HF</span> |
-| `pt` | Portuguese | Português | Global | ✅ | - | - | <span class="badge-hf">HF</span> |
+| Code | Language | Region | Family | Translation | STT | TTS | Provider |
+|---|---|---|---|:---:|:---:|:---:|---|
+| `lug` | Luganda | East Africa | Bantu | Yes | Yes | Yes | Sunbird AI |
+| `ach` | Acholi | East Africa | Nilotic | Yes | Yes | Yes | Sunbird AI |
+| `teo` | Ateso | East Africa | Nilotic | Yes | Yes | Yes | Sunbird AI |
+| `nyn` | Runyankore | East Africa | Bantu | Yes | Yes | Yes | Sunbird AI |
+| `lgg` | Lugbara | East Africa | Central Sudanic | Yes | Yes | Yes | Sunbird AI |
+| `yo` | Yoruba | West Africa | Niger-Congo | Yes | No | No | Khaya AI |
+| `tw` | Twi | West Africa | Niger-Congo | Yes | No | No | Khaya AI |
+| `ee` | Ewe | West Africa | Niger-Congo | Yes | No | No | Khaya AI |
+| `gaa` | Ga | West Africa | Niger-Congo | Yes | No | No | Khaya AI |
+| `fat` | Fante | West Africa | Niger-Congo | Yes | No | No | Khaya AI |
+| `dag` | Dagbani | West Africa | Niger-Congo | Yes | No | No | Khaya AI |
+| `gur` | Gurune | West Africa | Niger-Congo | Yes | No | No | Khaya AI |
+| `ki` | Kikuyu | East Africa | Bantu | Yes | No | No | Khaya AI |
+| `luo` | Luo | East Africa | Nilotic | Yes | No | No | Khaya AI |
+| `mer` | Kimeru | East Africa | Bantu | Yes | No | No | Khaya AI |
+| `kus` | Kusaal | West Africa | Niger-Congo | Yes | No | No | Khaya AI |
+| `sw` | Swahili | East Africa | Bantu | Yes | Yes | No | HuggingFace |
+| `fr` | French | Francophone Africa | Romance | Yes | No | No | HuggingFace |
+| `ar` | Arabic | North Africa | Semitic | Yes | No | No | HuggingFace |
+| `af` | Afrikaans | South Africa | Germanic | Yes | No | No | HuggingFace |
+| `en` | English | Global | Germanic | Yes | Yes | No | All providers |
 
-## TTS Voice IDs
+## Translation Pairs
 
-For text-to-speech, each language has a specific voice:
+Fasiri supports translation between English and any of the African languages above. Direct translation between two non-English African languages (e.g. Luganda to Yoruba) is not currently supported - requests must pivot through English.
 
-| Language | Code | Voice ID | Voice |
-|---|---|---|---|
-| Acholi | `ach` | `241` | Female |
-| Ateso | `teo` | `242` | Female |
-| Runyankole | `nyn` | `243` | Female |
-| Lugbara | `lgg` | `245` | Female |
-| Swahili | `sw` | `246` | Male |
-| Luganda | `lug` | `248` | Female |
+Supported direction patterns:
 
-## Programmatic access
+- English to African language: `en -> lug`, `en -> yo`, `en -> sw`, etc.
+- African language to English: `lug -> en`, `yo -> en`, `sw -> en`, etc.
+
+## Speech Coverage
+
+Speech capabilities are currently limited to Sunbird AI's supported languages. These are the five main languages of Uganda plus English.
+
+| Language | STT | TTS | Notes |
+|---|:---:|:---:|---|
+| Luganda (`lug`) | Yes | Yes | Female voice (voice ID 248) |
+| Acholi (`ach`) | Yes | Yes | Female voice (voice ID 241) |
+| Ateso (`teo`) | Yes | Yes | Female voice (voice ID 242) |
+| Runyankore (`nyn`) | Yes | Yes | Female voice (voice ID 243) |
+| Lugbara (`lgg`) | Yes | Yes | Female voice (voice ID 245) |
+| Swahili (`sw`) | Yes | No | STT via Sunbird, TTS not available |
+| English (`en`) | Yes | No | STT via Sunbird |
+
+## Checking languages at runtime
+
+Use the SDK or REST API to get the current language list, which includes real-time capability information:
 
 ```python
 from fasiri import Fasiri
 
 client = Fasiri(api_key="fsri_...")
 
-# Get all languages
+# All languages
 languages = client.languages()
-
-# Filter to translation-only
-translatable = client.translation_languages()
-
-# Filter to speech-capable
-speech = client.speech_languages()
-
-# Check a specific language
 for lang in languages:
-    if lang.code == "lug":
-        print(lang.supports_tts)    # True
-        print(lang.tts_voice_id)    # 248
-        print(lang.best_provider)   # sunbird
-        print(lang.quality_score)   # 0.92
+    print(f"{lang.code}: {lang.name} ({lang.region})")
+
+# Translation-capable languages only
+for lang in client.translation_languages():
+    print(f"{lang.code}: {lang.name} via {lang.best_provider}")
+
+# Speech-capable languages only
+for lang in client.speech_languages():
+    caps = []
+    if lang.supports_stt: caps.append("STT")
+    if lang.supports_tts: caps.append("TTS")
+    print(f"{lang.code}: {lang.name} - {', '.join(caps)}")
 ```
 
-## REST API
+Via REST:
 
 ```bash
-curl https://api.fasiri.betatechlabs.io/api/v1/languages
+curl https://fasiri-bu9u.onrender.com/api/v1/languages \
+  -H "Authorization: Bearer fsri_..."
 ```
-
-```json
-{
-  "languages": [
-    {
-      "code": "lug",
-      "name": "Luganda",
-      "native_name": "Oluganda",
-      "region": "East Africa",
-      "family": "Niger-Congo",
-      "supports_translation": true,
-      "supports_stt": true,
-      "supports_tts": true,
-      "tts_voice_id": 248,
-      "best_provider": "sunbird",
-      "quality_score": 0.92
-    }
-  ],
-  "total": 30
-}
-```
-
-!!! note "Language coverage is growing"
-    We add new languages regularly. Follow the [changelog](../changelog.md) or watch the GitHub repo for updates.

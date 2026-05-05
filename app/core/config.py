@@ -1,5 +1,5 @@
 """
-Fasiri – centralised settings.
+Fasiri - centralised settings.
 All values are read from environment variables (or a .env file via pydantic-settings).
 """
 from pydantic_settings import BaseSettings
@@ -25,7 +25,7 @@ class Settings(BaseSettings):
     rate_limit_rpm: int = Field(default=60, alias="RATE_LIMIT_RPM")
     rate_limit_batch_rpm: int = Field(default=10, alias="RATE_LIMIT_BATCH_RPM")
 
-    # ── Redis (optional – used for rate-limit counters) ──────────────────────
+    # ── Redis (optional - used for rate-limit counters) ──────────────────────
     redis_url: str = Field(default="", alias="REDIS_URL")
 
     # ── Provider base URLs ───────────────────────────────────────────────────
@@ -46,7 +46,7 @@ class Settings(BaseSettings):
     )
 
     # ── Misc ─────────────────────────────────────────────────────────────────
-    base_url: str = Field(default="http://localhost:8000", alias="BASE_URL")
+    base_url: str = Field(default="https://fasiri-bu9u.onrender.com", alias="BASE_URL")
     debug: bool = Field(default=False, alias="DEBUG")
 
     # HTTP timeouts (seconds)

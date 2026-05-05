@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Fasiri – Sunbird Token Helper
+Fasiri - Sunbird Token Helper
 ================================
 Gets a fresh JWT from Sunbird and writes it to your .env automatically.
 
@@ -36,7 +36,7 @@ def get_token(email: str, password: str) -> str:
             timeout=15,
         )
     except httpx.ConnectError:
-        print("❌ Cannot reach api.sunbird.ai — check your internet connection.")
+        print("❌ Cannot reach api.sunbird.ai - check your internet connection.")
         sys.exit(1)
 
     if resp.status_code == 200:
@@ -50,7 +50,7 @@ def get_token(email: str, password: str) -> str:
             sys.exit(1)
 
     elif resp.status_code in (401, 400):
-        print(f"❌ Login failed (HTTP {resp.status_code}) — wrong email or password.")
+        print(f"❌ Login failed (HTTP {resp.status_code}) - wrong email or password.")
         print(f"   Response: {resp.text[:200]}")
         print(f"\n   To register a new account:")
         print(f"   python get_sunbird_token.py --register")
@@ -74,7 +74,7 @@ def register(email: str, password: str) -> bool:
         print(f"✅ Registered successfully. Now logging in...")
         return True
     elif resp.status_code == 409:
-        print(f"ℹ️  Account already exists — proceeding to login.")
+        print(f"ℹ️  Account already exists - proceeding to login.")
         return True
     else:
         print(f"❌ Registration failed (HTTP {resp.status_code}): {resp.text[:200]}")
@@ -114,7 +114,7 @@ def write_to_env(token: str, env_path: Path) -> None:
 
 
 def verify_token(token: str) -> None:
-    """Quick sanity check — call nllb_translate with the token."""
+    """Quick sanity check - call nllb_translate with the token."""
     print("\n→ Verifying token with a test translation (en→lug)...")
     try:
         resp = httpx.post(
@@ -135,7 +135,7 @@ def verify_token(token: str) -> None:
         translated = output.get("translated_text", "")
         print(f"✅ Token works!  'Hello' → '{translated}' (Luganda)")
     elif resp.status_code == 405:
-        print(f"❌ Token verification failed with 405 — token may be invalid or expired.")
+        print(f"❌ Token verification failed with 405 - token may be invalid or expired.")
         print(f"   Try running this script again to get a fresh token.")
     else:
         print(f"⚠️  Unexpected HTTP {resp.status_code}: {resp.text[:200]}")
@@ -153,7 +153,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     print("=" * 55)
-    print("  Fasiri – Sunbird Token Helper")
+    print("  Fasiri - Sunbird Token Helper")
     print("=" * 55)
 
     # Get credentials

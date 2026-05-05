@@ -1,5 +1,5 @@
 """
-fasiri-sdk – Official Python client for the Fasiri African Language API.
+fasiri-sdk - Official Python client for the Fasiri African Language API.
 
 Install:
     pip install fasiri
@@ -169,7 +169,7 @@ class ProviderError(FasiriError):
 
 class Fasiri:
     """
-    Fasiri API client – synchronous and asynchronous.
+    Fasiri API client - synchronous and asynchronous.
 
     Parameters
     ----------
@@ -177,7 +177,7 @@ class Fasiri:
         Your Fasiri API key (``fsri_...``).
         Falls back to the ``FASIRI_API_KEY`` environment variable.
     base_url : str
-        Override the API base URL (default: ``https://api.fasiri.ai``).
+        Override the API base URL (default: ``https://fasiri-bu9u.onrender.com``).
     timeout : int
         HTTP timeout in seconds (default: 30).
 
@@ -195,7 +195,7 @@ class Fasiri:
             result = await client.async_translate("Hello", target="sw")
     """
 
-    DEFAULT_BASE_URL = "https://api.fasiri.ai"
+    DEFAULT_BASE_URL = "https://fasiri-bu9u.onrender.com"
 
     def __init__(
         self,
@@ -264,7 +264,7 @@ class Fasiri:
         if resp.status_code >= 500:
             body = resp.json().get("detail", {}) if resp.content else {}
             raise ProviderError(
-                body.get("message", "Provider error – please retry"),
+                body.get("message", "Provider error - please retry"),
                 code=body.get("code", "PROVIDER_ERROR"),
                 status_code=resp.status_code,
             )

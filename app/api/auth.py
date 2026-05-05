@@ -1,11 +1,12 @@
 """
-Fasiri – API key management endpoints.
+Fasiri - API key management endpoints.
 
-POST /api/v1/auth/keys          – issue a new API key
-GET  /api/v1/auth/keys/me       – inspect the current key's metadata
+POST /api/v1/auth/keys          - issue a new API key
+GET  /api/v1/auth/keys/me       - inspect the current key's metadata
 """
 from __future__ import annotations
 
+import time
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends
@@ -33,6 +34,7 @@ def _ts(epoch: float) -> str:
     status_code=201,
 )
 async def create_api_key(body: CreateKeyRequest) -> CreateKeyResponse:
+    from app.core.config import settings
 
     plain_key = create_key(body.name)
 

@@ -1,14 +1,14 @@
 
 """
-Fasiri – Routing service.
+Fasiri - Routing service.
 
 Selects the best provider + model for a given language pair,
 with automatic fallback if the primary provider fails.
 
 Provider priority:
-  1. Sunbird   — Ugandan languages (lug, ach, teo, nyn, lgg ↔ en)
-  2. Khaya     — West/East African languages (yo, tw, ee, gaa, fat, dag, ki, gur, luo, mer, kus ↔ en)
-  3. HuggingFace — Everything else (Helsinki models + multilingual fallback)
+  1. Sunbird   - Ugandan languages (lug, ach, teo, nyn, lgg ↔ en)
+  2. Khaya     - West/East African languages (yo, tw, ee, gaa, fat, dag, ki, gur, luo, mer, kus ↔ en)
+  3. HuggingFace - Everything else (Helsinki models + multilingual fallback)
 
 Fallback chain:
   - Sunbird fails for Ugandan langs   → HuggingFace (Helsinki mul, poor but last resort)
@@ -24,7 +24,7 @@ from app.core.registry import ModelEntry, get_model_fast
 from app.schemas.translate import Provider
 from app.services.providers.base import BaseProvider, TranslationResult
 from app.services.providers.huggingface import HuggingFaceProvider
-from app.services.providers.khaya import KhayaProvider, supports_pair
+from app.services.providers.khaya import KhayaProvider, supports_pair, KHAYA_LANGS
 from app.services.providers.sunbird import SunbirdProvider
 from app.core.config import settings
 
@@ -118,16 +118,16 @@ async def route_translation(
         )
     except Exception as exc:
         logger.error(
-            "Primary provider '%s' failed for %s→%s: %s – falling back",
+            "Primary provider '%s' failed for %s→%s: %s - falling back",
             provider_id, source_lang, target_lang, exc,
         )
 
     # 3. Fallback strategy
     try:
         if provider_id == "sunbird":
-            # Sunbird is down — try Khaya if it supports the pair, else HuggingFace
+            # Sunbird is down - try Khaya if it supports the pair, else HuggingFace
             if supports_pair(source_lang, target_lang):
-                logger.info("Sunbird down — trying Khaya for %s→%s", source_lang, target_lang)
+                logger.info("Sunbird down - trying Khaya for %s→%s", source_lang, target_lang)
                 return await _khaya().translate(
                     text=text,
                     source_lang=source_lang,
@@ -135,7 +135,7 @@ async def route_translation(
                     model_id=entry.model_id,
                 )
             else:
-                logger.info("Sunbird down — falling back to HuggingFace for %s→%s", source_lang, target_lang)
+                logger.info("Sunbird down - falling back to HuggingFace for %s→%s", source_lang, target_lang)
                 return await _huggingface().translate(
                     text=text,
                     source_lang=source_lang,
@@ -144,8 +144,8 @@ async def route_translation(
                 )
 
         elif provider_id == "khaya":
-            # Khaya is down — fall back to HuggingFace
-            logger.info("Khaya down — falling back to HuggingFace for %s→%s", source_lang, target_lang)
+            # Khaya is down - fall back to HuggingFace
+            logger.info("Khaya down - falling back to HuggingFace for %s→%s", source_lang, target_lang)
             return await _huggingface().translate(
                 text=text,
                 source_lang=source_lang,
@@ -154,7 +154,7 @@ async def route_translation(
             )
 
         else:
-            # HuggingFace was primary and failed — nothing left
+            # HuggingFace was primary and failed - nothing left
             raise RuntimeError(f"HuggingFace failed for {source_lang}→{target_lang}")
 
     except Exception as exc2:
@@ -195,7 +195,7 @@ async def route_translation(
 
 
 # """
-# Fasiri – Routing service.
+# Fasiri - Routing service.
 
 # Selects the best provider + model for a given language pair,
 # with automatic fallback if the primary provider fails.
@@ -276,7 +276,7 @@ async def route_translation(
 #         )
 #     except Exception as exc:
 #         logger.error(
-#             "Primary provider '%s' failed for %s→%s: %s – falling back to NLLB",
+#             "Primary provider '%s' failed for %s→%s: %s - falling back to NLLB",
 #             provider_id, source_lang, target_lang, exc,
 #         )
 

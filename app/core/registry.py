@@ -1,5 +1,5 @@
 """
-Fasiri – Model Registry.
+Fasiri - Model Registry.
 
 Each ModelEntry describes one translation model available for a specific
 (source_lang, target_lang) pair.  The router picks the entry with the highest
@@ -10,7 +10,7 @@ Provider IDs map to concrete adapter classes in app/services/providers/.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Tuple
 
 
@@ -77,7 +77,7 @@ class ModelEntry:
     provider: str            # "sunbird" | "huggingface" | "nllb"
     source_langs: List[str]
     target_langs: List[str]
-    quality_score: float     # 0.0 – 1.0  (BLEU-normalised estimate)
+    quality_score: float     # 0.0 - 1.0  (BLEU-normalised estimate)
     avg_latency_ms: int      # rough p50 latency
     supports_batch: bool = True
     notes: str = ""
@@ -87,7 +87,7 @@ class ModelEntry:
 # The router iterates this list and picks the highest quality_score for a pair.
 MODEL_REGISTRY: List[ModelEntry] = [
 
-    # ── Sunbird – Ugandan-language expert ────────────────────────────────────
+    # ── Sunbird - Ugandan-language expert ────────────────────────────────────
     ModelEntry(
         model_id="sunbird/nllb_translate",
         provider="sunbird",
@@ -181,7 +181,7 @@ MODEL_REGISTRY: List[ModelEntry] = [
 
     # ── NLLB-200: covers yo, ha, ig, zu, rw, am, so, tw, wo, ff + 190 more ──
     # Hausa (ha), Igbo (ig), Zulu (zu), Yoruba (en->yo), Kinyarwanda (rw),
-    # Amharic (am), Somali (so), Twi (tw), Wolof (wo), Fula (ff) and more —
+    # Amharic (am), Somali (so), Twi (tw), Wolof (wo), Fula (ff) and more -
     # Helsinki dedicated models for these either don't exist or are NOT deployed
     # on the HF Inference API. NLLB-200 handles all of them.
     ModelEntry(
@@ -211,7 +211,7 @@ def get_best_model(source_lang: str, target_lang: str) -> ModelEntry:
             candidates.append(entry)
 
     if not candidates:
-        # Should never happen – NLLB wildcard is always in the registry
+        # Should never happen - NLLB wildcard is always in the registry
         raise ValueError(f"No model found for {source_lang} → {target_lang}")
 
     return max(candidates, key=lambda e: e.quality_score)
@@ -239,7 +239,7 @@ _build_index()
 
 
 def get_model_fast(source_lang: str, target_lang: str) -> ModelEntry:
-    """O(1) version – falls back to linear search for unknown pairs."""
+    """O(1) version - falls back to linear search for unknown pairs."""
     entry = _PAIR_INDEX.get((source_lang, target_lang))
     if entry:
         return entry

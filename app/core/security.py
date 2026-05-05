@@ -1,5 +1,5 @@
 """
-Fasiri – API key security helpers.
+Fasiri - API key security helpers.
 
 Keys are structured as:  fsri_<random_hex_40>
 We store only a SHA-256 hash of the key in the database (or in-memory store).

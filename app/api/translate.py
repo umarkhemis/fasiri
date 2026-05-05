@@ -1,8 +1,8 @@
 """
-Fasiri – Translation endpoints.
+Fasiri - Translation endpoints.
 
-POST /api/v1/translate        – single translation
-POST /api/v1/translate/batch  – batch translation (up to 50 items)
+POST /api/v1/translate        - single translation
+POST /api/v1/translate/batch  - batch translation (up to 50 items)
 """
 from __future__ import annotations
 

@@ -1,12 +1,12 @@
 """
-Fasiri – FastAPI application entry point.
+Fasiri - FastAPI application entry point.
 
 Run with:
     uvicorn app.main:app --reload
 
 Interactive docs:
-    http://localhost:8000/docs     (Swagger UI)
-    http://localhost:8000/redoc    (ReDoc)
+    https://fasiri-bu9u.onrender.com/docs     (Swagger UI)
+    https://fasiri-bu9u.onrender.com/redoc    (ReDoc)
 """
 from __future__ import annotations
 
@@ -29,7 +29,7 @@ from app.core.security import get_dev_key
 # ── Logging ───────────────────────────────────────────────────────────────────
 logging.basicConfig(
     level=logging.DEBUG if settings.debug else logging.INFO,
-    format="%(asctime)s  %(levelname)-8s  %(name)s – %(message)s",
+    format="%(asctime)s  %(levelname)-8s  %(name)s - %(message)s",
 )
 logger = logging.getLogger("fasiri")
 
@@ -52,7 +52,7 @@ async def lifespan(app: FastAPI):
         logger.info("HuggingFace: ✓ key set (%s...)", hf_key[:8])
     else:
         logger.warning(
-            "HuggingFace: ✗ HUGGINGFACE_API_KEY not set – running in stub mode.\n"
+            "HuggingFace: ✗ HUGGINGFACE_API_KEY not set - running in stub mode.\n"
             "  → Get a free token at: https://huggingface.co/settings/tokens"
         )
 
@@ -71,7 +71,7 @@ async def lifespan(app: FastAPI):
             )
     else:
         logger.warning(
-            "Sunbird: ✗ SUNBIRD_API_KEY not set – running in stub mode.\n"
+            "Sunbird: ✗ SUNBIRD_API_KEY not set - running in stub mode.\n"
             "  → Register at https://api.sunbird.ai/auth/register"
         )
 
@@ -79,7 +79,7 @@ async def lifespan(app: FastAPI):
         logger.info("Khaya: ✓ key set (%s...)", kh_key[:8])
     else:
         logger.warning(
-            "Khaya: ✗ KHAYA_API_KEY not set – West African language translation unavailable.\n"
+            "Khaya: ✗ KHAYA_API_KEY not set - West African language translation unavailable.\n"
             "  → Register at https://translation.ghananlp.org/signup"
         )
 
@@ -92,7 +92,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Fasiri API",
     description=(
-        "**Fasiri** – Unified translation and speech API for African languages.\n\n"
+        "**Fasiri** - Unified translation and speech API for African languages.\n\n"
         "A single endpoint to translate, transcribe, and synthesise speech across "
         "30+ African languages, powered by Sunbird AI (Ugandan languages), "
         "Khaya AI (West African languages), and Helsinki-NLP (global fallback).\n\n"

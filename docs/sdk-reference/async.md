@@ -41,7 +41,7 @@ from fasiri import Fasiri
 async def translate_all():
     async with Fasiri(api_key="fsri_...") as client:
 
-        # Run 5 translations concurrently — much faster than sequential
+        # Run 5 translations concurrently - much faster than sequential
         results = await asyncio.gather(
             client.async_translate("Good morning",  target="lug"),
             client.async_translate("Thank you",     target="yo"),

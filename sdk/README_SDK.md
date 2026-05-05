@@ -1,8 +1,8 @@
 # fasiri
 
-> **Fasiri** — Unified translation and speech API for 30+ African languages.
+> **Fasiri** - Unified translation and speech API for 30+ African languages.
 
-The official Python SDK for the [Fasiri API](https://fasiri.ai).
+The official Python SDK for the [Fasiri API](https://fasiri-bu9u.onrender.com).
 A single interface to translate, transcribe, and synthesise speech across
 African languages powered by Sunbird AI, Khaya AI, and Helsinki-NLP.
 
@@ -42,11 +42,11 @@ print(result)  # "Asante sana"
 
 ## Authentication
 
-Get your API key from the [Fasiri dashboard](https://fasiri.ai/dashboard)
+Get your API key from the [Fasiri dashboard](https://fasiri-bu9u.onrender.com/dashboard)
 or issue one locally:
 
 ```bash
-curl -X POST http://localhost:8000/api/v1/auth/keys \
+curl -X POST https://fasiri-bu9u.onrender.com/api/v1/auth/keys \
   -H "Content-Type: application/json" \
   -d '{"name": "my-app"}'
 ```
@@ -99,7 +99,7 @@ Full list: `client.languages()`
 result = client.translate(
     text="Hello, how are you?",
     target="sw",        # target language code
-    source="en",        # optional — auto-detected if omitted
+    source="en",        # optional - auto-detected if omitted
     provider="auto",    # "auto" | "sunbird" | "khaya" | "huggingface"
 )
 
@@ -255,9 +255,9 @@ except FasiriError as e:
 
 | Parameter  | Environment Variable | Default                  | Description              |
 |------------|---------------------|--------------------------|--------------------------|
-| `api_key`  | `FASIRI_API_KEY`    | —                        | Your Fasiri API key      |
-| `base_url` | `FASIRI_BASE_URL`   | `https://api.fasiri.ai`  | API base URL             |
-| `timeout`  | —                   | `30`                     | HTTP timeout in seconds  |
+| `api_key`  | `FASIRI_API_KEY`    | -                        | Your Fasiri API key      |
+| `base_url` | `FASIRI_BASE_URL`   | `https://fasiri-bu9u.onrender.com`  | API base URL             |
+| `timeout`  | -                   | `30`                     | HTTP timeout in seconds  |
 
 ---
 

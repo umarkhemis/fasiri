@@ -14,7 +14,6 @@
 #   DEPLOY_SSH_KEY        - your private SSH key (full contents)
 #   HUGGINGFACE_API_KEY   - for integration smoke test post-deploy
 #   SUNBIRD_API_KEY       - for integration smoke test post-deploy
-#   KHAYA_API_KEY         - for integration smoke test post-deploy
 # ============================================================
 
 name: CI/CD
@@ -49,15 +48,12 @@ jobs:
           python-version: "3.12"
           cache: pip
 
-      - name: Install API dependencies
+      - name: Install dependencies
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
           pip install python-multipart pytest pytest-asyncio
-
-      - name: Install Fasiri SDK (from root pyproject.toml)
-        run: |
-          pip install -e .
+          pip install -e sdk/
 
       - name: Run unit tests
         run: pytest tests/ -v --tb=short -q
@@ -65,7 +61,6 @@ jobs:
           FASIRI_SECRET_KEY: test-secret-key-for-ci
           HUGGINGFACE_API_KEY: ""
           SUNBIRD_API_KEY: ""
-          KHAYA_API_KEY: ""
 
       - name: Lint check
         run: |
@@ -175,7 +170,7 @@ jobs:
       - name: Smoke test post-deploy
         run: |
           sleep 10
-          curl -f https://fasiri-bu9u.onrender.com/health || exit 1
+          curl -f https://${{ secrets.DEPLOY_HOST }}/health || exit 1
           echo "Health check passed"
 
       - name: Notify on failure
@@ -183,68 +178,10 @@ jobs:
         run: |
           echo "DEPLOY FAILED on commit ${{ github.sha }}"
           echo "Check GitHub Actions logs for details"
+          # Add Slack/email notification here if needed
 
   # ============================================================
-  # JOB 4: Publish SDK to PyPI
-  # ============================================================
-  publish:
-    name: Publish to PyPI
-    runs-on: ubuntu-latest
-    needs: test
-    if: github.ref == 'refs/heads/main' && startsWith(github.ref, 'refs/tags/v')
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install build tools
-        run: pip install build twine
-
-      - name: Build package
-        run: python -m build
-
-      - name: Publish to PyPI
-        env:
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
-        run: twine upload dist/*
-
-  # ============================================================
-  # JOB 5: Deploy Docs to GitHub Pages
-  # ============================================================
-  docs:
-    name: Deploy Docs
-    runs-on: ubuntu-latest
-    needs: test
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0   # needed for mkdocs git-revision-date plugin
-
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install docs dependencies
-        run: |
-          pip install mkdocs-material mkdocstrings[python]
-
-      - name: Deploy to GitHub Pages
-        run: mkdocs gh-deploy --force --verbose
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  # ============================================================
-  # JOB 6: Security Scan
+  # JOB 4: Security scan (runs weekly + on main push)
   # ============================================================
   security:
     name: Security Scan

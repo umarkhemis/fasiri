@@ -1,11 +1,11 @@
-# Fasiri – Testing Guide
+# Fasiri - Testing Guide
 
 ## Scripts at a glance
 
 | Script | Purpose | Time |
 |---|---|---|
 | `smoke_test.py` | Quick pass/fail per provider | ~10s |
-| `test_live.py` | Full endpoint coverage | ~2–3 min |
+| `test_live.py` | Full endpoint coverage | ~2-3 min |
 | `stress_test.py` | Concurrency / latency / throughput | configurable |
 | `get_sunbird_token.py` | Get/refresh your Sunbird JWT | ~5s |
 | `pytest tests/` | Unit + integration tests (mocked) | ~15s |
@@ -31,7 +31,7 @@ uvicorn app.main:app --reload
 
 ---
 
-## 2. Smoke test — run this first
+## 2. Smoke test - run this first
 
 Always run this after changing `.env` or restarting the server.
 
@@ -56,9 +56,9 @@ python smoke_test.py
 
 | Error | Cause | Fix |
 |---|---|---|
-| `Sunbird 503 — 405 Method Not Allowed` | Bad/missing JWT | `python get_sunbird_token.py` |
-| `HuggingFace 503 — 404 Not Found` | Wrong base URL | Set `HUGGINGFACE_BASE_URL=https://router.huggingface.co/hf-inference/models` |
-| `HuggingFace 503 — model loading` | Cold start | Wait 20s and retry |
+| `Sunbird 503 - 405 Method Not Allowed` | Bad/missing JWT | `python get_sunbird_token.py` |
+| `HuggingFace 503 - 404 Not Found` | Wrong base URL | Set `HUGGINGFACE_BASE_URL=https://router.huggingface.co/hf-inference/models` |
+| `HuggingFace 503 - model loading` | Cold start | Wait 20s and retry |
 | `Server reachable ` | Server not running | `uvicorn app.main:app --reload` |
 
 ---
@@ -72,7 +72,7 @@ Tests every endpoint with validation, edge cases, and the Python SDK.
 python test_live.py
 
 # With a specific URL and key
-python test_live.py --url http://localhost:8000 --key fsri_yourkey
+python test_live.py --url https://fasiri-bu9u.onrender.com --key fsri_yourkey
 
 # Skip slow suites
 python test_live.py --skip ratelimit stt
@@ -83,29 +83,29 @@ python test_live.py --skip stt tts ratelimit sdk
 
 ### What each suite tests
 
-**1. System** — `/health`, `/`, `/docs`, `/openapi.json`
+**1. System** - `/health`, `/`, `/docs`, `/openapi.json`
 
-**2. Auth** — Issue keys, reject missing/bad keys, inspect key metadata
+**2. Auth** - Issue keys, reject missing/bad keys, inspect key metadata
 
-**3. Languages** — All 32 languages present, STT/TTS flags correct, Sunbird languages tagged
+**3. Languages** - All 32 languages present, STT/TTS flags correct, Sunbird languages tagged
 
-**4. Translation** — 12 test cases across all supported language pairs:
+**4. Translation** - 12 test cases across all supported language pairs:
 - Sunbird: en→lug, en→nyn, en→ach, en→teo, en→lgg, lug→en
 - HuggingFace: en→sw, en→yo, en→ha, en→ig, en→zu
 - Auto-detect: French → Swahili
 - Validation: empty text, too long, same language
 
-**5. Batch** — 6-item batch, partial failure handling, size limits
+**5. Batch** - 6-item batch, partial failure handling, size limits
 
-**6. TTS** — All 6 Sunbird TTS voices (lug, ach, nyn, teo, lgg, sw), validation
+**6. TTS** - All 6 Sunbird TTS voices (lug, ach, nyn, teo, lgg, sw), validation
 
-**7. STT** — Silent WAV upload for lug/ach/sw, unsupported language, file too large
+**7. STT** - Silent WAV upload for lug/ach/sw, unsupported language, file too large
 
-**8. Debug** — Provider connectivity check (requires `DEBUG=true`)
+**8. Debug** - Provider connectivity check (requires `DEBUG=true`)
 
-**9. Rate limiting** — Confirms 429 fires after limit exceeded
+**9. Rate limiting** - Confirms 429 fires after limit exceeded
 
-**10. SDK** — Python SDK `translate()`, `translate_batch()`, `languages()`
+**10. SDK** - Python SDK `translate()`, `translate_batch()`, `languages()`
 
 ---
 
@@ -197,10 +197,10 @@ With `DEBUG=true` in `.env`:
 
 ```bash
 # Show env config (values masked)
-curl http://localhost:8000/api/v1/debug/env
+curl https://fasiri-bu9u.onrender.com/api/v1/debug/env
 
 # Live provider connectivity check
-curl http://localhost:8000/api/v1/debug/providers
+curl https://fasiri-bu9u.onrender.com/api/v1/debug/providers
 ```
 
 The `/debug/providers` response tells you exactly what's wrong and how to fix it.

@@ -1,8 +1,8 @@
 """
-Fasiri – Base provider interface.
+Fasiri - Base provider interface.
 
 All provider adapters must extend BaseProvider and implement translate().
-Speech methods are optional – providers that don't support them raise NotImplementedError.
+Speech methods are optional - providers that don't support them raise NotImplementedError.
 """
 from __future__ import annotations
 

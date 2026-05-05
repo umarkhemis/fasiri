@@ -1,5 +1,5 @@
 """
-Fasiri – Full test suite.
+Fasiri - Full test suite.
 
 Run with:
     pytest tests/ -v
@@ -568,7 +568,7 @@ class TestRegistry:
         assert entry.provider == "sunbird"
 
     def test_nllb_fallback_for_unknown_pair(self):
-        # ha (Hausa) has no verified Helsinki model — routes to NLLB-200
+        # ha (Hausa) has no verified Helsinki model - routes to NLLB-200
         entry = get_best_model("en", "ha")
         assert entry.provider == "huggingface"
         assert "nllb" in entry.model_id.lower()
@@ -637,7 +637,7 @@ class TestSystem:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 9. SDK Data Class Behaviour (unit tests – no HTTP)
+# 9. SDK Data Class Behaviour (unit tests - no HTTP)
 # ═══════════════════════════════════════════════════════════════════════════════
 
 class TestSDKDataClasses:

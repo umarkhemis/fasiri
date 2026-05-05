@@ -1,5 +1,5 @@
 """
-Fasiri – Pydantic request / response schemas.
+Fasiri - Pydantic request / response schemas.
 """
 from __future__ import annotations
 
@@ -144,7 +144,7 @@ class CreateKeyRequest(BaseModel):
 
 class CreateKeyResponse(BaseModel):
     api_key: str = Field(...,
-        description="Your API key. Store it securely – it will not be shown again.")
+        description="Your API key. Store it securely - it will not be shown again.")
     name: str
     expires_at: str
     note: str = "Store this key securely. It will NOT be shown again."
