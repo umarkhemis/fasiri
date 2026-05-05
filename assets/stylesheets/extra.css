@@ -1,0 +1,30 @@
+/* Fasiri brand colors */
+:root {
+  --md-primary-fg-color:        #2D7D46;
+  --md-primary-fg-color--light: #3a9e58;
+  --md-primary-fg-color--dark:  #1f5c32;
+  --md-accent-fg-color:         #E8A020;
+}
+
+/* Wordmark in header */
+.md-header__title {
+  font-family: Georgia, serif;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+/* Code blocks */
+.highlight code {
+  font-size: 0.85em;
+}
+
+/* Admonition tweaks */
+.md-typeset .admonition {
+  border-radius: 4px;
+}
+
+/* Table styling */
+.md-typeset table:not([class]) th {
+  background-color: #2D7D46;
+  color: white;
+}
