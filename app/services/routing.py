@@ -24,7 +24,7 @@ from app.core.registry import ModelEntry, get_model_fast
 from app.schemas.translate import Provider
 from app.services.providers.base import BaseProvider, TranslationResult
 from app.services.providers.huggingface import HuggingFaceProvider
-from app.services.providers.khaya import KhayaProvider, supports_pair
+from app.services.providers.khaya import KhayaProvider, supports_pair, KHAYA_LANGS
 from app.services.providers.sunbird import SunbirdProvider
 from app.core.config import settings
 

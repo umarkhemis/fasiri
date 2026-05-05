@@ -2,19 +2,16 @@
 # Fasiri - GitHub Actions CI/CD Pipeline
 #
 # Triggers on:
-#   push to main     → full test + build + deploy
-#   pull requests    → test only (no deploy)
-#   manual trigger   → full pipeline
+#   push to main       - test + docs deploy
+#   pull requests      - test only
+#   tag push (v*)      - test + PyPI publish
+#   manual trigger     - full pipeline
 #
-# Required GitHub Secrets (Settings → Secrets → Actions):
-#   DOCKER_USERNAME       - Docker Hub username
-#   DOCKER_PASSWORD       - Docker Hub token
-#   DEPLOY_HOST           - your server IP or hostname
-#   DEPLOY_USER           - SSH user (e.g. ubuntu)
-#   DEPLOY_SSH_KEY        - your private SSH key (full contents)
-#   HUGGINGFACE_API_KEY   - for integration smoke test post-deploy
-#   SUNBIRD_API_KEY       - for integration smoke test post-deploy
-#   KHAYA_API_KEY         - for integration smoke test post-deploy
+# Required GitHub Secrets (Settings -> Secrets -> Actions):
+#   PYPI_API_TOKEN     - PyPI token for publishing (when ready)
+#
+# Render deployment is automatic via Render's GitHub integration.
+# No SSH secrets needed.
 # ============================================================
 
 name: CI/CD
@@ -22,13 +19,11 @@ name: CI/CD
 on:
   push:
     branches: [main]
+    tags:
+      - "v*"
   pull_request:
     branches: [main]
   workflow_dispatch:
-
-env:
-  IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/fasiri-api
-  IMAGE_TAG:  ${{ github.sha }}
 
 jobs:
 
@@ -55,9 +50,8 @@ jobs:
           pip install -r requirements.txt
           pip install python-multipart pytest pytest-asyncio
 
-      - name: Install Fasiri SDK (from root pyproject.toml)
-        run: |
-          pip install -e .
+      - name: Install Fasiri SDK
+        run: pip install -e .
 
       - name: Run unit tests
         run: pytest tests/ -v --tb=short -q
@@ -72,126 +66,50 @@ jobs:
           pip install ruff
           ruff check app/ --select E,F,W --ignore E501
 
-      - name: Test summary
-        if: always()
-        run: echo "Tests complete"
-
   # ============================================================
-  # JOB 2: Build & Push Docker Image
+  # JOB 2: Deploy Docs to GitHub Pages
+  # Runs on every push to main (not PRs)
   # ============================================================
-  build:
-    name: Build & Push Image
+  docs:
+    name: Deploy Docs
     runs-on: ubuntu-latest
     needs: test
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Extract metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.IMAGE_NAME }}
-          tags: |
-            type=sha,prefix=sha-
-            type=raw,value=latest
-            type=raw,value=${{ github.run_number }}
-
-      - name: Build and push
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          platforms: linux/amd64,linux/arm64
-
-      - name: Image summary
-        run: |
-          echo "Image pushed: ${{ env.IMAGE_NAME }}:latest"
-          echo "SHA tag:      ${{ env.IMAGE_NAME }}:sha-${{ github.sha }}"
-
-  # ============================================================
-  # JOB 3: Deploy to Server
-  # ============================================================
-  deploy:
-    name: Deploy to Production
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-    environment: production
+    permissions:
+      contents: write   # required for gh-pages push
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.9.0
         with:
-          ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
+          fetch-depth: 0
 
-      - name: Add server to known hosts
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install docs dependencies
+        run: pip install mkdocs-material mkdocstrings[python]
+
+      - name: Configure git for gh-pages push
         run: |
-          ssh-keyscan -H ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Deploy via SSH
-        run: |
-          ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'ENDSSH'
-            set -e
-
-            echo "==> Navigating to app directory"
-            cd /opt/fasiri
-
-            echo "==> Pulling latest image"
-            docker compose pull api
-
-            echo "==> Rolling restart (zero downtime)"
-            docker compose up -d --no-deps --build api
-
-            echo "==> Waiting for health check..."
-            sleep 15
-            docker compose ps
-
-            echo "==> Cleaning up old images"
-            docker image prune -f
-
-            echo "==> Deploy complete"
-          ENDSSH
-
-      - name: Smoke test post-deploy
-        run: |
-          sleep 10
-          curl -f https://fasiri-bu9u.onrender.com/health || exit 1
-          echo "Health check passed"
-
-      - name: Notify on failure
-        if: failure()
-        run: |
-          echo "DEPLOY FAILED on commit ${{ github.sha }}"
-          echo "Check GitHub Actions logs for details"
+      - name: Deploy to GitHub Pages
+        run: mkdocs gh-deploy --force
 
   # ============================================================
-  # JOB 4: Publish SDK to PyPI
+  # JOB 3: Publish SDK to PyPI
+  # Only runs on version tags like v1.0.0
   # ============================================================
   publish:
     name: Publish to PyPI
     runs-on: ubuntu-latest
     needs: test
-    if: github.ref == 'refs/heads/main' && startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref, 'refs/tags/v')
 
     steps:
       - name: Checkout code
@@ -215,42 +133,14 @@ jobs:
         run: twine upload dist/*
 
   # ============================================================
-  # JOB 5: Deploy Docs to GitHub Pages
-  # ============================================================
-  docs:
-    name: Deploy Docs
-    runs-on: ubuntu-latest
-    needs: test
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0   # needed for mkdocs git-revision-date plugin
-
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install docs dependencies
-        run: |
-          pip install mkdocs-material mkdocstrings[python]
-
-      - name: Deploy to GitHub Pages
-        run: mkdocs gh-deploy --force --verbose
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  # ============================================================
-  # JOB 6: Security Scan
+  # JOB 4: Security Scan
+  # Runs on pushes to main only
   # ============================================================
   security:
     name: Security Scan
     runs-on: ubuntu-latest
     needs: test
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
 
     steps:
       - name: Checkout code
@@ -262,5 +152,5 @@ jobs:
           scan-type: fs
           scan-ref: .
           format: table
-          exit-code: 0        # don't fail the pipeline on findings
+          exit-code: 0
           severity: HIGH,CRITICAL
