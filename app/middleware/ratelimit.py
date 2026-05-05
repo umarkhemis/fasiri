@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import time
 from collections import defaultdict, deque
-from typing import Dict, Deque
+from typing import Dict
 import logging
 
 from fastapi import HTTPException, status
