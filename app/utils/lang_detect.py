@@ -9,7 +9,6 @@ Returns a BCP-47 code compatible with LANGUAGE_REGISTRY.
 from __future__ import annotations
 
 import logging
-from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -57,7 +56,7 @@ def detect_language(text: str) -> str:
     Falls back to 'en' if detection fails.
     """
     try:
-        from langdetect import detect, LangDetectException  # type: ignore
+        from langdetect import detect  # type: ignore
         raw = detect(text)
         mapped = _LANGDETECT_MAP.get(raw, raw)
         logger.debug("langdetect: %s -> %s", raw, mapped)
