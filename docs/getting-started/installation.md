@@ -3,114 +3,93 @@
 ## Requirements
 
 - Python 3.9 or higher
-- An API key (see [Authentication](authentication.md))
+- An API key (Fasiri Cloud) or provider keys (direct mode)
 
 ## Install the SDK
-
-Install the official Fasiri Python SDK from PyPI:
 
 ```bash
 pip install fasiri
 ```
 
-To upgrade to the latest version:
+To upgrade:
 
 ```bash
 pip install --upgrade fasiri
 ```
 
-### Verify the installation
+Verify:
 
 ```python
 import fasiri
-print(fasiri.__version__)  # 1.0.0
+print(fasiri.__version__)  # 1.1.0
 ```
 
 ---
 
-## Install for async usage
+## Choose your mode
 
-The SDK supports both synchronous and asynchronous usage out of the box. No extra dependencies are required - `httpx` (which ships with the SDK) handles both modes.
+Fasiri SDK supports two modes. Both use the same interface.
+
+### Cloud mode
+
+Get a free Fasiri key - one key covers all providers:
 
 ```bash
-pip install fasiri
+curl -X POST https://fasiri-bu9u.onrender.com/api/v1/auth/keys \
+  -H "Content-Type: application/json" \
+  -d '{"name": "my-app"}'
 ```
 
 ```python
-import asyncio
 from fasiri import Fasiri
 
-async def main():
-    async with Fasiri(api_key="fsri_...") as client:
-        result = await client.async_translate("Hello", target="lug")
-        print(result)
-
-asyncio.run(main())
+client = Fasiri(api_key="fsri_...")
+result = client.translate("Good morning", target="lug")
+print(result)  # Wasuze otya
 ```
+
+### Direct mode
+
+Use your own provider keys - no Fasiri account needed:
+
+```python
+from fasiri import Fasiri
+from fasiri.providers import SunbirdProvider, KhayaProvider, HuggingFaceProvider
+
+client = Fasiri(
+    providers=[
+        SunbirdProvider(api_key="eyJ..."),         # Sunbird JWT
+        KhayaProvider(api_key="your-khaya-key"),    # Khaya subscription key
+        HuggingFaceProvider(api_key="hf_..."),      # HuggingFace token
+    ]
+)
+result = client.translate("Good morning", target="lug")
+print(result)  # Wasuze otya
+```
+
+See the [Direct Mode guide](../guides/direct-mode.md) for setup instructions.
 
 ---
 
 ## Self-hosted API server
 
-If you want to run the Fasiri API server yourself rather than using the hosted version at `https://fasiri-bu9u.onrender.com`, follow these steps.
-
-### Prerequisites
-
-- Python 3.9+
-- Git
-- API keys for at least one provider (Sunbird AI, Khaya AI, or HuggingFace)
-
-### Clone the repository
+To run the Fasiri API server yourself:
 
 ```bash
 git clone https://github.com/umarkhemis/fasiri
 cd fasiri
-```
-
-### Create a virtual environment
-
-```bash
-python -m venv .venv
-source .venv/bin/activate      # Linux/macOS
-.venv\Scripts\activate         # Windows
-```
-
-### Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### Configure environment variables
-
-```bash
 cp .env.example .env
-```
-
-Open `.env` and fill in your provider API keys. At minimum you need one of the following:
-
-- `SUNBIRD_API_KEY` - for Ugandan language translation, STT, and TTS
-- `KHAYA_API_KEY` - for West African language translation
-- `HUGGINGFACE_API_KEY` - for Swahili, French, Arabic, and multilingual fallback
-
-See [Environment Variables](../self-hosting/env.md) for the full reference.
-
-### Start the server
-
-```bash
+# Add your provider keys to .env
+pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
-The API will start at `https://fasiri-bu9u.onrender.com`. Visit `https://fasiri-bu9u.onrender.com/docs` for the interactive Swagger UI.
-
-### Point the SDK at your local server
+Point the SDK at your local server:
 
 ```python
-from fasiri import Fasiri
-
 client = Fasiri(
     api_key="fsri_...",
-    base_url="https://fasiri-bu9u.onrender.com",
+    base_url="http://localhost:8000",
 )
 ```
 
@@ -118,27 +97,19 @@ client = Fasiri(
 
 ## Docker
 
-The fastest way to run the server in production is with Docker Compose:
-
 ```bash
 git clone https://github.com/umarkhemis/fasiri
 cd fasiri
 cp .env.example .env
-# Fill in your provider keys in .env
-
 docker compose up --build
 ```
-
-See [Docker deployment](../self-hosting/docker.md) for the full guide.
 
 ---
 
 ## Dependencies
 
-The Fasiri SDK has a single runtime dependency:
+The SDK has a single runtime dependency:
 
 | Package | Version | Purpose |
 |---|---|---|
-| `httpx` | >=0.27.0 | HTTP client (sync + async) |
-
-The API server has additional dependencies listed in `requirements.txt`.
+| `httpx` | >=0.27.0 | HTTP client (sync and async) |

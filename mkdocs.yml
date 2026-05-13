@@ -72,6 +72,7 @@ nav:
       - Translation: guides/translation.md
       - Batch Translation: guides/batch.md
       - Batch at Scale: guides/batch-at-scale.md
+      - Direct Mode: guides/direct-mode.md
       - Speech Workflows: guides/speech-workflows.md
       - Provider Routing: guides/provider-routing.md
       - Rate Limits: guides/rate-limits.md
@@ -118,8 +119,5 @@ extra:
     - icon: fontawesome/brands/python
       link: https://pypi.org/project/fasiri
       name: PyPI
-
-extra_css:
-  - assets/stylesheets/extra.css
 
 copyright: Copyright &copy; 2026 Beta-Tech Labs

@@ -11,6 +11,8 @@ class Settings(BaseSettings):
     huggingface_api_key: str = Field(default="", alias="HUGGINGFACE_API_KEY")
     sunbird_api_key: str = Field(default="", alias="SUNBIRD_API_KEY")
     khaya_api_key: str = Field(default="", alias="KHAYA_API_KEY")
+    # A permanent demo key that survives server restarts (set this in Render env vars)
+    fasiri_demo_key: str = Field(default="", alias="FASIRI_DEMO_KEY")
 
     # ── Fasiri internal auth ─────────────────────────────────────────────────
     # Secret used to sign/verify Fasiri API keys  (openssl rand -hex 32)

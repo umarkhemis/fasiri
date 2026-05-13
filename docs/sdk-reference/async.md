@@ -1,187 +1,126 @@
 # Async Usage
 
-Fasiri has full async support for use with `asyncio`, `FastAPI`, `Django Async`, and any other async framework.
+The Fasiri SDK supports async/await in both cloud and direct mode.
+All sync methods have an async equivalent prefixed with `async_`.
 
-## Context manager (recommended)
+---
 
-The cleanest way to use the async client is as an async context manager. This ensures the underlying HTTP connection pool is properly closed:
+## Basic async
 
 ```python
 import asyncio
 from fasiri import Fasiri
 
 async def main():
-    async with Fasiri(api_key="fsri_...") as client:
-        result = await client.async_translate("Hello", target="lug")
-        print(result)  # "Oli otya?"
+    client = Fasiri(api_key="fsri_...")
+
+    result = await client.async_translate("Good morning", target="lug")
+    print(result)  # Wasuze otya
 
 asyncio.run(main())
 ```
 
-## Available async methods
+---
 
-Every sync method has an async counterpart:
+## Async context manager
 
-| Sync | Async |
-|---|---|
-| `client.translate()` | `await client.async_translate()` |
-| `client.translate_batch()` | `await client.async_translate_batch()` |
+Use `async with` for connection pooling. Recommended for applications
+making many requests:
 
-!!! note
-    `transcribe()` and `synthesise()` do not yet have async versions. They run synchronously. Full async speech methods are on the roadmap.
+```python
+async def main():
+    async with Fasiri(api_key="fsri_...") as client:
+        result = await client.async_translate("Hello", target="lug")
+        print(result)
+```
 
-## Concurrent batch translation
+---
 
-The real power of async is running multiple independent calls concurrently:
+## Async batch
+
+Async batch translation in direct mode runs all items concurrently,
+making it significantly faster than sync batch for large lists:
 
 ```python
 import asyncio
 from fasiri import Fasiri
+from fasiri.providers import SunbirdProvider, KhayaProvider
 
-async def translate_all():
-    async with Fasiri(api_key="fsri_...") as client:
+async def main():
+    # Direct mode - concurrent requests
+    client = Fasiri(
+        providers=[
+            SunbirdProvider(api_key="eyJ..."),
+            KhayaProvider(api_key="your-key"),
+        ]
+    )
 
-        # Run 5 translations concurrently - much faster than sequential
-        results = await asyncio.gather(
-            client.async_translate("Good morning",  target="lug"),
-            client.async_translate("Thank you",     target="yo"),
-            client.async_translate("Welcome",       target="ha"),
-            client.async_translate("How are you?",  target="sw"),
-            client.async_translate("Goodbye",       target="ig"),
-        )
+    results = await client.async_translate_batch([
+        {"id": "1", "text": "Good morning",  "target": "lug"},
+        {"id": "2", "text": "How are you?",  "target": "yo"},
+        {"id": "3", "text": "Thank you",     "target": "tw"},
+        {"id": "4", "text": "Welcome",       "target": "nyn"},
+        {"id": "5", "text": "Goodbye",       "target": "ach"},
+    ])
 
-        for result in results:
-            print(result)
+    print(f"{results.succeeded}/{results.total} succeeded")
+    print(f"Total time: {results.total_latency_ms}ms")
 
-asyncio.run(translate_all())
+    for item in results.successful():
+        print(f"[{item.id}] {item.translated_text} via {item.provider}")
+
+asyncio.run(main())
 ```
+
+---
 
 ## FastAPI integration
 
 ```python
-from fastapi import FastAPI, Depends, HTTPException
-from fasiri import Fasiri, FasiriError
-import os
+from fastapi import FastAPI
+from fasiri import Fasiri
+from fasiri.providers import SunbirdProvider, KhayaProvider
 
 app = FastAPI()
 
-# Create a single client instance at startup
-_client: Fasiri | None = None
-
-@app.on_event("startup")
-async def startup():
-    global _client
-    _client = Fasiri(api_key=os.environ["FASIRI_API_KEY"])
-
-@app.on_event("shutdown")
-async def shutdown():
-    pass  # client closes connections automatically
-
-def get_client() -> Fasiri:
-    return _client
+# Initialise once at startup
+fasiri = Fasiri(
+    providers=[
+        SunbirdProvider(api_key="eyJ..."),
+        KhayaProvider(api_key="your-key"),
+    ]
+)
 
 @app.post("/translate")
-async def translate(
-    text: str,
-    target: str,
-    client: Fasiri = Depends(get_client),
-):
-    try:
-        result = await client.async_translate(text, target=target)
-        return {
-            "translated": result.translated_text,
-            "provider":   result.provider,
-            "score":      result.quality_score,
-        }
-    except FasiriError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+async def translate(text: str, target: str):
+    result = await fasiri.async_translate(text, target=target)
+    return {
+        "translation": result.translated_text,
+        "provider":    result.provider,
+        "quality":     result.quality_score,
+    }
+
+@app.post("/batch")
+async def batch(items: list[dict]):
+    results = await fasiri.async_translate_batch(items)
+    return {
+        "succeeded": results.succeeded,
+        "failed":    results.failed,
+        "results":   [
+            {"id": r.id, "translation": r.translated_text, "error": r.error}
+            for r in results
+        ],
+    }
 ```
 
-## Django async view
+---
 
-```python
-# views.py
-from django.http import JsonResponse
-from fasiri import Fasiri
+## Async methods reference
 
-client = Fasiri(api_key="fsri_...")
-
-async def translate_view(request):
-    text   = request.GET.get("text", "")
-    target = request.GET.get("target", "sw")
-
-    result = await client.async_translate(text, target=target)
-
-    return JsonResponse({
-        "translated_text": result.translated_text,
-        "provider": result.provider,
-    })
-```
-
-## Processing large datasets concurrently
-
-For translating thousands of texts efficiently, use batch + semaphore to control concurrency:
-
-```python
-import asyncio
-from fasiri import Fasiri
-
-async def bulk_translate(texts: list[str], target: str, concurrency: int = 5):
-    """
-    Translate a large list of texts using concurrent batch calls.
-    concurrency controls how many batch requests run simultaneously.
-    """
-    # Split into batches of 50 (API maximum)
-    def chunks(lst, n):
-        for i in range(0, len(lst), n):
-            yield lst[i:i + n]
-
-    batches = list(chunks(
-        [{"id": str(i), "text": t, "target": target}
-         for i, t in enumerate(texts)],
-        50
-    ))
-
-    semaphore = asyncio.Semaphore(concurrency)
-    results = {}
-
-    async def process_batch(batch):
-        async with semaphore:
-            async with Fasiri(api_key="fsri_...") as client:
-                br = await client.async_translate_batch(batch)
-                for item in br:
-                    if item.success:
-                        results[item.id] = item.translated_text
-
-    await asyncio.gather(*[process_batch(b) for b in batches])
-    return [results.get(str(i), "") for i in range(len(texts))]
-
-# Usage
-texts = ["Hello"] * 200  # 200 texts
-translated = asyncio.run(bulk_translate(texts, target="lug"))
-```
-
-## Error handling in async code
-
-```python
-import asyncio
-from fasiri import Fasiri, RateLimitError, ProviderError
-
-async def translate_with_retry(text, target, max_retries=3):
-    async with Fasiri(api_key="fsri_...") as client:
-        for attempt in range(max_retries):
-            try:
-                return await client.async_translate(text, target=target)
-
-            except RateLimitError as e:
-                if attempt < max_retries - 1:
-                    await asyncio.sleep(e.retry_after)
-                else:
-                    raise
-
-            except ProviderError:
-                if attempt < max_retries - 1:
-                    await asyncio.sleep(2 ** attempt)
-                else:
-                    raise
-```
+| Sync method | Async equivalent |
+|---|---|
+| `translate()` | `async_translate()` |
+| `translate_batch()` | `async_translate_batch()` |
+| `transcribe()` | - (not yet async) |
+| `synthesise()` | - (not yet async) |
+| `languages()` | - (not yet async) |

@@ -1,6 +1,7 @@
 # Python SDK Reference
 
-The Fasiri Python SDK provides a clean, type-safe interface to the Fasiri API.
+The Fasiri Python SDK provides a unified interface for African language translation,
+speech-to-text, and text-to-speech - in both cloud and direct mode.
 
 ## Installation
 
@@ -11,18 +12,26 @@ pip install fasiri
 ## Import
 
 ```python
+# Cloud mode
 from fasiri import Fasiri
+
+# Direct mode
+from fasiri import Fasiri
+from fasiri.providers import SunbirdProvider, KhayaProvider, HuggingFaceProvider
 ```
+
+---
 
 ## The Fasiri class
 
-`Fasiri` is the main client class. All API operations are methods on this class.
+All API operations are methods on the `Fasiri` class.
 
 ### Constructor
 
 ```python
 Fasiri(
     api_key: str | None = None,
+    providers: list | None = None,
     base_url: str | None = None,
     timeout: int = 30,
 )
@@ -30,34 +39,41 @@ Fasiri(
 
 **Parameters:**
 
-| Parameter | Type | Default | Description |
-|---|---|---|---|
-| `api_key` | str | `None` | Your Fasiri API key. Falls back to `FASIRI_API_KEY` environment variable. |
-| `base_url` | str | `"https://fasiri-bu9u.onrender.com"` | API base URL. Override for self-hosted deployments. |
-| `timeout` | int | `30` | HTTP request timeout in seconds. |
+| Parameter | Type | Description |
+|---|---|---|
+| `api_key` | str | Fasiri Cloud key (`fsri_...`). Falls back to `FASIRI_API_KEY` env var. |
+| `providers` | list | Direct mode provider list. When set, `api_key` is not required. |
+| `base_url` | str | API base URL override. Falls back to `FASIRI_BASE_URL` env var. |
+| `timeout` | int | HTTP timeout in seconds. Default: 30. |
 
-**Example:**
+Pass either `api_key` (cloud mode) or `providers` (direct mode). Not both.
+
+**Cloud mode:**
 
 ```python
-from fasiri import Fasiri
-
-# Explicit key
 client = Fasiri(api_key="fsri_...")
 
 # From environment variable
 import os
 os.environ["FASIRI_API_KEY"] = "fsri_..."
 client = Fasiri()
-
-# Self-hosted server
-client = Fasiri(
-    api_key="fsri_...",
-    base_url="https://fasiri-bu9u.onrender.com",
-)
-
-# Longer timeout for STT (audio transcription is slow)
-client = Fasiri(api_key="fsri_...", timeout=60)
 ```
+
+**Direct mode:**
+
+```python
+from fasiri.providers import SunbirdProvider, KhayaProvider, HuggingFaceProvider
+
+client = Fasiri(
+    providers=[
+        SunbirdProvider(api_key="eyJ..."),
+        KhayaProvider(api_key="your-key"),
+        HuggingFaceProvider(api_key="hf_..."),
+    ]
+)
+```
+
+---
 
 ## Methods
 
@@ -74,24 +90,16 @@ client.translate(
 
 Translate text to the target language.
 
-**Parameters:**
-
 | Parameter | Type | Default | Description |
 |---|---|---|---|
-| `text` | str | - | Text to translate. Max 5,000 characters. |
-| `target` | str | - | Target language code, e.g. `"lug"`, `"yo"`, `"sw"`. |
-| `source` | str | `None` | Source language code. Auto-detected if omitted. |
-| `provider` | str | `"auto"` | Provider: `"auto"`, `"sunbird"`, `"khaya"`, `"huggingface"`. |
-
-**Returns:** `TranslationResult`
+| `text` | str | - | Text to translate. |
+| `target` | str | - | Target language code e.g. `"lug"`, `"yo"`, `"sw"`. |
+| `source` | str | `None` | Source language. Auto-detected if omitted. |
+| `provider` | str | `"auto"` | Cloud mode only: `"auto"`, `"sunbird"`, `"khaya"`, `"huggingface"`. |
 
 ### async_translate
 
-Async equivalent of `translate`. Use inside `async def` functions.
-
-```python
-await client.async_translate(text, target, source, provider)
-```
+Async equivalent of `translate`.
 
 ### translate_batch
 
@@ -102,15 +110,12 @@ client.translate_batch(
 ) -> BatchResult
 ```
 
-Translate multiple texts in one request.
-
-Each item dict must have `"id"`, `"text"`, and `"target"`. Optionally include `"source"`.
-
-**Returns:** `BatchResult`
+Translate multiple texts. Each item needs `"id"`, `"text"`, `"target"`.
+In direct mode async batch, items run concurrently.
 
 ### async_translate_batch
 
-Async equivalent of `translate_batch`.
+Async equivalent of `translate_batch`. Runs items concurrently in direct mode.
 
 ### transcribe
 
@@ -121,9 +126,8 @@ client.transcribe(
 ) -> STTResult
 ```
 
-Transcribe audio to text. Pass a file path (str) or raw audio bytes.
-
-**Returns:** `STTResult`
+Transcribe audio. Pass a file path or raw bytes.
+Direct mode: requires `SunbirdProvider`.
 
 ### synthesise / synthesize
 
@@ -135,9 +139,8 @@ client.synthesise(
 ) -> TTSResult
 ```
 
-Convert text to speech. Both spellings are accepted.
-
-**Returns:** `TTSResult`
+Convert text to speech. Both spellings accepted.
+Direct mode: requires `SunbirdProvider`.
 
 ### languages
 
@@ -145,7 +148,7 @@ Convert text to speech. Both spellings are accepted.
 client.languages() -> list[Language]
 ```
 
-Return all supported languages.
+Return all supported languages with capabilities.
 
 ### translation_languages
 
@@ -163,17 +166,22 @@ client.speech_languages() -> list[Language]
 
 Return only languages that support STT or TTS.
 
+---
+
 ## Async context manager
 
-Use `async with` for efficient connection pooling in async applications:
+Use `async with` for efficient connection pooling:
 
 ```python
 async with Fasiri(api_key="fsri_...") as client:
     result = await client.async_translate("Hello", target="lug")
 ```
 
+---
+
 ## See also
 
 - [Data Types](types.md) - TranslationResult, BatchResult, Language, etc.
-- [Exceptions](exceptions.md) - Error types and handling
+- [Exceptions](exceptions.md) - Error handling
 - [Async Usage](async.md) - Full async guide
+- [Direct Mode](../guides/direct-mode.md) - Using providers directly

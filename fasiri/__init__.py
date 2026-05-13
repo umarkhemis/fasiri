@@ -1,35 +1,36 @@
 """
 fasiri - Official Python SDK for the Fasiri African Language API.
 
-Quick start::
+Two modes of operation:
+
+**Cloud mode** - use the hosted Fasiri API (free key at fasiri-bu9u.onrender.com)::
 
     from fasiri import Fasiri
 
     client = Fasiri(api_key="fsri_...")
+    result = client.translate("Good morning", target="lug")
+    print(result)  # Wasuze otya
 
-    # Translate
-    result = client.translate("Hello, how are you?", target="sw")
-    print(result)  # Habari, ukoje?
+**Direct mode** - call providers directly with your own API keys (free, no Fasiri account)::
 
-    # Batch
-    batch = client.translate_batch([
-        {"id": "1", "text": "Good morning", "target": "lug"},
-        {"id": "2", "text": "Thank you",    "target": "yo"},
-    ])
-    for item in batch:
-        print(item.id, item)
+    from fasiri import Fasiri
+    from fasiri.providers import SunbirdProvider, KhayaProvider, HuggingFaceProvider
 
-    # Speech-to-Text
-    stt = client.transcribe("speech.wav", language="lug")
-    print(stt.transcript)
+    client = Fasiri(
+        providers=[
+            SunbirdProvider(api_key="eyJ..."),         # your Sunbird JWT
+            KhayaProvider(api_key="your-khaya-key"),    # your Khaya subscription key
+            HuggingFaceProvider(api_key="hf_..."),      # your HuggingFace token
+        ]
+    )
 
-    # Text-to-Speech
-    tts = client.synthesise("Oli otya?", language="lug")
-    print(tts.audio_url)
+    result = client.translate("Good morning", target="lug")
+    print(result)          # Wasuze otya
+    print(result.provider) # "sunbird"
 
-    # List languages
-    for lang in client.languages():
-        print(lang)
+In direct mode, Fasiri routes requests to the best provider automatically
+and falls back if one fails. Requests go straight from your machine to the
+provider - you handle your own provider billing.
 """
 
 from .client import (
@@ -64,4 +65,4 @@ __all__ = [
     "ProviderError",
 ]
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"

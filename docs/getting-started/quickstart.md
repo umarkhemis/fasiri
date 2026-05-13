@@ -1,14 +1,10 @@
 # Quick Start
 
-This guide takes you from zero to your first successful translation in under five minutes.
+Get up and running in under 5 minutes.
 
-## Step 1 - Install the SDK
+## Option A - Fasiri Cloud
 
-```bash
-pip install fasiri
-```
-
-## Step 2 - Get an API key
+### Step 1 - Get a free API key
 
 ```bash
 curl -X POST https://fasiri-bu9u.onrender.com/api/v1/auth/keys \
@@ -16,48 +12,59 @@ curl -X POST https://fasiri-bu9u.onrender.com/api/v1/auth/keys \
   -d '{"name": "quickstart"}'
 ```
 
-Copy the `api_key` value from the response.
+Copy the `api_key` from the response.
 
-## Step 3 - Make your first translation
+### Step 2 - Install and translate
+
+```bash
+pip install fasiri
+```
 
 ```python
 from fasiri import Fasiri
 
 client = Fasiri(api_key="fsri_...")
 
-result = client.translate("Good morning", target="lug")
-print(result.translated_text)  # "Wasuze otya"
-```
+# English -> Luganda
+print(client.translate("Good morning", target="lug"))   # Wasuze otya
 
-That is it. The client automatically selects Sunbird AI for Luganda and falls back to other providers if needed.
+# English -> Yoruba
+print(client.translate("How are you?", target="yo"))    # Bawo ni
+
+# English -> Swahili
+print(client.translate("Thank you", target="sw"))       # Asante
+```
 
 ---
 
-## Translating to other languages
+## Option B - Direct mode (your own provider keys)
+
+No Fasiri account needed. Use your existing Sunbird, Khaya, or HuggingFace keys.
+
+```bash
+pip install fasiri
+```
 
 ```python
-# Yoruba (West Africa) - uses Khaya AI
-result = client.translate("How are you?", target="yo")
-print(result)  # "Bawo ni"
+from fasiri import Fasiri
+from fasiri.providers import SunbirdProvider, KhayaProvider
 
-# Swahili (East Africa) - uses HuggingFace Helsinki-NLP
-result = client.translate("Thank you very much", target="sw")
-print(result)  # "Asante sana"
+client = Fasiri(
+    providers=[
+        SunbirdProvider(api_key="eyJ..."),       # your Sunbird JWT
+        KhayaProvider(api_key="your-khaya-key"), # your Khaya key
+    ]
+)
 
-# Acholi (Uganda) - uses Sunbird AI
-result = client.translate("Welcome", target="ach")
-print(result)
-
-# Twi (Ghana) - uses Khaya AI
-result = client.translate("Good night", target="tw")
-print(result)
+print(client.translate("Good morning", target="lug"))  # Wasuze otya
+print(client.translate("How are you?", target="yo"))   # Bawo ni
 ```
+
+See [Direct Mode](../guides/direct-mode.md) for how to get provider keys.
 
 ---
 
-## Translating a batch
-
-When you have multiple texts to translate, use batch translation instead of looping over single requests. It is faster and more efficient.
+## Batch translation
 
 ```python
 results = client.translate_batch([
@@ -67,96 +74,67 @@ results = client.translate_batch([
     {"id": "4", "text": "See you later",  "target": "sw"},
 ])
 
-print(f"{results.succeeded}/{results.total} translations succeeded")
+print(f"{results.succeeded}/{results.total} succeeded")
 
 for item in results:
     if item.success:
-        print(f"  [{item.id}] {item.translated_text} (via {item.provider})")
+        print(f"[{item.id}] {item.translated_text} ({item.provider})")
     else:
-        print(f"  [{item.id}] Failed: {item.error}")
+        print(f"[{item.id}] Failed: {item.error}")
 ```
 
 ---
 
-## Speech-to-Text
-
-Transcribe an audio file in Luganda:
+## Speech
 
 ```python
-stt = client.transcribe("meeting_recording.wav", language="lug")
+# Transcribe audio
+stt = client.transcribe("speech.wav", language="lug")
 print(stt.transcript)
-print(f"Detected language: {stt.detected_lang}")
-print(f"Transcribed in {stt.latency_ms}ms")
+
+# Synthesise speech
+tts = client.synthesise("Oli otya?", language="lug")
+print(tts.audio_url)
 ```
 
 ---
 
-## Text-to-Speech
-
-Synthesise spoken audio from Luganda text:
+## Async usage
 
 ```python
-tts = client.synthesise("Oli otya?", language="lug")
-print(tts.audio_url)   # URL to the generated audio file
+import asyncio
+from fasiri import Fasiri
+
+async def main():
+    async with Fasiri(api_key="fsri_...") as client:
+        result = await client.async_translate("Good morning", target="lug")
+        print(result)
+
+asyncio.run(main())
 ```
 
 ---
 
-## Inspecting results
-
-Every translation result includes metadata you can use to make decisions in your application:
+## Inspect the result
 
 ```python
 result = client.translate("Hello", target="lug")
 
-print(result.translated_text)      # The translation
-print(result.detected_source_lang) # Auto-detected source language
-print(result.provider)             # Which provider was used
-print(result.model_used)           # Which model within that provider
-print(result.quality_score)        # Float between 0 and 1
-print(result.latency_ms)           # How long the request took
-print(result.characters_translated) # Input character count
-```
-
----
-
-## Using the REST API directly
-
-If you are not using Python, you can call the REST API directly from any language.
-
-**Translate:**
-
-```bash
-curl -X POST https://fasiri-bu9u.onrender.com/api/v1/translate \
-  -H "Authorization: Bearer fsri_..." \
-  -H "Content-Type: application/json" \
-  -d '{
-    "text": "Good morning",
-    "target_lang": "lug",
-    "source_lang": "en",
-    "provider": "auto"
-  }'
-```
-
-**List languages:**
-
-```bash
-curl https://fasiri-bu9u.onrender.com/api/v1/languages \
-  -H "Authorization: Bearer fsri_..."
-```
-
-**Health check:**
-
-```bash
-curl https://fasiri-bu9u.onrender.com/health
+print(result.translated_text)       # Oli otya
+print(result.detected_source_lang)  # en
+print(result.provider)              # sunbird
+print(result.model_used)            # sunbird/translate
+print(result.quality_score)         # 0.92
+print(result.latency_ms)            # 1823
+print(result.characters_translated) # 5
 ```
 
 ---
 
 ## Next steps
 
-- [Full translation guide](../guides/translation.md) - provider selection, quality scores, and best practices
-- [Batch translation at scale](../guides/batch-at-scale.md) - handling large volumes efficiently
-- [Error handling](../guides/error-handling.md) - building resilient applications
-- [Async usage](../sdk-reference/async.md) - using the async client in FastAPI and other async frameworks
-- [All supported languages](languages.md) - complete language list with capabilities
+- [Translation guide](../guides/translation.md)
+- [Direct mode guide](../guides/direct-mode.md)
+- [Batch translation](../guides/batch.md)
+- [Error handling](../guides/error-handling.md)
+- [Async usage](../sdk-reference/async.md)

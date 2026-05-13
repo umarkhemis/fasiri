@@ -1,25 +1,34 @@
 # Changelog
 
-All notable changes to Fasiri are documented here.
+## [1.1.0] - 2026-05-10
+
+### Added
+- Direct mode - call Sunbird AI, Khaya AI, and HuggingFace with your own API keys
+- `fasiri.providers` subpackage with `SunbirdProvider`, `KhayaProvider`, `HuggingFaceProvider`
+- `BaseDirectProvider` abstract class for building custom providers
+- `DirectRouter` for automatic provider selection and fallback in direct mode
+- Async batch translation runs concurrently in direct mode
+- STT and TTS work in direct mode via SunbirdProvider
+- `Fasiri.__repr__` shows mode and provider names
+
+### Changed
+- `Fasiri` constructor now accepts `providers=` list for direct mode
+- SDK version bumped to 1.1.0
+- Improved error messages when no API key is provided - now shows both options
 
 ## [1.0.0] - 2026-05-01
 
 ### Added
-- Khaya AI provider for West/East African language translation
-- Three-provider fallback routing: Sunbird → Khaya → HuggingFace
-- Python SDK (`pip install fasiri`) with sync + async client
-- Batch translation endpoint
-- Health check with per-provider status
-- Dual Khaya API key support for rate-limit failover
+- Initial release
+- Fasiri Cloud mode with hosted API
+- Translation (single and batch)
+- Speech-to-Text and Text-to-Speech
+- Python SDK with sync and async support
+- Provider routing: Sunbird AI, Khaya AI, HuggingFace
 
 ### Changed
-- Renamed: AfriLang → **Fasiri**
-- API key prefix: `afrlk_` → `fsri_`
-- Environment variables: `AFRILANG_*` → `FASIRI_*`
-- Sunbird endpoint: `/tasks/nllb_translate` → `/tasks/translate`
-- Removed NLLB-200 (no longer supported on hf-inference free tier)
-
-### Fixed
-- Sunbird 405 errors (wrong endpoint)
-- HuggingFace 400 errors (unsupported NLLB model)
-- Bad Luganda translations from opus-mt-en-mul fallback
+- Renamed project from AfriLang to Fasiri
+- API key prefix changed from `afrlk_` to `fsri_`
+- Sunbird endpoint corrected to `/tasks/translate`
+- Removed NLLB-200 (no longer supported by hf-inference)
+- Added Khaya AI as third provider for West African languages

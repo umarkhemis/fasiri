@@ -2,9 +2,13 @@
 
 ## What is Fasiri?
 
-**Fasiri** (Swahili: *to interpret*) is a unified REST API and Python SDK that connects your application to the best African language AI providers available. Instead of integrating with Sunbird AI, Khaya AI, and HuggingFace separately, you make one call to Fasiri and it handles provider selection, fallback routing, and error recovery automatically.
+**Fasiri** (Swahili: *to interpret*) is a unified API and Python SDK for African language translation, speech-to-text, and text-to-speech. It brings together the best African language AI providers - Sunbird AI, Khaya AI, and HuggingFace - behind a single consistent interface.
 
-Fasiri is designed for developers building applications that need to communicate across African languages - whether that is a healthcare platform serving rural communities, an agricultural advisory service, a government citizen portal, or a multilingual chatbot.
+Fasiri supports two modes of operation:
+
+**Fasiri Cloud** - use the hosted API with a single key. Fasiri handles provider routing, fallback, and reliability.
+
+**Direct mode** - bring your own provider keys and call Sunbird AI, Khaya AI, or HuggingFace directly from your application. No Fasiri account needed. You handle your own provider billing. Fasiri is the routing layer.
 
 ---
 
@@ -12,13 +16,13 @@ Fasiri is designed for developers building applications that need to communicate
 
 **Translation**
 
-Translate text between English and 19+ African languages with automatic provider routing and quality scoring. Supports single requests and batch translation.
+Translate text between English and 19+ African languages. Supports single requests and batch translation with automatic provider routing.
 
 [Get started with translation](guides/translation.md)
 
 **Speech-to-Text**
 
-Transcribe audio recordings in Luganda, Acholi, Ateso, Runyankore, Lugbara, and Swahili with high accuracy models from Sunbird AI.
+Transcribe audio in Luganda, Acholi, Ateso, Runyankore, Lugbara, and Swahili using Sunbird AI.
 
 [Get started with STT](guides/speech-workflows.md)
 
@@ -30,73 +34,68 @@ Synthesise natural-sounding speech in Ugandan languages using Sunbird AI voice m
 
 **Python SDK**
 
-A clean, synchronous and asynchronous Python client with full type hints and comprehensive error handling. Install with `pip install fasiri`.
+Sync and async Python client with full type hints. Supports both cloud and direct mode with the same interface.
 
 [Install the SDK](getting-started/installation.md)
 
 ---
 
-## How it works
-
-When you send a translation request to Fasiri, the routing engine selects the best provider for the given language pair:
-
-```
-Request: translate "Good morning" to Luganda (lug)
-
-  Step 1 - Identify best provider -> Sunbird AI (specialised for Ugandan languages)
-  Step 2 - Call Sunbird AI /tasks/translate
-  Step 3 - If Sunbird fails -> try Khaya AI (if pair supported)
-  Step 4 - If Khaya fails  -> try HuggingFace Helsinki-NLP
-  Step 5 - Return result with provider metadata and quality score
-```
-
-This means your application keeps working even when individual providers have downtime.
-
-### Provider coverage
-
-| Provider | Languages | Capabilities |
-|---|---|---|
-| Sunbird AI | Luganda, Acholi, Ateso, Runyankore, Lugbara | Translation, STT, TTS |
-| Khaya AI | Yoruba, Twi, Ewe, Ga, Dagbani, Kikuyu, Luo, Kimeru, Kusaal | Translation |
-| HuggingFace | Swahili, French, Arabic, Afrikaans, multilingual fallback | Translation |
-
----
-
 ## Quick example
+
+**Cloud mode:**
 
 ```python
 from fasiri import Fasiri
 
 client = Fasiri(api_key="fsri_...")
 
-# Translate to Luganda
 result = client.translate("Good morning", target="lug")
-print(result.translated_text)   # "Wasuze otya"
-print(result.provider)           # "sunbird"
-print(result.quality_score)      # 0.92
+print(result)          # Wasuze otya
+print(result.provider) # sunbird
+```
 
-# Translate to Yoruba
-result = client.translate("How are you?", target="yo")
-print(result.translated_text)   # "Bawo ni"
-print(result.provider)           # "khaya"
+**Direct mode (bring your own keys):**
 
-# Translate to Swahili
-result = client.translate("Thank you", target="sw")
-print(result.translated_text)   # "Asante"
-print(result.provider)           # "huggingface"
+```python
+from fasiri import Fasiri
+from fasiri.providers import SunbirdProvider, KhayaProvider
+
+client = Fasiri(
+    providers=[
+        SunbirdProvider(api_key="eyJ..."),
+        KhayaProvider(api_key="your-khaya-key"),
+    ]
+)
+
+result = client.translate("Good morning", target="lug")
+print(result)          # Wasuze otya
+print(result.provider) # sunbird
+```
+
+Same interface. Same results. You choose where requests go.
+
+---
+
+## How provider routing works
+
+```
+Request: en -> lug   ->  Sunbird AI  (specialised for Ugandan languages)
+Request: en -> yo    ->  Khaya AI    (specialised for West African languages)
+Request: en -> sw    ->  HuggingFace (Helsinki-NLP opus-mt-en-sw)
+
+If primary fails     ->  next provider in chain
+If all fail          ->  ProviderError raised
 ```
 
 ---
 
 ## API base URL
 
-All REST API requests go to:
-
 ```
 https://fasiri-bu9u.onrender.com
 ```
 
-Interactive API documentation (Swagger UI):
+Interactive docs (Swagger UI):
 
 ```
 https://fasiri-bu9u.onrender.com/docs
@@ -106,7 +105,8 @@ https://fasiri-bu9u.onrender.com/docs
 
 ## Next steps
 
-- [Install the Python SDK](getting-started/installation.md)
-- [Get an API key](getting-started/authentication.md)
-- [View all supported languages](getting-started/languages.md)
-- [Read the translation guide](guides/translation.md)
+- [Installation](getting-started/installation.md)
+- [Authentication](getting-started/authentication.md)
+- [Quick start](getting-started/quickstart.md)
+- [Direct mode guide](guides/direct-mode.md)
+- [Supported languages](getting-started/languages.md)

@@ -1,39 +1,46 @@
 """
 fasiri-sdk - Official Python client for the Fasiri African Language API.
 
-Install:
-    pip install fasiri
+Two modes of operation:
 
-Usage:
+1. Fasiri Cloud (default) - calls the hosted Fasiri API::
+
     from fasiri import Fasiri
 
     client = Fasiri(api_key="fsri_...")
+    result = client.translate("Good morning", target="lug")
+    print(result)  # Wasuze otya
 
-    # Single translation
-    result = client.translate("Hello, how are you?", target="sw")
-    print(result.translated_text)  # "Habari, ukoje?"
+2. Direct mode - calls providers directly with your own keys (free, no Fasiri account)::
 
-    # Batch
-    results = client.translate_batch([
-        {"id": "1", "text": "Good morning", "target": "lug"},
-        {"id": "2", "text": "Thank you",    "target": "yo"},
-    ])
+    from fasiri import Fasiri
+    from fasiri.providers import SunbirdProvider, KhayaProvider, HuggingFaceProvider
 
-    # Async
-    async with Fasiri(api_key="fsri_...") as client:
-        result = await client.async_translate("Hello", target="ha")
+    client = Fasiri(
+        providers=[
+            SunbirdProvider(api_key="eyJ..."),        # your Sunbird JWT
+            KhayaProvider(api_key="your-khaya-key"),   # your Khaya subscription key
+            HuggingFaceProvider(api_key="hf_..."),     # your HuggingFace token
+        ]
+    )
+    result = client.translate("Good morning", target="lug")
+    print(result)  # Wasuze otya
+    print(result.provider)  # "sunbird"
+
+In direct mode, requests go straight to the provider from your machine.
+Fasiri is just the routing and abstraction layer - you handle provider billing.
 """
 from __future__ import annotations
 
 import os
 import time
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 import httpx
 
 
-# ── Data classes returned to the caller ──────────────────────────────────────
+# ── Data classes ──────────────────────────────────────────────────────────────
 
 @dataclass
 class TranslationResult:
@@ -139,15 +146,14 @@ class Language:
 # ── Exceptions ────────────────────────────────────────────────────────────────
 
 class FasiriError(Exception):
-    """Base exception for all Fasiri SDK errors."""
     def __init__(self, message: str, code: str = "UNKNOWN", status_code: int = 0):
         super().__init__(message)
-        self.code = code
+        self.code        = code
         self.status_code = status_code
 
 
 class AuthenticationError(FasiriError):
-    """Raised when the API key is missing, invalid, or expired."""
+    """Raised when the API key is invalid or expired."""
 
 
 class RateLimitError(FasiriError):
@@ -169,30 +175,42 @@ class ProviderError(FasiriError):
 
 class Fasiri:
     """
-    Fasiri API client - synchronous and asynchronous.
+    Fasiri API client.
+
+    Supports two modes:
+
+    **Cloud mode** (default) - use the hosted Fasiri API::
+
+        client = Fasiri(api_key="fsri_...")
+
+    **Direct mode** - call providers directly with your own keys::
+
+        from fasiri.providers import SunbirdProvider, KhayaProvider
+
+        client = Fasiri(
+            providers=[
+                SunbirdProvider(api_key="eyJ..."),
+                KhayaProvider(api_key="your-khaya-key"),
+            ]
+        )
+
+    In direct mode the interface is identical - same methods, same return types.
+    Requests go straight from your machine to the provider. Fasiri is just the
+    routing layer. You handle your own provider billing.
 
     Parameters
     ----------
-    api_key : str
-        Your Fasiri API key (``fsri_...``).
-        Falls back to the ``FASIRI_API_KEY`` environment variable.
-    base_url : str
-        Override the API base URL (default: ``https://fasiri-bu9u.onrender.com``).
-    timeout : int
-        HTTP timeout in seconds (default: 30).
-
-    Examples
-    --------
-    Sync usage::
-
-        client = Fasiri(api_key="fsri_...")
-        result = client.translate("Hello", target="sw")
-        print(result)  # "Habari"
-
-    Async usage::
-
-        async with Fasiri(api_key="fsri_...") as client:
-            result = await client.async_translate("Hello", target="sw")
+    api_key : str, optional
+        Fasiri Cloud API key (``fsri_...``). Required for cloud mode.
+        Falls back to ``FASIRI_API_KEY`` environment variable.
+    providers : list, optional
+        List of direct provider instances for direct mode.
+        When provided, ``api_key`` is not required.
+    base_url : str, optional
+        Fasiri API base URL. Default: ``https://fasiri-bu9u.onrender.com``.
+        Falls back to ``FASIRI_BASE_URL`` environment variable.
+    timeout : int, optional
+        HTTP timeout in seconds. Default: 30.
     """
 
     DEFAULT_BASE_URL = "https://fasiri-bu9u.onrender.com"
@@ -200,29 +218,70 @@ class Fasiri:
     def __init__(
         self,
         api_key: Optional[str] = None,
+        providers: Optional[list] = None,
         base_url: Optional[str] = None,
         timeout: int = 30,
     ) -> None:
-        self.api_key = api_key or os.environ.get("FASIRI_API_KEY", "")
-        if not self.api_key:
-            raise AuthenticationError(
-                "No API key provided. Pass api_key= or set FASIRI_API_KEY.",
-                code="MISSING_API_KEY",
+        self._timeout   = timeout
+        self._providers = providers  # direct mode provider list
+        self._router    = None       # lazy-initialised direct router
+
+        if providers:
+            # ── Direct mode ──────────────────────────────────────────────────
+            # Validate provider types
+            from .providers.base import BaseDirectProvider
+            for p in providers:
+                if not isinstance(p, BaseDirectProvider):
+                    raise TypeError(
+                        f"Expected a provider instance (SunbirdProvider, KhayaProvider, etc.), "
+                        f"got {type(p).__name__}. "
+                        f"Example: Fasiri(providers=[SunbirdProvider(api_key='...')])"
+                    )
+            self._mode    = "direct"
+            self.api_key  = None
+            self.base_url = None
+
+        else:
+            # ── Cloud mode ───────────────────────────────────────────────────
+            self.api_key = (
+                api_key
+                or os.environ.get("FASIRI_API_KEY", "")
             )
-        self.base_url = (base_url or os.environ.get(
-            "FASIRI_BASE_URL", self.DEFAULT_BASE_URL
-        )).rstrip("/")
-        self.timeout = timeout
+            if not self.api_key:
+                raise AuthenticationError(
+                    "No API key provided.\n"
+                    "Option 1 - Fasiri Cloud: get a free key at https://fasiri-bu9u.onrender.com\n"
+                    "           then pass: Fasiri(api_key='fsri_...')\n"
+                    "Option 2 - Direct mode: use your own provider keys:\n"
+                    "           from fasiri.providers import SunbirdProvider\n"
+                    "           Fasiri(providers=[SunbirdProvider(api_key='eyJ...')])",
+                    code="MISSING_API_KEY",
+                )
+            self._mode    = "cloud"
+            self.base_url = (
+                base_url
+                or os.environ.get("FASIRI_BASE_URL", self.DEFAULT_BASE_URL)
+            ).rstrip("/")
+
         self._async_client: Optional[httpx.AsyncClient] = None
+
+    # ── Direct mode router (lazy init) ───────────────────────────────────────
+
+    def _get_router(self):
+        if self._router is None:
+            from .providers.router import DirectRouter
+            self._router = DirectRouter(self._providers)
+        return self._router
 
     # ── Context manager (async) ───────────────────────────────────────────────
 
     async def __aenter__(self) -> "Fasiri":
-        self._async_client = httpx.AsyncClient(
-            base_url=self.base_url,
-            headers=self._headers(),
-            timeout=self.timeout,
-        )
+        if self._mode == "cloud":
+            self._async_client = httpx.AsyncClient(
+                base_url=self.base_url,
+                headers=self._headers(),
+                timeout=self._timeout,
+            )
         return self
 
     async def __aexit__(self, *args) -> None:
@@ -230,13 +289,13 @@ class Fasiri:
             await self._async_client.aclose()
             self._async_client = None
 
-    # ── Internal helpers ──────────────────────────────────────────────────────
+    # ── Internal helpers (cloud mode) ─────────────────────────────────────────
 
     def _headers(self) -> Dict[str, str]:
         return {
             "Authorization": f"Bearer {self.api_key}",
-            "Content-Type": "application/json",
-            "User-Agent": "fasiri-python-sdk/1.0.0",
+            "Content-Type":  "application/json",
+            "User-Agent":    "fasiri-python-sdk/1.1.0",
         }
 
     def _raise_for_error(self, resp: httpx.Response) -> None:
@@ -272,7 +331,9 @@ class Fasiri:
 
     def _sync_post(self, path: str, json: Dict) -> Dict:
         with httpx.Client(
-            base_url=self.base_url, headers=self._headers(), timeout=self.timeout
+            base_url=self.base_url,
+            headers=self._headers(),
+            timeout=self._timeout,
         ) as client:
             resp = client.post(path, json=json)
         self._raise_for_error(resp)
@@ -280,7 +341,9 @@ class Fasiri:
 
     def _sync_get(self, path: str) -> Dict:
         with httpx.Client(
-            base_url=self.base_url, headers=self._headers(), timeout=self.timeout
+            base_url=self.base_url,
+            headers=self._headers(),
+            timeout=self._timeout,
         ) as client:
             resp = client.get(path)
         self._raise_for_error(resp)
@@ -288,7 +351,9 @@ class Fasiri:
 
     async def _async_post(self, path: str, json: Dict) -> Dict:
         client = self._async_client or httpx.AsyncClient(
-            base_url=self.base_url, headers=self._headers(), timeout=self.timeout
+            base_url=self.base_url,
+            headers=self._headers(),
+            timeout=self._timeout,
         )
         try:
             resp = await client.post(path, json=json)
@@ -308,30 +373,67 @@ class Fasiri:
         provider: str = "auto",
     ) -> TranslationResult:
         """
-        Translate text to a target language.
+        Translate text to the target language.
+
+        Works in both cloud and direct mode. In direct mode, the ``provider``
+        parameter is ignored - routing is handled automatically based on which
+        providers you configured.
 
         Parameters
         ----------
         text : str
-            The text to translate (max 5,000 characters).
+            Text to translate. Max 5,000 characters (cloud) or 1,000 (Khaya direct).
         target : str
-            Target language code, e.g. ``"sw"``, ``"lug"``, ``"yo"``.
+            Target language code e.g. ``"lug"``, ``"yo"``, ``"sw"``.
         source : str, optional
             Source language code. Auto-detected if omitted.
-        provider : str
-            ``"auto"`` (default), ``"sunbird"``, ``"khaya"``, or ``"huggingface"``.
+        provider : str, optional
+            Cloud mode only: ``"auto"``, ``"sunbird"``, ``"khaya"``, or ``"huggingface"``.
 
         Returns
         -------
         TranslationResult
+
+        Examples
+        --------
+        Cloud mode::
+
+            result = client.translate("Good morning", target="lug")
+            print(result)          # Wasuze otya
+            print(result.provider) # sunbird
+
+        Direct mode::
+
+            result = client.translate("Good morning", target="lug")
+            print(result)          # Wasuze otya
+            print(result.provider) # sunbird
         """
+        if self._mode == "direct":
+            return self._direct_translate(text, target, source or "en")
+
         data = self._sync_post("/api/v1/translate", {
-            "text": text,
+            "text":        text,
             "target_lang": target,
             "source_lang": source,
-            "provider": provider,
+            "provider":    provider,
         })
         return self._parse_translation(data)
+
+    def _direct_translate(
+        self, text: str, target: str, source: str
+    ) -> TranslationResult:
+        """Translate using direct providers and normalise to TranslationResult."""
+        result = self._get_router().translate(text, target, source)
+        return TranslationResult(
+            translated_text=result.translated_text,
+            detected_source_lang=result.source_lang,
+            target_lang=result.target_lang,
+            model_used=result.model_used,
+            provider=result.provider,
+            quality_score=result.quality_score,
+            latency_ms=result.latency_ms,
+            characters_translated=len(text),
+        )
 
     async def async_translate(
         self,
@@ -341,11 +443,26 @@ class Fasiri:
         provider: str = "auto",
     ) -> TranslationResult:
         """Async version of :meth:`translate`."""
+        if self._mode == "direct":
+            result = await self._get_router().async_translate(
+                text, target, source or "en"
+            )
+            return TranslationResult(
+                translated_text=result.translated_text,
+                detected_source_lang=result.source_lang,
+                target_lang=result.target_lang,
+                model_used=result.model_used,
+                provider=result.provider,
+                quality_score=result.quality_score,
+                latency_ms=result.latency_ms,
+                characters_translated=len(text),
+            )
+
         data = await self._async_post("/api/v1/translate", {
-            "text": text,
+            "text":        text,
             "target_lang": target,
             "source_lang": source,
-            "provider": provider,
+            "provider":    provider,
         })
         return self._parse_translation(data)
 
@@ -370,15 +487,18 @@ class Fasiri:
         provider: str = "auto",
     ) -> BatchResult:
         """
-        Translate multiple texts in a single request.
+        Translate multiple texts in a single call.
+
+        In direct mode, each item is translated individually using the
+        provider router (parallel async calls in async mode).
 
         Parameters
         ----------
         items : list of dict
             Each dict must have ``"id"``, ``"text"``, ``"target"``.
-            Optionally include ``"source"`` for known source languages.
+            Optionally include ``"source"`` for known source language.
         provider : str
-            Provider override (default: ``"auto"``).
+            Cloud mode only. Default: ``"auto"``.
 
         Returns
         -------
@@ -389,47 +509,148 @@ class Fasiri:
         ::
 
             results = client.translate_batch([
-                {"id": "1", "text": "Hello",    "target": "sw"},
+                {"id": "1", "text": "Hello",    "target": "lug"},
                 {"id": "2", "text": "Thank you", "target": "yo"},
             ])
-            for r in results:
+            for r in results.successful():
                 print(r.id, r.translated_text)
         """
+        if self._mode == "direct":
+            return self._direct_batch(items)
+
         payload_items = [
             {
-                "id": item["id"],
-                "text": item["text"],
+                "id":          item["id"],
+                "text":        item["text"],
                 "target_lang": item.get("target") or item.get("target_lang"),
                 "source_lang": item.get("source") or item.get("source_lang"),
             }
             for item in items
         ]
         data = self._sync_post("/api/v1/translate/batch", {
-            "items": payload_items,
+            "items":    payload_items,
             "provider": provider,
         })
         return self._parse_batch(data)
+
+    def _direct_batch(self, items: List[Dict]) -> BatchResult:
+        """Sequential batch translation in direct mode."""
+        t0 = time.monotonic()
+        results = []
+        succeeded = 0
+        failed    = 0
+
+        for item in items:
+            item_id     = item["id"]
+            text        = item["text"]
+            target      = item.get("target") or item.get("target_lang", "")
+            source      = item.get("source") or item.get("source_lang", "en")
+
+            try:
+                r = self._direct_translate(text, target, source)
+                results.append(BatchItemResult(
+                    id=item_id,
+                    translated_text=r.translated_text,
+                    detected_source_lang=r.detected_source_lang,
+                    target_lang=r.target_lang,
+                    model_used=r.model_used,
+                    provider=r.provider,
+                    quality_score=r.quality_score,
+                    error=None,
+                ))
+                succeeded += 1
+            except Exception as exc:
+                results.append(BatchItemResult(
+                    id=item_id,
+                    translated_text=None,
+                    detected_source_lang=None,
+                    target_lang=target,
+                    model_used=None,
+                    provider=None,
+                    quality_score=None,
+                    error=str(exc),
+                ))
+                failed += 1
+
+        total_ms = int((time.monotonic() - t0) * 1000)
+        return BatchResult(
+            results=results,
+            total=len(items),
+            succeeded=succeeded,
+            failed=failed,
+            total_latency_ms=total_ms,
+        )
 
     async def async_translate_batch(
         self,
         items: List[Dict[str, str]],
         provider: str = "auto",
     ) -> BatchResult:
-        """Async version of :meth:`translate_batch`."""
+        """Async batch translation. Direct mode runs items concurrently."""
+        if self._mode == "direct":
+            return await self._async_direct_batch(items)
+
         payload_items = [
             {
-                "id": item["id"],
-                "text": item["text"],
+                "id":          item["id"],
+                "text":        item["text"],
                 "target_lang": item.get("target") or item.get("target_lang"),
                 "source_lang": item.get("source") or item.get("source_lang"),
             }
             for item in items
         ]
         data = await self._async_post("/api/v1/translate/batch", {
-            "items": payload_items,
+            "items":    payload_items,
             "provider": provider,
         })
         return self._parse_batch(data)
+
+    async def _async_direct_batch(self, items: List[Dict]) -> BatchResult:
+        """Concurrent async batch in direct mode."""
+        import asyncio
+        t0 = time.monotonic()
+
+        async def _one(item: Dict) -> BatchItemResult:
+            item_id = item["id"]
+            text    = item["text"]
+            target  = item.get("target") or item.get("target_lang", "")
+            source  = item.get("source") or item.get("source_lang", "en")
+            try:
+                r = await self._get_router().async_translate(text, target, source)
+                return BatchItemResult(
+                    id=item_id,
+                    translated_text=r.translated_text,
+                    detected_source_lang=r.source_lang,
+                    target_lang=r.target_lang,
+                    model_used=r.model_used,
+                    provider=r.provider,
+                    quality_score=r.quality_score,
+                    error=None,
+                )
+            except Exception as exc:
+                return BatchItemResult(
+                    id=item_id,
+                    translated_text=None,
+                    detected_source_lang=None,
+                    target_lang=target,
+                    model_used=None,
+                    provider=None,
+                    quality_score=None,
+                    error=str(exc),
+                )
+
+        results   = await asyncio.gather(*[_one(item) for item in items])
+        succeeded = sum(1 for r in results if r.success)
+        failed    = sum(1 for r in results if not r.success)
+        total_ms  = int((time.monotonic() - t0) * 1000)
+
+        return BatchResult(
+            results=list(results),
+            total=len(items),
+            succeeded=succeeded,
+            failed=failed,
+            total_latency_ms=total_ms,
+        )
 
     @staticmethod
     def _parse_batch(data: Dict) -> BatchResult:
@@ -464,30 +685,53 @@ class Fasiri:
         """
         Transcribe audio to text (Speech-to-Text).
 
+        In direct mode, only SunbirdProvider supports STT.
+
         Parameters
         ----------
         audio : bytes or str
-            Raw audio bytes, or a file path to a WAV/MP3/OGG file.
+            Raw audio bytes, or a file path to a WAV/MP3 file.
         language : str
-            Language code of the audio, e.g. ``"lug"``, ``"ach"``.
+            Language code of the audio e.g. ``"lug"``, ``"ach"``.
 
         Returns
         -------
         STTResult
         """
+        import os as _os
         if isinstance(audio, str):
+            filename = _os.path.basename(audio)
             with open(audio, "rb") as f:
                 audio_bytes = f.read()
-            filename = os.path.basename(audio)
         else:
             audio_bytes = audio
-            filename = "audio.wav"
+            filename    = "audio.wav"
+
+        if self._mode == "direct":
+            # Find a provider that supports STT
+            for p in self._providers:
+                try:
+                    r = p.speech_to_text(audio_bytes, language, filename)
+                    return STTResult(
+                        transcript=r.transcript,
+                        detected_lang=r.detected_lang,
+                        language=r.language,
+                        model_used=r.model_used,
+                        provider=r.provider,
+                        latency_ms=r.latency_ms,
+                    )
+                except NotImplementedError:
+                    continue
+            raise NotImplementedError(
+                "None of your configured providers support Speech-to-Text. "
+                "Add SunbirdProvider to enable STT."
+            )
 
         with httpx.Client(
             base_url=self.base_url,
             headers={"Authorization": f"Bearer {self.api_key}",
-                     "User-Agent": "fasiri-python-sdk/1.0.0"},
-            timeout=max(self.timeout, 60),
+                     "User-Agent": "fasiri-python-sdk/1.1.0"},
+            timeout=max(self._timeout, 60),
         ) as client:
             resp = client.post(
                 "/api/v1/speech/stt",
@@ -514,21 +758,43 @@ class Fasiri:
         """
         Convert text to speech (Text-to-Speech).
 
+        In direct mode, only SunbirdProvider supports TTS.
+
         Parameters
         ----------
         text : str
-            Text to synthesise (max 2,000 characters).
+            Text to synthesise.
         language : str
-            Language code, e.g. ``"lug"``, ``"sw"``.
+            Language code e.g. ``"lug"``, ``"ach"``.
         voice_id : int, optional
-            Specific Sunbird voice ID. Auto-selected if omitted.
+            Sunbird voice ID. Auto-selected if omitted.
 
         Returns
         -------
         TTSResult
         """
+        if self._mode == "direct":
+            for p in self._providers:
+                try:
+                    r = p.text_to_speech(text, language)
+                    return TTSResult(
+                        audio_url=r.audio_url,
+                        audio_base64=r.audio_base64,
+                        content_type=r.content_type,
+                        language=r.language,
+                        model_used=r.model_used,
+                        provider=r.provider,
+                        latency_ms=r.latency_ms,
+                    )
+                except NotImplementedError:
+                    continue
+            raise NotImplementedError(
+                "None of your configured providers support Text-to-Speech. "
+                "Add SunbirdProvider to enable TTS."
+            )
+
         data = self._sync_post("/api/v1/speech/tts", {
-            "text": text,
+            "text":     text,
             "language": language,
             "voice_id": voice_id,
         })
@@ -542,7 +808,7 @@ class Fasiri:
             latency_ms=data["latency_ms"],
         )
 
-    # Alias for American spelling
+    # American spelling alias
     synthesize = synthesise
 
     # ── Languages ─────────────────────────────────────────────────────────────
@@ -551,10 +817,16 @@ class Fasiri:
         """
         Return all supported languages with their capabilities.
 
+        In direct mode, returns the combined language list of all
+        configured providers.
+
         Returns
         -------
         list of Language
         """
+        if self._mode == "direct":
+            return self._direct_languages()
+
         data = self._sync_get("/api/v1/languages")
         return [
             Language(
@@ -573,6 +845,27 @@ class Fasiri:
             for lang in data["languages"]
         ]
 
+    def _direct_languages(self) -> List[Language]:
+        """Build a language list from direct provider capabilities."""
+        seen: Dict[str, Language] = {}
+        for p in self._providers:
+            for code in p.supported_languages:
+                if code not in seen:
+                    seen[code] = Language(
+                        code=code,
+                        name=code.upper(),
+                        native_name=code,
+                        region="Africa",
+                        family="",
+                        supports_translation=True,
+                        supports_stt=False,
+                        supports_tts=False,
+                        tts_voice_id=None,
+                        best_provider=p.name,
+                        quality_score=0.80,
+                    )
+        return list(seen.values())
+
     def translation_languages(self) -> List[Language]:
         """Return only languages that support translation."""
         return [l for l in self.languages() if l.supports_translation]
@@ -580,3 +873,11 @@ class Fasiri:
     def speech_languages(self) -> List[Language]:
         """Return only languages that support STT or TTS."""
         return [l for l in self.languages() if l.supports_stt or l.supports_tts]
+
+    # ── Repr ─────────────────────────────────────────────────────────────────
+
+    def __repr__(self) -> str:
+        if self._mode == "direct":
+            names = [p.name for p in self._providers]
+            return f"<Fasiri direct mode providers={names}>"
+        return f"<Fasiri cloud mode key={self.api_key[:12]}...>"
