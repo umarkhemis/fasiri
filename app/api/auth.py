@@ -17,7 +17,10 @@ from app.schemas.translate import CreateKeyRequest, CreateKeyResponse, KeyInfoRe
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
-def _ts(epoch: float) -> str:
+
+def _ts(epoch):
+    if epoch is None:
+        return None
     return datetime.fromtimestamp(epoch, tz=timezone.utc).isoformat()
 
 
