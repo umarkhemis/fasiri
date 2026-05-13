@@ -150,10 +150,11 @@ class CreateKeyResponse(BaseModel):
     note: str = "Store this key securely. It will NOT be shown again."
 
 
+
 class KeyInfoResponse(BaseModel):
     name: str
     created_at: str
-    expires_at: str
+    expires_at: Optional[str]   
     requests_total: int
 
 
