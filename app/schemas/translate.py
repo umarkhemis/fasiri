@@ -154,7 +154,7 @@ class CreateKeyResponse(BaseModel):
 class KeyInfoResponse(BaseModel):
     name: str
     created_at: str
-    expires_at: Optional[str]   
+    expires_at: Optional[str]
     requests_total: int
 
 
