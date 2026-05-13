@@ -719,6 +719,8 @@
       
         
       
+        
+      
     
     
     
@@ -837,6 +839,34 @@
     
   
     Batch at Scale
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/direct-mode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Direct Mode
   
 
     
@@ -1733,7 +1763,7 @@
   <a href="#fallback-chain" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Fallback Chain
+        Fallback chain
       
     </span>
   </a>
@@ -2222,7 +2252,7 @@
   <a href="#fallback-chain" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Fallback Chain
+        Fallback chain
       
     </span>
   </a>
@@ -2250,37 +2280,125 @@
 
 
 <h1 id="providers-overview">Providers Overview<a class="headerlink" href="#providers-overview" title="Permanent link">&para;</a></h1>
-<p>Fasiri routes requests to the best available provider for each language pair.</p>
+<p>Fasiri supports three AI providers. In cloud mode, Fasiri manages them for you.
+In direct mode, you configure them yourself with your own keys.</p>
+<hr />
 <h2 id="sunbird-ai">Sunbird AI<a class="headerlink" href="#sunbird-ai" title="Permanent link">&para;</a></h2>
-<p><strong>Languages:</strong> Luganda, Acholi, Ateso, Runyankore, Lugbara<br />
-<strong>Capabilities:</strong> Translation, STT, TTS<br />
+<p><strong>Languages:</strong> Luganda, Acholi, Ateso, Runyankore, Lugbara (and English)
+<strong>Capabilities:</strong> Translation, Speech-to-Text, Text-to-Speech
 <strong>Register:</strong> <a href="https://api.sunbird.ai/auth/register">api.sunbird.ai</a></p>
-<p>Built specifically for Ugandan languages. Get a JWT token:
+<p>Built specifically for Ugandan languages. The only provider offering STT and TTS
+for these languages.</p>
+<p><strong>Get a token:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>https://api.sunbird.ai/auth/token<span class="w"> </span><span class="se">\</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/x-www-form-urlencoded&quot;</span><span class="w"> </span><span class="se">\</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;username=you@email.com&amp;password=yourpassword&quot;</span>
 </code></pre></div>
-Set <code>SUNBIRD_API_KEY=&lt;access_token&gt;</code> in <code>.env</code>.</p>
+<p>The <code>access_token</code> in the response is a JWT starting with <code>ey...</code>. It expires
+periodically - refresh it by calling the same endpoint again.</p>
+<p><strong>Direct mode:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">fasiri.providers</span><span class="w"> </span><span class="kn">import</span> <span class="n">SunbirdProvider</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">provider</span> <span class="o">=</span> <span class="n">SunbirdProvider</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;eyJ...&quot;</span><span class="p">)</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">result</span> <span class="o">=</span> <span class="n">provider</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="s2">&quot;Good morning&quot;</span><span class="p">,</span> <span class="n">target_lang</span><span class="o">=</span><span class="s2">&quot;lug&quot;</span><span class="p">)</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>  <span class="c1"># Wasuze otya</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="n">stt</span> <span class="o">=</span> <span class="n">provider</span><span class="o">.</span><span class="n">speech_to_text</span><span class="p">(</span><span class="n">audio_bytes</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="s2">&quot;lug&quot;</span><span class="p">)</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="nb">print</span><span class="p">(</span><span class="n">stt</span><span class="o">.</span><span class="n">transcript</span><span class="p">)</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="n">tts</span> <span class="o">=</span> <span class="n">provider</span><span class="o">.</span><span class="n">text_to_speech</span><span class="p">(</span><span class="s2">&quot;Oli otya?&quot;</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="s2">&quot;lug&quot;</span><span class="p">)</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="nb">print</span><span class="p">(</span><span class="n">tts</span><span class="o">.</span><span class="n">audio_url</span><span class="p">)</span>
+</code></pre></div>
 <hr />
 <h2 id="khaya-ai">Khaya AI<a class="headerlink" href="#khaya-ai" title="Permanent link">&para;</a></h2>
-<p><strong>Languages:</strong> Yoruba, Twi, Ewe, Ga, Fante, Dagbani, Kikuyu, Luo, Kimeru, Kusaal<br />
-<strong>Capabilities:</strong> Translation only<br />
-<strong>Register:</strong> <a href="https://translation.ghananlp.org/signup">translation.ghananlp.org</a></p>
-<p>Purpose-built for West/East African languages via GhanaNLP API v2.<br />
-Set <code>KHAYA_API_KEY=&lt;subscription_key&gt;</code> in <code>.env</code>.</p>
+<p><strong>Languages:</strong> Yoruba, Twi, Ewe, Ga, Fante, Dagbani, Gurune, Kikuyu, Luo, Kimeru, Kusaal
+<strong>Capabilities:</strong> Translation only
+<strong>Register:</strong> <a href="https://translation.ghananlp.org/signup">translation.ghananlp.org/signup</a></p>
+<p>GhanaNLP's translation API v2. Purpose-built for West and East African languages.
+Uses an <code>Ocp-Apim-Subscription-Key</code> header - the SDK handles this automatically.</p>
+<p><strong>Direct mode:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">fasiri.providers</span><span class="w"> </span><span class="kn">import</span> <span class="n">KhayaProvider</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">provider</span> <span class="o">=</span> <span class="n">KhayaProvider</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;your-subscription-key&quot;</span><span class="p">)</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">result</span> <span class="o">=</span> <span class="n">provider</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="s2">&quot;Good morning&quot;</span><span class="p">,</span> <span class="n">target_lang</span><span class="o">=</span><span class="s2">&quot;yo&quot;</span><span class="p">)</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>  <span class="c1"># Bawo ni</span>
+</code></pre></div>
+<p><strong>Supported pairs:</strong></p>
+<p>All <code>en -&gt; lang</code> and <code>lang -&gt; en</code> combinations for: <code>yo, tw, ee, gaa, fat, dag, gur, ki, luo, mer, kus</code></p>
 <hr />
 <h2 id="huggingface">HuggingFace<a class="headerlink" href="#huggingface" title="Permanent link">&para;</a></h2>
-<p><strong>Languages:</strong> Swahili, French, Arabic, Afrikaans, multilingual fallback<br />
-<strong>Capabilities:</strong> Translation only<br />
+<p><strong>Languages:</strong> Swahili, French, Arabic, Afrikaans (and Yoruba -&gt; English)
+<strong>Capabilities:</strong> Translation only
 <strong>Register:</strong> <a href="https://huggingface.co/settings/tokens">huggingface.co/settings/tokens</a></p>
-<p>Uses verified Helsinki-NLP models. Acts as last-resort fallback.<br />
-Set <code>HUGGINGFACE_API_KEY=&lt;token&gt;</code> in <code>.env</code>.</p>
-<hr />
-<h2 id="fallback-chain">Fallback Chain<a class="headerlink" href="#fallback-chain" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>en → lug:  Sunbird → Khaya → HuggingFace → 503
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>en → yo:   Khaya → HuggingFace → 503
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>en → sw:   HuggingFace → 503
+<p>Uses verified Helsinki-NLP opus-mt models. Acts as the fallback layer.</p>
+<p>Note: <code>facebook/nllb-200-distilled-600M</code> was removed from the hf-inference
+provider in 2025 and is no longer supported.</p>
+<p><strong>Direct mode:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">fasiri.providers</span><span class="w"> </span><span class="kn">import</span> <span class="n">HuggingFaceProvider</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">provider</span> <span class="o">=</span> <span class="n">HuggingFaceProvider</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;hf_...&quot;</span><span class="p">)</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="n">result</span> <span class="o">=</span> <span class="n">provider</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="s2">&quot;Good morning&quot;</span><span class="p">,</span> <span class="n">target_lang</span><span class="o">=</span><span class="s2">&quot;sw&quot;</span><span class="p">)</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>  <span class="c1"># Habari ya asubuhi</span>
 </code></pre></div>
+<p><strong>Verified deployed models:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Pair</th>
+<th>Model</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>en -&gt; sw</td>
+<td>Helsinki-NLP/opus-mt-en-sw</td>
+</tr>
+<tr>
+<td>sw -&gt; en</td>
+<td>Helsinki-NLP/opus-mt-sw-en</td>
+</tr>
+<tr>
+<td>en -&gt; fr</td>
+<td>Helsinki-NLP/opus-mt-en-fr</td>
+</tr>
+<tr>
+<td>fr -&gt; en</td>
+<td>Helsinki-NLP/opus-mt-fr-en</td>
+</tr>
+<tr>
+<td>en -&gt; ar</td>
+<td>Helsinki-NLP/opus-mt-en-ar</td>
+</tr>
+<tr>
+<td>ar -&gt; en</td>
+<td>Helsinki-NLP/opus-mt-ar-en</td>
+</tr>
+<tr>
+<td>en -&gt; af</td>
+<td>Helsinki-NLP/opus-mt-en-af</td>
+</tr>
+<tr>
+<td>af -&gt; en</td>
+<td>Helsinki-NLP/opus-mt-af-en</td>
+</tr>
+<tr>
+<td>yo -&gt; en</td>
+<td>Helsinki-NLP/opus-mt-yo-en</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="fallback-chain">Fallback chain<a class="headerlink" href="#fallback-chain" title="Permanent link">&para;</a></h2>
+<p>In both cloud and direct mode, if the primary provider fails,
+Fasiri tries the next compatible provider automatically.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>en -&gt; lug:  Sunbird -&gt; (HuggingFace mul fallback)
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>en -&gt; yo:   Khaya   -&gt; (HuggingFace mul fallback)
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>en -&gt; sw:   HuggingFace Helsinki -&gt; mul fallback
+</code></pre></div>
+<p>In direct mode, fallback only uses providers you have configured.</p>
 
 
 

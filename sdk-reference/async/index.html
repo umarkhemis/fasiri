@@ -719,6 +719,8 @@
       
         
       
+        
+      
     
     
     
@@ -837,6 +839,34 @@
     
   
     Batch at Scale
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/direct-mode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Direct Mode
   
 
     
@@ -1464,10 +1494,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#context-manager-recommended" class="md-nav__link">
+  <a href="#basic-async" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Context manager (recommended)
+        Basic async
       
     </span>
   </a>
@@ -1475,10 +1505,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#available-async-methods" class="md-nav__link">
+  <a href="#async-context-manager" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Available async methods
+        Async context manager
       
     </span>
   </a>
@@ -1486,10 +1516,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#concurrent-batch-translation" class="md-nav__link">
+  <a href="#async-batch" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Concurrent batch translation
+        Async batch
       
     </span>
   </a>
@@ -1508,32 +1538,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#django-async-view" class="md-nav__link">
+  <a href="#async-methods-reference" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Django async view
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#processing-large-datasets-concurrently" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Processing large datasets concurrently
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#error-handling-in-async-code" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Error handling in async code
+        Async methods reference
       
     </span>
   </a>
@@ -2219,10 +2227,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#context-manager-recommended" class="md-nav__link">
+  <a href="#basic-async" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Context manager (recommended)
+        Basic async
       
     </span>
   </a>
@@ -2230,10 +2238,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#available-async-methods" class="md-nav__link">
+  <a href="#async-context-manager" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Available async methods
+        Async context manager
       
     </span>
   </a>
@@ -2241,10 +2249,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#concurrent-batch-translation" class="md-nav__link">
+  <a href="#async-batch" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Concurrent batch translation
+        Async batch
       
     </span>
   </a>
@@ -2263,32 +2271,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#django-async-view" class="md-nav__link">
+  <a href="#async-methods-reference" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Django async view
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#processing-large-datasets-concurrently" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Processing large datasets concurrently
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#error-handling-in-async-code" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Error handling in async code
+        Async methods reference
       
     </span>
   </a>
@@ -2316,182 +2302,132 @@
 
 
 <h1 id="async-usage">Async Usage<a class="headerlink" href="#async-usage" title="Permanent link">&para;</a></h1>
-<p>Fasiri has full async support for use with <code>asyncio</code>, <code>FastAPI</code>, <code>Django Async</code>, and any other async framework.</p>
-<h2 id="context-manager-recommended">Context manager (recommended)<a class="headerlink" href="#context-manager-recommended" title="Permanent link">&para;</a></h2>
-<p>The cleanest way to use the async client is as an async context manager. This ensures the underlying HTTP connection pool is properly closed:</p>
+<p>The Fasiri SDK supports async/await in both cloud and direct mode.
+All sync methods have an async equivalent prefixed with <code>async_</code>.</p>
+<hr />
+<h2 id="basic-async">Basic async<a class="headerlink" href="#basic-async" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">fasiri</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fasiri</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="k">async</span> <span class="k">with</span> <span class="n">Fasiri</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;fsri_...&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>        <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">async_translate</span><span class="p">(</span><span class="s2">&quot;Hello&quot;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;lug&quot;</span><span class="p">)</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>        <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>  <span class="c1"># &quot;Oli otya?&quot;</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">client</span> <span class="o">=</span> <span class="n">Fasiri</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;fsri_...&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">async_translate</span><span class="p">(</span><span class="s2">&quot;Good morning&quot;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;lug&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>  <span class="c1"># Wasuze otya</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
 </code></pre></div>
-<h2 id="available-async-methods">Available async methods<a class="headerlink" href="#available-async-methods" title="Permanent link">&para;</a></h2>
-<p>Every sync method has an async counterpart:</p>
+<hr />
+<h2 id="async-context-manager">Async context manager<a class="headerlink" href="#async-context-manager" title="Permanent link">&para;</a></h2>
+<p>Use <code>async with</code> for connection pooling. Recommended for applications
+making many requests:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="k">async</span> <span class="k">with</span> <span class="n">Fasiri</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;fsri_...&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>        <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">async_translate</span><span class="p">(</span><span class="s2">&quot;Hello&quot;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;lug&quot;</span><span class="p">)</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>        <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<h2 id="async-batch">Async batch<a class="headerlink" href="#async-batch" title="Permanent link">&para;</a></h2>
+<p>Async batch translation in direct mode runs all items concurrently,
+making it significantly faster than sync batch for large lists:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">fasiri</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fasiri</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">fasiri.providers</span><span class="w"> </span><span class="kn">import</span> <span class="n">SunbirdProvider</span><span class="p">,</span> <span class="n">KhayaProvider</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="c1"># Direct mode - concurrent requests</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="n">client</span> <span class="o">=</span> <span class="n">Fasiri</span><span class="p">(</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>        <span class="n">providers</span><span class="o">=</span><span class="p">[</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>            <span class="n">SunbirdProvider</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;eyJ...&quot;</span><span class="p">),</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>            <span class="n">KhayaProvider</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;your-key&quot;</span><span class="p">),</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>        <span class="p">]</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>    <span class="p">)</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>    <span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">async_translate_batch</span><span class="p">([</span>
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>        <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;Good morning&quot;</span><span class="p">,</span>  <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="s2">&quot;lug&quot;</span><span class="p">},</span>
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>        <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;How are you?&quot;</span><span class="p">,</span>  <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="s2">&quot;yo&quot;</span><span class="p">},</span>
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>        <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;3&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;Thank you&quot;</span><span class="p">,</span>     <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="s2">&quot;tw&quot;</span><span class="p">},</span>
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>        <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;4&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;Welcome&quot;</span><span class="p">,</span>       <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="s2">&quot;nyn&quot;</span><span class="p">},</span>
+<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>        <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;5&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;Goodbye&quot;</span><span class="p">,</span>       <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="s2">&quot;ach&quot;</span><span class="p">},</span>
+<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>    <span class="p">])</span>
+<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>
+<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">succeeded</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">total</span><span class="si">}</span><span class="s2"> succeeded&quot;</span><span class="p">)</span>
+<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total time: </span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">total_latency_ms</span><span class="si">}</span><span class="s2">ms&quot;</span><span class="p">)</span>
+<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>
+<a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">successful</span><span class="p">():</span>
+<a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">translated_text</span><span class="si">}</span><span class="s2"> via </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">provider</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a>
+<a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a><span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</code></pre></div>
+<hr />
+<h2 id="fastapi-integration">FastAPI integration<a class="headerlink" href="#fastapi-integration" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastAPI</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">fasiri</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fasiri</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">fasiri.providers</span><span class="w"> </span><span class="kn">import</span> <span class="n">SunbirdProvider</span><span class="p">,</span> <span class="n">KhayaProvider</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="c1"># Initialise once at startup</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="n">fasiri</span> <span class="o">=</span> <span class="n">Fasiri</span><span class="p">(</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    <span class="n">providers</span><span class="o">=</span><span class="p">[</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>        <span class="n">SunbirdProvider</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;eyJ...&quot;</span><span class="p">),</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>        <span class="n">KhayaProvider</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;your-key&quot;</span><span class="p">),</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>    <span class="p">]</span>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="p">)</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/translate&quot;</span><span class="p">)</span>
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">translate</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">fasiri</span><span class="o">.</span><span class="n">async_translate</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">)</span>
+<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>    <span class="k">return</span> <span class="p">{</span>
+<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>        <span class="s2">&quot;translation&quot;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">translated_text</span><span class="p">,</span>
+<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>        <span class="s2">&quot;provider&quot;</span><span class="p">:</span>    <span class="n">result</span><span class="o">.</span><span class="n">provider</span><span class="p">,</span>
+<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>        <span class="s2">&quot;quality&quot;</span><span class="p">:</span>     <span class="n">result</span><span class="o">.</span><span class="n">quality_score</span><span class="p">,</span>
+<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>    <span class="p">}</span>
+<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a>
+<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/batch&quot;</span><span class="p">)</span>
+<a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">batch</span><span class="p">(</span><span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]):</span>
+<a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a>    <span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">fasiri</span><span class="o">.</span><span class="n">async_translate_batch</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
+<a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a>    <span class="k">return</span> <span class="p">{</span>
+<a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a>        <span class="s2">&quot;succeeded&quot;</span><span class="p">:</span> <span class="n">results</span><span class="o">.</span><span class="n">succeeded</span><span class="p">,</span>
+<a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a>        <span class="s2">&quot;failed&quot;</span><span class="p">:</span>    <span class="n">results</span><span class="o">.</span><span class="n">failed</span><span class="p">,</span>
+<a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a>        <span class="s2">&quot;results&quot;</span><span class="p">:</span>   <span class="p">[</span>
+<a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a>            <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;translation&quot;</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">translated_text</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">error</span><span class="p">}</span>
+<a id="__codelineno-3-32" name="__codelineno-3-32" href="#__codelineno-3-32"></a>            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span>
+<a id="__codelineno-3-33" name="__codelineno-3-33" href="#__codelineno-3-33"></a>        <span class="p">],</span>
+<a id="__codelineno-3-34" name="__codelineno-3-34" href="#__codelineno-3-34"></a>    <span class="p">}</span>
+</code></pre></div>
+<hr />
+<h2 id="async-methods-reference">Async methods reference<a class="headerlink" href="#async-methods-reference" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Sync</th>
-<th>Async</th>
+<th>Sync method</th>
+<th>Async equivalent</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>client.translate()</code></td>
-<td><code>await client.async_translate()</code></td>
+<td><code>translate()</code></td>
+<td><code>async_translate()</code></td>
 </tr>
 <tr>
-<td><code>client.translate_batch()</code></td>
-<td><code>await client.async_translate_batch()</code></td>
+<td><code>translate_batch()</code></td>
+<td><code>async_translate_batch()</code></td>
+</tr>
+<tr>
+<td><code>transcribe()</code></td>
+<td>- (not yet async)</td>
+</tr>
+<tr>
+<td><code>synthesise()</code></td>
+<td>- (not yet async)</td>
+</tr>
+<tr>
+<td><code>languages()</code></td>
+<td>- (not yet async)</td>
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p><code>transcribe()</code> and <code>synthesise()</code> do not yet have async versions. They run synchronously. Full async speech methods are on the roadmap.</p>
-</div>
-<h2 id="concurrent-batch-translation">Concurrent batch translation<a class="headerlink" href="#concurrent-batch-translation" title="Permanent link">&para;</a></h2>
-<p>The real power of async is running multiple independent calls concurrently:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">fasiri</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fasiri</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">translate_all</span><span class="p">():</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="k">async</span> <span class="k">with</span> <span class="n">Fasiri</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;fsri_...&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>        <span class="c1"># Run 5 translations concurrently - much faster than sequential</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>        <span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>            <span class="n">client</span><span class="o">.</span><span class="n">async_translate</span><span class="p">(</span><span class="s2">&quot;Good morning&quot;</span><span class="p">,</span>  <span class="n">target</span><span class="o">=</span><span class="s2">&quot;lug&quot;</span><span class="p">),</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>            <span class="n">client</span><span class="o">.</span><span class="n">async_translate</span><span class="p">(</span><span class="s2">&quot;Thank you&quot;</span><span class="p">,</span>     <span class="n">target</span><span class="o">=</span><span class="s2">&quot;yo&quot;</span><span class="p">),</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>            <span class="n">client</span><span class="o">.</span><span class="n">async_translate</span><span class="p">(</span><span class="s2">&quot;Welcome&quot;</span><span class="p">,</span>       <span class="n">target</span><span class="o">=</span><span class="s2">&quot;ha&quot;</span><span class="p">),</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>            <span class="n">client</span><span class="o">.</span><span class="n">async_translate</span><span class="p">(</span><span class="s2">&quot;How are you?&quot;</span><span class="p">,</span>  <span class="n">target</span><span class="o">=</span><span class="s2">&quot;sw&quot;</span><span class="p">),</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>            <span class="n">client</span><span class="o">.</span><span class="n">async_translate</span><span class="p">(</span><span class="s2">&quot;Goodbye&quot;</span><span class="p">,</span>       <span class="n">target</span><span class="o">=</span><span class="s2">&quot;ig&quot;</span><span class="p">),</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>        <span class="p">)</span>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>            <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">translate_all</span><span class="p">())</span>
-</code></pre></div>
-<h2 id="fastapi-integration">FastAPI integration<a class="headerlink" href="#fastapi-integration" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastAPI</span><span class="p">,</span> <span class="n">Depends</span><span class="p">,</span> <span class="n">HTTPException</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">fasiri</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fasiri</span><span class="p">,</span> <span class="n">FasiriError</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="c1"># Create a single client instance at startup</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="n">_client</span><span class="p">:</span> <span class="n">Fasiri</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="nd">@app</span><span class="o">.</span><span class="n">on_event</span><span class="p">(</span><span class="s2">&quot;startup&quot;</span><span class="p">)</span>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">startup</span><span class="p">():</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>    <span class="k">global</span> <span class="n">_client</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    <span class="n">_client</span> <span class="o">=</span> <span class="n">Fasiri</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;FASIRI_API_KEY&quot;</span><span class="p">])</span>
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="nd">@app</span><span class="o">.</span><span class="n">on_event</span><span class="p">(</span><span class="s2">&quot;shutdown&quot;</span><span class="p">)</span>
-<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">shutdown</span><span class="p">():</span>
-<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>    <span class="k">pass</span>  <span class="c1"># client closes connections automatically</span>
-<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>
-<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_client</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Fasiri</span><span class="p">:</span>
-<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>    <span class="k">return</span> <span class="n">_client</span>
-<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>
-<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/translate&quot;</span><span class="p">)</span>
-<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">translate</span><span class="p">(</span>
-<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-<a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>    <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-<a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>    <span class="n">client</span><span class="p">:</span> <span class="n">Fasiri</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">get_client</span><span class="p">),</span>
-<a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a><span class="p">):</span>
-<a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a>    <span class="k">try</span><span class="p">:</span>
-<a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a>        <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">async_translate</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">)</span>
-<a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a>        <span class="k">return</span> <span class="p">{</span>
-<a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a>            <span class="s2">&quot;translated&quot;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">translated_text</span><span class="p">,</span>
-<a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a>            <span class="s2">&quot;provider&quot;</span><span class="p">:</span>   <span class="n">result</span><span class="o">.</span><span class="n">provider</span><span class="p">,</span>
-<a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a>            <span class="s2">&quot;score&quot;</span><span class="p">:</span>      <span class="n">result</span><span class="o">.</span><span class="n">quality_score</span><span class="p">,</span>
-<a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a>        <span class="p">}</span>
-<a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a>    <span class="k">except</span> <span class="n">FasiriError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a>        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
-</code></pre></div>
-<h2 id="django-async-view">Django async view<a class="headerlink" href="#django-async-view" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># views.py</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">django.http</span><span class="w"> </span><span class="kn">import</span> <span class="n">JsonResponse</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">fasiri</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fasiri</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="n">client</span> <span class="o">=</span> <span class="n">Fasiri</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;fsri_...&quot;</span><span class="p">)</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">translate_view</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    <span class="n">text</span>   <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    <span class="n">target</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;target&quot;</span><span class="p">,</span> <span class="s2">&quot;sw&quot;</span><span class="p">)</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">async_translate</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">)</span>
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>
-<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>    <span class="k">return</span> <span class="n">JsonResponse</span><span class="p">({</span>
-<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>        <span class="s2">&quot;translated_text&quot;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">translated_text</span><span class="p">,</span>
-<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>        <span class="s2">&quot;provider&quot;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">provider</span><span class="p">,</span>
-<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>    <span class="p">})</span>
-</code></pre></div>
-<h2 id="processing-large-datasets-concurrently">Processing large datasets concurrently<a class="headerlink" href="#processing-large-datasets-concurrently" title="Permanent link">&para;</a></h2>
-<p>For translating thousands of texts efficiently, use batch + semaphore to control concurrency:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">fasiri</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fasiri</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">bulk_translate</span><span class="p">(</span><span class="n">texts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">concurrency</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="sd">    Translate a large list of texts using concurrent batch calls.</span>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="sd">    concurrency controls how many batch requests run simultaneously.</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="sd">    &quot;&quot;&quot;</span>
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>    <span class="c1"># Split into batches of 50 (API maximum)</span>
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">chunks</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">lst</span><span class="p">),</span> <span class="n">n</span><span class="p">):</span>
-<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>            <span class="k">yield</span> <span class="n">lst</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="n">n</span><span class="p">]</span>
-<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>
-<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>    <span class="n">batches</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">chunks</span><span class="p">(</span>
-<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>        <span class="p">[{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">t</span><span class="p">,</span> <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="n">target</span><span class="p">}</span>
-<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">texts</span><span class="p">)],</span>
-<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>        <span class="mi">50</span>
-<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>    <span class="p">))</span>
-<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>
-<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>    <span class="n">semaphore</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Semaphore</span><span class="p">(</span><span class="n">concurrency</span><span class="p">)</span>
-<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a>    <span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
-<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>
-<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a>    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">process_batch</span><span class="p">(</span><span class="n">batch</span><span class="p">):</span>
-<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a>        <span class="k">async</span> <span class="k">with</span> <span class="n">semaphore</span><span class="p">:</span>
-<a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a>            <span class="k">async</span> <span class="k">with</span> <span class="n">Fasiri</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;fsri_...&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
-<a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a>                <span class="n">br</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">async_translate_batch</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
-<a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a>                <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">br</span><span class="p">:</span>
-<a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a>                    <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
-<a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a>                        <span class="n">results</span><span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">translated_text</span>
-<a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a>
-<a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a>    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">process_batch</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">batches</span><span class="p">])</span>
-<a id="__codelineno-4-32" name="__codelineno-4-32" href="#__codelineno-4-32"></a>    <span class="k">return</span> <span class="p">[</span><span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">texts</span><span class="p">))]</span>
-<a id="__codelineno-4-33" name="__codelineno-4-33" href="#__codelineno-4-33"></a>
-<a id="__codelineno-4-34" name="__codelineno-4-34" href="#__codelineno-4-34"></a><span class="c1"># Usage</span>
-<a id="__codelineno-4-35" name="__codelineno-4-35" href="#__codelineno-4-35"></a><span class="n">texts</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Hello&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">200</span>  <span class="c1"># 200 texts</span>
-<a id="__codelineno-4-36" name="__codelineno-4-36" href="#__codelineno-4-36"></a><span class="n">translated</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">bulk_translate</span><span class="p">(</span><span class="n">texts</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;lug&quot;</span><span class="p">))</span>
-</code></pre></div>
-<h2 id="error-handling-in-async-code">Error handling in async code<a class="headerlink" href="#error-handling-in-async-code" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">fasiri</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fasiri</span><span class="p">,</span> <span class="n">RateLimitError</span><span class="p">,</span> <span class="n">ProviderError</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">translate_with_retry</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">max_retries</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="k">async</span> <span class="k">with</span> <span class="n">Fasiri</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;fsri_...&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>        <span class="k">for</span> <span class="n">attempt</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_retries</span><span class="p">):</span>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>            <span class="k">try</span><span class="p">:</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>                <span class="k">return</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">async_translate</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">)</span>
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>            <span class="k">except</span> <span class="n">RateLimitError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>                <span class="k">if</span> <span class="n">attempt</span> <span class="o">&lt;</span> <span class="n">max_retries</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
-<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>                    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">retry_after</span><span class="p">)</span>
-<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>                <span class="k">else</span><span class="p">:</span>
-<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>                    <span class="k">raise</span>
-<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>
-<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>            <span class="k">except</span> <span class="n">ProviderError</span><span class="p">:</span>
-<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>                <span class="k">if</span> <span class="n">attempt</span> <span class="o">&lt;</span> <span class="n">max_retries</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
-<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>                    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span> <span class="o">**</span> <span class="n">attempt</span><span class="p">)</span>
-<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>                <span class="k">else</span><span class="p">:</span>
-<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>                    <span class="k">raise</span>
-</code></pre></div>
 
 
 

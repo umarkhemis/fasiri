@@ -717,6 +717,8 @@
       
         
       
+        
+      
     
     
     
@@ -835,6 +837,34 @@
     
   
     Batch at Scale
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guides/direct-mode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Direct Mode
   
 
     
@@ -2103,15 +2133,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#v100-2026-05-01" class="md-nav__link">
+  <a href="#v110-2026-05-10" class="md-nav__link">
     <span class="md-ellipsis">
       
-        v1.0.0 (2026-05-01)
+        v1.1.0 (2026-05-10)
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="v1.0.0 (2026-05-01)">
+    <nav class="md-nav" aria-label="v1.1.0 (2026-05-10)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2136,11 +2166,39 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#fixed" class="md-nav__link">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v100-2026-05-01" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Fixed
+        v1.0.0 (2026-05-01)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="v1.0.0 (2026-05-01)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#added_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Added
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#changed_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Changed
       
     </span>
   </a>
@@ -2187,15 +2245,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#v100-2026-05-01" class="md-nav__link">
+  <a href="#v110-2026-05-10" class="md-nav__link">
     <span class="md-ellipsis">
       
-        v1.0.0 (2026-05-01)
+        v1.1.0 (2026-05-10)
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="v1.0.0 (2026-05-01)">
+    <nav class="md-nav" aria-label="v1.1.0 (2026-05-10)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2220,11 +2278,39 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#fixed" class="md-nav__link">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v100-2026-05-01" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Fixed
+        v1.0.0 (2026-05-01)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="v1.0.0 (2026-05-01)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#added_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Added
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#changed_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Changed
       
     </span>
   </a>
@@ -2257,30 +2343,45 @@
 
 
 <h1 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">&para;</a></h1>
-<h2 id="v100-2026-05-01">v1.0.0 (2026-05-01)<a class="headerlink" href="#v100-2026-05-01" title="Permanent link">&para;</a></h2>
+<h2 id="v110-2026-05-10">v1.1.0 (2026-05-10)<a class="headerlink" href="#v110-2026-05-10" title="Permanent link">&para;</a></h2>
 <h3 id="added">Added<a class="headerlink" href="#added" title="Permanent link">&para;</a></h3>
 <ul>
-<li><strong>Khaya AI provider</strong> - West/East African language translation (Yoruba, Twi, Ewe, Ga, Dagbani, Kikuyu, Luo, Kimeru, Kusaal)</li>
-<li><strong>Three-provider routing</strong> - Sunbird → Khaya → HuggingFace with automatic fallback</li>
-<li><strong>Python SDK</strong> (<code>pip install fasiri</code>) with sync and async support</li>
-<li><strong>Batch translation</strong> endpoint (<code>POST /api/v1/translate/batch</code>)</li>
-<li><strong>Health check</strong> endpoint (<code>GET /health</code>) with provider status</li>
-<li><strong>Dual API key support</strong> for Khaya (primary + secondary for rate-limit failover)</li>
+<li>Direct mode - call Sunbird AI, Khaya AI, and HuggingFace with your own API keys</li>
+<li><code>fasiri.providers</code> subpackage with <code>SunbirdProvider</code>, <code>KhayaProvider</code>, <code>HuggingFaceProvider</code></li>
+<li><code>BaseDirectProvider</code> abstract base class for building custom provider adapters</li>
+<li><code>DirectRouter</code> for automatic provider selection and fallback in direct mode</li>
+<li>Async batch translation runs concurrently in direct mode</li>
+<li>STT and TTS work in direct mode via <code>SunbirdProvider</code></li>
+<li>New documentation section: Direct Mode guide</li>
+<li>New documentation section: Providers reference</li>
 </ul>
 <h3 id="changed">Changed<a class="headerlink" href="#changed" title="Permanent link">&para;</a></h3>
 <ul>
-<li>Renamed project from AfriLang → <strong>Fasiri</strong></li>
-<li>API key prefix changed from <code>afrlk_</code> → <code>fsri_</code></li>
-<li>Environment variable prefix changed from <code>AFRILANG_</code> → <code>FASIRI_</code></li>
-<li>Sunbird endpoint corrected from <code>/tasks/nllb_translate</code> → <code>/tasks/translate</code></li>
-<li>Removed <code>facebook/nllb-200-distilled-600M</code> (dropped by hf-inference in 2025)</li>
-<li>HuggingFace provider now only uses verified deployed Helsinki-NLP models</li>
+<li><code>Fasiri</code> constructor now accepts <code>providers=</code> list for direct mode</li>
+<li>SDK version bumped to 1.1.0</li>
+<li>Improved error messages when no API key is provided - shows both cloud and direct mode options</li>
 </ul>
-<h3 id="fixed">Fixed<a class="headerlink" href="#fixed" title="Permanent link">&para;</a></h3>
+<hr />
+<h2 id="v100-2026-05-01">v1.0.0 (2026-05-01)<a class="headerlink" href="#v100-2026-05-01" title="Permanent link">&para;</a></h2>
+<h3 id="added_1">Added<a class="headerlink" href="#added_1" title="Permanent link">&para;</a></h3>
 <ul>
-<li>Sunbird 405 errors caused by wrong endpoint path</li>
-<li>HuggingFace 400 errors caused by NLLB model being unsupported</li>
-<li>Wrong Luganda translations from <code>opus-mt-en-mul</code> when used as Ugandan fallback</li>
+<li>Initial release</li>
+<li>Fasiri Cloud mode with hosted API at fasiri-bu9u.onrender.com</li>
+<li>Translation: single and batch, with auto language detection</li>
+<li>Speech-to-Text for Ugandan languages and Swahili</li>
+<li>Text-to-Speech for Ugandan languages</li>
+<li>Python SDK with sync and async support</li>
+<li>Provider routing: Sunbird AI, Khaya AI, HuggingFace with automatic fallback</li>
+<li>Health check endpoint with per-provider status</li>
+<li>Dual Khaya API key support for rate-limit failover</li>
+</ul>
+<h3 id="changed_1">Changed<a class="headerlink" href="#changed_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Renamed project from AfriLang to Fasiri</li>
+<li>API key prefix changed from <code>afrlk_</code> to <code>fsri_</code></li>
+<li>Sunbird endpoint corrected from <code>/tasks/nllb_translate</code> to <code>/tasks/translate</code></li>
+<li>Removed NLLB-200 (no longer supported by hf-inference free tier in 2025)</li>
+<li>Added Khaya AI as third provider for West African languages</li>
 </ul>
 
 

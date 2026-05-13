@@ -719,6 +719,8 @@
       
         
       
+        
+      
     
     
     
@@ -837,6 +839,34 @@
     
   
     Batch at Scale
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guides/direct-mode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Direct Mode
   
 
     
@@ -2303,21 +2333,29 @@
 
 
 <h1 id="python-sdk-reference">Python SDK Reference<a class="headerlink" href="#python-sdk-reference" title="Permanent link">&para;</a></h1>
-<p>The Fasiri Python SDK provides a clean, type-safe interface to the Fasiri API.</p>
+<p>The Fasiri Python SDK provides a unified interface for African language translation,
+speech-to-text, and text-to-speech - in both cloud and direct mode.</p>
 <h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>pip<span class="w"> </span>install<span class="w"> </span>fasiri
 </code></pre></div>
 <h2 id="import">Import<a class="headerlink" href="#import" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">fasiri</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fasiri</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Cloud mode</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">fasiri</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fasiri</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># Direct mode</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="kn">from</span><span class="w"> </span><span class="nn">fasiri</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fasiri</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="kn">from</span><span class="w"> </span><span class="nn">fasiri.providers</span><span class="w"> </span><span class="kn">import</span> <span class="n">SunbirdProvider</span><span class="p">,</span> <span class="n">KhayaProvider</span><span class="p">,</span> <span class="n">HuggingFaceProvider</span>
 </code></pre></div>
+<hr />
 <h2 id="the-fasiri-class">The Fasiri class<a class="headerlink" href="#the-fasiri-class" title="Permanent link">&para;</a></h2>
-<p><code>Fasiri</code> is the main client class. All API operations are methods on this class.</p>
+<p>All API operations are methods on the <code>Fasiri</code> class.</p>
 <h3 id="constructor">Constructor<a class="headerlink" href="#constructor" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">Fasiri</span><span class="p">(</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">api_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">base_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span><span class="p">,</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="p">)</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">providers</span><span class="p">:</span> <span class="nb">list</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="n">base_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span><span class="p">,</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="p">)</span>
 </code></pre></div>
 <p><strong>Parameters:</strong></p>
 <table>
@@ -2325,7 +2363,6 @@
 <tr>
 <th>Parameter</th>
 <th>Type</th>
-<th>Default</th>
 <th>Description</th>
 </tr>
 </thead>
@@ -2333,54 +2370,56 @@
 <tr>
 <td><code>api_key</code></td>
 <td>str</td>
-<td><code>None</code></td>
-<td>Your Fasiri API key. Falls back to <code>FASIRI_API_KEY</code> environment variable.</td>
+<td>Fasiri Cloud key (<code>fsri_...</code>). Falls back to <code>FASIRI_API_KEY</code> env var.</td>
+</tr>
+<tr>
+<td><code>providers</code></td>
+<td>list</td>
+<td>Direct mode provider list. When set, <code>api_key</code> is not required.</td>
 </tr>
 <tr>
 <td><code>base_url</code></td>
 <td>str</td>
-<td><code>"https://fasiri-bu9u.onrender.com"</code></td>
-<td>API base URL. Override for self-hosted deployments.</td>
+<td>API base URL override. Falls back to <code>FASIRI_BASE_URL</code> env var.</td>
 </tr>
 <tr>
 <td><code>timeout</code></td>
 <td>int</td>
-<td><code>30</code></td>
-<td>HTTP request timeout in seconds.</td>
+<td>HTTP timeout in seconds. Default: 30.</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Example:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">fasiri</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fasiri</span>
+<p>Pass either <code>api_key</code> (cloud mode) or <code>providers</code> (direct mode). Not both.</p>
+<p><strong>Cloud mode:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">client</span> <span class="o">=</span> <span class="n">Fasiri</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;fsri_...&quot;</span><span class="p">)</span>
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="c1"># Explicit key</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">client</span> <span class="o">=</span> <span class="n">Fasiri</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;fsri_...&quot;</span><span class="p">)</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="c1"># From environment variable</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;FASIRI_API_KEY&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;fsri_...&quot;</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="n">client</span> <span class="o">=</span> <span class="n">Fasiri</span><span class="p">()</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="c1"># Self-hosted server</span>
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="n">client</span> <span class="o">=</span> <span class="n">Fasiri</span><span class="p">(</span>
-<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>    <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;fsri_...&quot;</span><span class="p">,</span>
-<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>    <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://fasiri-bu9u.onrender.com&quot;</span><span class="p">,</span>
-<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="p">)</span>
-<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>
-<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="c1"># Longer timeout for STT (audio transcription is slow)</span>
-<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="n">client</span> <span class="o">=</span> <span class="n">Fasiri</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;fsri_...&quot;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="c1"># From environment variable</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;FASIRI_API_KEY&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;fsri_...&quot;</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="n">client</span> <span class="o">=</span> <span class="n">Fasiri</span><span class="p">()</span>
 </code></pre></div>
+<p><strong>Direct mode:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">fasiri.providers</span><span class="w"> </span><span class="kn">import</span> <span class="n">SunbirdProvider</span><span class="p">,</span> <span class="n">KhayaProvider</span><span class="p">,</span> <span class="n">HuggingFaceProvider</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">client</span> <span class="o">=</span> <span class="n">Fasiri</span><span class="p">(</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">providers</span><span class="o">=</span><span class="p">[</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>        <span class="n">SunbirdProvider</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;eyJ...&quot;</span><span class="p">),</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>        <span class="n">KhayaProvider</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;your-key&quot;</span><span class="p">),</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>        <span class="n">HuggingFaceProvider</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;hf_...&quot;</span><span class="p">),</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>    <span class="p">]</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="p">)</span>
+</code></pre></div>
+<hr />
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="translate">translate<a class="headerlink" href="#translate" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">client</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="n">provider</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;auto&quot;</span><span class="p">,</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TranslationResult</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">client</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="n">source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="n">provider</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TranslationResult</span>
 </code></pre></div>
 <p>Translate text to the target language.</p>
-<p><strong>Parameters:</strong></p>
 <table>
 <thead>
 <tr>
@@ -2395,52 +2434,48 @@
 <td><code>text</code></td>
 <td>str</td>
 <td>-</td>
-<td>Text to translate. Max 5,000 characters.</td>
+<td>Text to translate.</td>
 </tr>
 <tr>
 <td><code>target</code></td>
 <td>str</td>
 <td>-</td>
-<td>Target language code, e.g. <code>"lug"</code>, <code>"yo"</code>, <code>"sw"</code>.</td>
+<td>Target language code e.g. <code>"lug"</code>, <code>"yo"</code>, <code>"sw"</code>.</td>
 </tr>
 <tr>
 <td><code>source</code></td>
 <td>str</td>
 <td><code>None</code></td>
-<td>Source language code. Auto-detected if omitted.</td>
+<td>Source language. Auto-detected if omitted.</td>
 </tr>
 <tr>
 <td><code>provider</code></td>
 <td>str</td>
 <td><code>"auto"</code></td>
-<td>Provider: <code>"auto"</code>, <code>"sunbird"</code>, <code>"khaya"</code>, <code>"huggingface"</code>.</td>
+<td>Cloud mode only: <code>"auto"</code>, <code>"sunbird"</code>, <code>"khaya"</code>, <code>"huggingface"</code>.</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Returns:</strong> <code>TranslationResult</code></p>
 <h3 id="async_translate">async_translate<a class="headerlink" href="#async_translate" title="Permanent link">&para;</a></h3>
-<p>Async equivalent of <code>translate</code>. Use inside <code>async def</code> functions.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">async_translate</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">provider</span><span class="p">)</span>
-</code></pre></div>
+<p>Async equivalent of <code>translate</code>.</p>
 <h3 id="translate_batch">translate_batch<a class="headerlink" href="#translate_batch" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">client</span><span class="o">.</span><span class="n">translate_batch</span><span class="p">(</span>
 <a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
 <a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="n">provider</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;auto&quot;</span><span class="p">,</span>
 <a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BatchResult</span>
 </code></pre></div>
-<p>Translate multiple texts in one request.</p>
-<p>Each item dict must have <code>"id"</code>, <code>"text"</code>, and <code>"target"</code>. Optionally include <code>"source"</code>.</p>
-<p><strong>Returns:</strong> <code>BatchResult</code></p>
+<p>Translate multiple texts. Each item needs <code>"id"</code>, <code>"text"</code>, <code>"target"</code>.
+In direct mode async batch, items run concurrently.</p>
 <h3 id="async_translate_batch">async_translate_batch<a class="headerlink" href="#async_translate_batch" title="Permanent link">&para;</a></h3>
-<p>Async equivalent of <code>translate_batch</code>.</p>
+<p>Async equivalent of <code>translate_batch</code>. Runs items concurrently in direct mode.</p>
 <h3 id="transcribe">transcribe<a class="headerlink" href="#transcribe" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">client</span><span class="o">.</span><span class="n">transcribe</span><span class="p">(</span>
 <a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>    <span class="n">audio</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
 <a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="n">language</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 <a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">STTResult</span>
 </code></pre></div>
-<p>Transcribe audio to text. Pass a file path (str) or raw audio bytes.</p>
-<p><strong>Returns:</strong> <code>STTResult</code></p>
+<p>Transcribe audio. Pass a file path or raw bytes.
+Direct mode: requires <code>SunbirdProvider</code>.</p>
 <h3 id="synthesise-synthesize">synthesise / synthesize<a class="headerlink" href="#synthesise-synthesize" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">client</span><span class="o">.</span><span class="n">synthesise</span><span class="p">(</span>
 <a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -2448,12 +2483,12 @@
 <a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="n">voice_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TTSResult</span>
 </code></pre></div>
-<p>Convert text to speech. Both spellings are accepted.</p>
-<p><strong>Returns:</strong> <code>TTSResult</code></p>
+<p>Convert text to speech. Both spellings accepted.
+Direct mode: requires <code>SunbirdProvider</code>.</p>
 <h3 id="languages">languages<a class="headerlink" href="#languages" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">client</span><span class="o">.</span><span class="n">languages</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Language</span><span class="p">]</span>
 </code></pre></div>
-<p>Return all supported languages.</p>
+<p>Return all supported languages with capabilities.</p>
 <h3 id="translation_languages">translation_languages<a class="headerlink" href="#translation_languages" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">client</span><span class="o">.</span><span class="n">translation_languages</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Language</span><span class="p">]</span>
 </code></pre></div>
@@ -2462,16 +2497,19 @@
 <div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">client</span><span class="o">.</span><span class="n">speech_languages</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Language</span><span class="p">]</span>
 </code></pre></div>
 <p>Return only languages that support STT or TTS.</p>
+<hr />
 <h2 id="async-context-manager">Async context manager<a class="headerlink" href="#async-context-manager" title="Permanent link">&para;</a></h2>
-<p>Use <code>async with</code> for efficient connection pooling in async applications:</p>
+<p>Use <code>async with</code> for efficient connection pooling:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="k">async</span> <span class="k">with</span> <span class="n">Fasiri</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;fsri_...&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
 <a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">async_translate</span><span class="p">(</span><span class="s2">&quot;Hello&quot;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;lug&quot;</span><span class="p">)</span>
 </code></pre></div>
+<hr />
 <h2 id="see-also">See also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>
 <ul>
 <li><a href="types/">Data Types</a> - TranslationResult, BatchResult, Language, etc.</li>
-<li><a href="exceptions/">Exceptions</a> - Error types and handling</li>
+<li><a href="exceptions/">Exceptions</a> - Error handling</li>
 <li><a href="async/">Async Usage</a> - Full async guide</li>
+<li><a href="../guides/direct-mode/">Direct Mode</a> - Using providers directly</li>
 </ul>
 
 
