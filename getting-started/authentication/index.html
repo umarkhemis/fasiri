@@ -2449,7 +2449,7 @@
 <h2 id="getting-an-api-key">Getting an API key<a class="headerlink" href="#getting-an-api-key" title="Permanent link">&para;</a></h2>
 <h3 id="via-the-rest-api">Via the REST API<a class="headerlink" href="#via-the-rest-api" title="Permanent link">&para;</a></h3>
 <p>Send a POST request to the auth endpoint. No authentication is required for this endpoint:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>https://fasiri-bu9u.onrender.com/api/v1/auth/keys<span class="w"> </span><span class="se">\</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>https://api.fasiri-ai.com/api/v1/auth/keys<span class="w"> </span><span class="se">\</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;name&quot;: &quot;my-application&quot;}&#39;</span>
 </code></pre></div>
@@ -2469,7 +2469,7 @@
 <h2 id="using-your-key">Using your key<a class="headerlink" href="#using-your-key" title="Permanent link">&para;</a></h2>
 <h3 id="in-http-requests">In HTTP requests<a class="headerlink" href="#in-http-requests" title="Permanent link">&para;</a></h3>
 <p>Pass the key in the <code>Authorization</code> header using the <code>Bearer</code> scheme:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>https://fasiri-bu9u.onrender.com/api/v1/translate<span class="w"> </span><span class="se">\</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>https://api.fasiri-ai.com/api/v1/translate<span class="w"> </span><span class="se">\</span>
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer fsri_...&quot;</span><span class="w"> </span><span class="se">\</span>
 <a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
@@ -2504,7 +2504,7 @@
 <hr />
 <h2 id="inspecting-your-key">Inspecting your key<a class="headerlink" href="#inspecting-your-key" title="Permanent link">&para;</a></h2>
 <p>To check the metadata for the currently authenticated key:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>curl<span class="w"> </span>https://fasiri-bu9u.onrender.com/api/v1/auth/keys/me<span class="w"> </span><span class="se">\</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>curl<span class="w"> </span>https://api.fasiri-ai.com/api/v1/auth/keys/me<span class="w"> </span><span class="se">\</span>
 <a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer fsri_...&quot;</span>
 </code></pre></div>
 <p>Response:</p>
