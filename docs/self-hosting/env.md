@@ -34,7 +34,7 @@ cp .env.example .env
 
 | Variable           | Default                 | Description             |
 |--------------------|-------------------------|-------------------------|
-| `BASE_URL`         | `https://fasiri-bu9u.onrender.com` | Public base URL         |
+| `BASE_URL`         | `https://api.fasiri-ai.com` | Public base URL         |
 | `DEBUG`            | `false`                 | Enable debug logging    |
 | `HTTP_TIMEOUT`     | `30`                    | Provider timeout (secs) |
 | `HTTP_TIMEOUT_STT` | `60`                    | STT timeout (secs)      |

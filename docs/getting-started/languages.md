@@ -80,6 +80,6 @@ for lang in client.speech_languages():
 Via REST:
 
 ```bash
-curl https://fasiri-bu9u.onrender.com/api/v1/languages \
+curl https://api.fasiri-ai.com/api/v1/languages \
   -H "Authorization: Bearer fsri_..."
 ```

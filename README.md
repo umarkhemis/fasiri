@@ -6,7 +6,7 @@
     <a href="https://pypi.org/project/fasiri"><img src="https://img.shields.io/pypi/pyversions/fasiri" alt="Python versions"></a>
     <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="MIT License"></a>
     <a href="https://umarkhemis.github.io/fasiri"><img src="https://img.shields.io/badge/docs-GitHub%20Pages-blue" alt="Docs"></a>
-    <a href="https://fasiri-bu9u.onrender.com/health"><img src="https://img.shields.io/badge/API-live-2D7D46" alt="API status"></a>
+    <a href="https://api.fasiri-ai.com/health"><img src="https://img.shields.io/badge/API-live-2D7D46" alt="API status"></a>
   </p>
 </div>
 
@@ -16,8 +16,8 @@
 
 Translate text, transcribe audio, and synthesise speech across Luganda, Yoruba, Swahili, Acholi, Twi, and 25+ more African languages with one API key and one endpoint.
 
-- **API base URL:** `https://fasiri-bu9u.onrender.com`
-- **Interactive docs:** `https://fasiri-bu9u.onrender.com/docs`
+- **API base URL:** `https://api.fasiri-ai.com`
+- **Interactive docs:** `https://api.fasiri-ai.com/docs`
 - **Documentation:** `https://umarkhemis.github.io/fasiri`
 
 ---
@@ -153,12 +153,12 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
-Or use the hosted API at `https://fasiri-bu9u.onrender.com`.
+Or use the hosted API at `https://api.fasiri-ai.com`.
 
 ### 2. Issue an API key
 
 ```bash
-curl -X POST https://fasiri-bu9u.onrender.com/api/v1/auth/keys \
+curl -X POST https://api.fasiri-ai.com/api/v1/auth/keys \
   -H "Content-Type: application/json" \
   -d '{"name": "my-app"}'
 ```
@@ -166,7 +166,7 @@ curl -X POST https://fasiri-bu9u.onrender.com/api/v1/auth/keys \
 ### 3. Translate
 
 ```bash
-curl -X POST https://fasiri-bu9u.onrender.com/api/v1/translate \
+curl -X POST https://api.fasiri-ai.com/api/v1/translate \
   -H "Authorization: Bearer fsri_..." \
   -H "Content-Type: application/json" \
   -d '{

@@ -92,13 +92,13 @@ If all fail          ->  ProviderError raised
 ## API base URL
 
 ```
-https://fasiri-bu9u.onrender.com
+https://api.fasiri-ai.com
 ```
 
 Interactive docs (Swagger UI):
 
 ```
-https://fasiri-bu9u.onrender.com/docs
+https://api.fasiri-ai.com/docs
 ```
 
 ---

@@ -11,7 +11,7 @@ cp .env.example .env
 docker-compose up --build
 ```
 
-The API will be available at `https://fasiri-bu9u.onrender.com`.
+The API will be available at `https://api.fasiri-ai.com`.
 
 ## Production
 

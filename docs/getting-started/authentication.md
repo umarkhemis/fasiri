@@ -27,7 +27,7 @@ Keys are case-sensitive. Store them securely and never commit them to source con
 Send a POST request to the auth endpoint. No authentication is required for this endpoint:
 
 ```bash
-curl -X POST https://fasiri-bu9u.onrender.com/api/v1/auth/keys \
+curl -X POST https://api.fasiri-ai.com/api/v1/auth/keys \
   -H "Content-Type: application/json" \
   -d '{"name": "my-application"}'
 ```
@@ -55,7 +55,7 @@ Response:
 Pass the key in the `Authorization` header using the `Bearer` scheme:
 
 ```bash
-curl -X POST https://fasiri-bu9u.onrender.com/api/v1/translate \
+curl -X POST https://api.fasiri-ai.com/api/v1/translate \
   -H "Authorization: Bearer fsri_..." \
   -H "Content-Type: application/json" \
   -d '{
@@ -110,7 +110,7 @@ client = Fasiri()
 To check the metadata for the currently authenticated key:
 
 ```bash
-curl https://fasiri-bu9u.onrender.com/api/v1/auth/keys/me \
+curl https://api.fasiri-ai.com/api/v1/auth/keys/me \
   -H "Authorization: Bearer fsri_..."
 ```
 

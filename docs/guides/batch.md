@@ -37,7 +37,7 @@ for item in results.errors():
 ## REST API
 
 ```bash
-curl -X POST https://fasiri-bu9u.onrender.com/api/v1/translate/batch \
+curl -X POST https://api.fasiri-ai.com/api/v1/translate/batch \
   -H "Authorization: Bearer fsri_..." \
   -H "Content-Type: application/json" \
   -d '{

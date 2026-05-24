@@ -127,7 +127,7 @@ translated_document = "\n\n".join(translated_paragraphs)
 ## Via the REST API
 
 ```bash
-curl -X POST https://fasiri-bu9u.onrender.com/api/v1/translate \
+curl -X POST https://api.fasiri-ai.com/api/v1/translate \
   -H "Authorization: Bearer fsri_..." \
   -H "Content-Type: application/json" \
   -d '{

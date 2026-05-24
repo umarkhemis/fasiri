@@ -36,7 +36,7 @@ print(result)          # Wasuze otya
 print(result.provider) # sunbird
 ```
 
-Get your free key at [fasiri-bu9u.onrender.com](https://fasiri-bu9u.onrender.com/docs).
+Get your free key at [https://fasiri-ai.com/](https://api.fasiri-ai.com/docs).
 
 ---
 

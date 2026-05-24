@@ -213,7 +213,8 @@ class Fasiri:
         HTTP timeout in seconds. Default: 30.
     """
 
-    DEFAULT_BASE_URL = "https://fasiri-bu9u.onrender.com"
+    # DEFAULT_BASE_URL = "https://fasiri-bu9u.onrender.com"
+    DEFAULT_BASE_URL = "https://api.fasiri-ai.com"
 
     def __init__(
         self,
@@ -250,7 +251,7 @@ class Fasiri:
             if not self.api_key:
                 raise AuthenticationError(
                     "No API key provided.\n"
-                    "Option 1 - Fasiri Cloud: get a free key at https://fasiri-bu9u.onrender.com\n"
+                    "Option 1 - Fasiri Cloud: get a free key at https://api.fasiri-ai.com\n"
                     "           then pass: Fasiri(api_key='fsri_...')\n"
                     "Option 2 - Direct mode: use your own provider keys:\n"
                     "           from fasiri.providers import SunbirdProvider\n"

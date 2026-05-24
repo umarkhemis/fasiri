@@ -35,7 +35,7 @@ Fasiri SDK supports two modes. Both use the same interface.
 Get a free Fasiri key - one key covers all providers:
 
 ```bash
-curl -X POST https://fasiri-bu9u.onrender.com/api/v1/auth/keys \
+curl -X POST https://api.fasiri-ai.com/api/v1/auth/keys \
   -H "Content-Type: application/json" \
   -d '{"name": "my-app"}'
 ```

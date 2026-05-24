@@ -3,7 +3,7 @@
 The Fasiri REST API is available at:
 
 ```
-https://fasiri-bu9u.onrender.com
+https://api.fasiri-ai.com
 ```
 
 All endpoints (except key issuance) require authentication via an API key in the `Authorization` header:
@@ -15,7 +15,7 @@ Authorization: Bearer fsri_<your-key>
 Interactive API documentation with a live request builder is available at:
 
 ```
-https://fasiri-bu9u.onrender.com/docs
+https://api.fasiri-ai.com/docs
 ```
 
 ---
@@ -23,7 +23,7 @@ https://fasiri-bu9u.onrender.com/docs
 ## Base URL
 
 ```
-https://fasiri-bu9u.onrender.com
+https://api.fasiri-ai.com
 ```
 
 All API paths are prefixed with `/api/v1`.

@@ -7,7 +7,7 @@ Run this first whenever something breaks.
 
 Usage:
     python smoke_test.py
-    python smoke_test.py --url https://fasiri-bu9u.onrender.com
+    python smoke_test.py --url https://api.fasiri-ai.com
 """
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ import sys
 import time
 import httpx
 
-BASE_URL = "https://fasiri-bu9u.onrender.com"
+BASE_URL = "https://api.fasiri-ai.com"
 
 def check(label: str, ok: bool, detail: str = "") -> bool:
     icon = "✅" if ok else "❌"
@@ -236,7 +236,7 @@ def main():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--url", default="https://fasiri-bu9u.onrender.com")
+    parser.add_argument("--url", default="https://api.fasiri-ai.com")
     args = parser.parse_args()
     BASE_URL = args.url.rstrip("/")
     main()

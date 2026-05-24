@@ -7,7 +7,7 @@ Get up and running in under 5 minutes.
 ### Step 1 - Get a free API key
 
 ```bash
-curl -X POST https://fasiri-bu9u.onrender.com/api/v1/auth/keys \
+curl -X POST https://api.fasiri-ai.com/api/v1/auth/keys \
   -H "Content-Type: application/json" \
   -d '{"name": "quickstart"}'
 ```

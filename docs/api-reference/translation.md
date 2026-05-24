@@ -24,7 +24,7 @@ Content-Type: application/json
 **Example request:**
 
 ```bash
-curl -X POST https://fasiri-bu9u.onrender.com/api/v1/translate \
+curl -X POST https://api.fasiri-ai.com/api/v1/translate \
   -H "Authorization: Bearer fsri_..." \
   -H "Content-Type: application/json" \
   -d '{
@@ -104,7 +104,7 @@ Each item in `items`:
 **Example request:**
 
 ```bash
-curl -X POST https://fasiri-bu9u.onrender.com/api/v1/translate/batch \
+curl -X POST https://api.fasiri-ai.com/api/v1/translate/batch \
   -H "Authorization: Bearer fsri_..." \
   -H "Content-Type: application/json" \
   -d '{

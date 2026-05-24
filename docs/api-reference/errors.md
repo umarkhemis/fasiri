@@ -134,7 +134,7 @@ This means both the primary provider and the fallback failed. Usually a transien
     def translate_with_retry(text, target, max_retries=3):
         for attempt in range(max_retries):
             r = httpx.post(
-                "https://api.fasiri.betatechlabs.io/api/v1/translate",
+                "https://api.fasiri-ai.com//api/v1/translate",
                 headers={"Authorization": "Bearer fsri_..."},
                 json={"text": text, "target_lang": target},
             )
