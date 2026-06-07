@@ -5,8 +5,8 @@ Run with:
     uvicorn app.main:app --reload
 
 Interactive docs:
-    https://fasiri-bu9u.onrender.com/docs     (Swagger UI)
-    https://fasiri-bu9u.onrender.com/redoc    (ReDoc)
+    https://api.fasiri-ai.com/docs     (Swagger UI)
+    https://api.fasiri-ai.com/redoc    (ReDoc)
 """
 from __future__ import annotations
 
@@ -24,7 +24,8 @@ from app.api.languages import router as languages_router
 from app.api.speech import router as speech_router
 from app.api.translate import router as translate_router
 from app.core.config import settings
-from app.core.security import get_dev_key
+from app.core import database as db
+from app.core.security import get_dev_key, register_permanent_key
 
 # ── Logging ───────────────────────────────────────────────────────────────────
 logging.basicConfig(
@@ -37,16 +38,49 @@ logger = logging.getLogger("fasiri")
 # ── Lifespan ──────────────────────────────────────────────────────────────────
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    dev_key = get_dev_key()
     logger.info("=" * 60)
     logger.info("Fasiri API starting up")
-    logger.info("Docs:    %s/docs", settings.base_url)
-    logger.info("Dev key: %s", dev_key)
 
-    # ── Provider diagnostics ──────────────────────────────────────────────────
-    hf_key  = settings.huggingface_api_key
-    sb_key  = settings.sunbird_api_key
-    kh_key  = settings.khaya_api_key
+    # ── 1. Database ───────────────────────────────────────────────────────────
+    db.init_db(settings.database_url)
+
+    if db.is_available():
+        logger.info("Key store: ✓ Neon Postgres (keys persist across restarts)")
+    else:
+        logger.warning(
+            "Key store: ✗ in-memory (keys lost on restart)\n"
+            "  → Set DATABASE_URL in your environment to fix this."
+        )
+
+    # ── 2. Register permanent env-pinned keys ─────────────────────────────────
+    # These are upserted into the DB on every startup so they're always valid.
+    if settings.fasiri_demo_key:
+        register_permanent_key(settings.fasiri_demo_key, "demo")
+        logger.info("Demo key: ✓ registered (%s...)", settings.fasiri_demo_key[:12])
+    else:
+        logger.warning("FASIRI_DEMO_KEY not set — public demo won't work.")
+
+    if settings.fasiri_admin_key:
+        register_permanent_key(settings.fasiri_admin_key, "admin")
+        logger.info("Admin key: ✓ registered (%s...)", settings.fasiri_admin_key[:12])
+    else:
+        logger.warning(
+            "FASIRI_ADMIN_KEY not set — fasiri_platform cannot issue keys.\n"
+            "  → Generate one with: python -c \"import os; print('fsri_'+os.urandom(20).hex())\"\n"
+            "  → Add it to Render env vars as FASIRI_ADMIN_KEY\n"
+            "  → Add the same value to Vercel env vars as FASIRI_ADMIN_KEY"
+        )
+
+    # ── 3. Dev key (local only) ───────────────────────────────────────────────
+    dev_key = get_dev_key()
+    logger.info("Docs:    %s/docs", settings.base_url)
+    if settings.debug:
+        logger.info("Dev key: %s", dev_key)
+
+    # ── 4. Provider diagnostics ───────────────────────────────────────────────
+    hf_key = settings.huggingface_api_key
+    sb_key = settings.sunbird_api_key
+    kh_key = settings.khaya_api_key
 
     if hf_key:
         logger.info("HuggingFace: ✓ key set (%s...)", hf_key[:8])
@@ -61,13 +95,10 @@ async def lifespan(app: FastAPI):
             logger.info("Sunbird: ✓ JWT token set (%s...)", sb_key[:12])
         else:
             logger.error(
-                "Sunbird: ✗ SUNBIRD_API_KEY is set but does NOT look like a JWT "
-                "(should start with 'ey...').\n"
-                "  → This will cause HTTP 405 errors.\n"
-                "  → Run: curl -X POST https://api.sunbird.ai/auth/token \\\n"
-                "           -H 'Content-Type: application/x-www-form-urlencoded' \\\n"
-                "           -d 'username=you@example.com&password=yourpassword'\n"
-                "  → Copy the access_token into SUNBIRD_API_KEY in your .env"
+                "Sunbird: ✗ SUNBIRD_API_KEY does not look like a JWT (should start with 'ey...').\n"
+                "  → Re-login: curl -X POST https://api.sunbird.ai/auth/token \\\n"
+                "       -H 'Content-Type: application/x-www-form-urlencoded' \\\n"
+                "       -d 'username=you@example.com&password=yourpassword'"
             )
     else:
         logger.warning(
@@ -79,7 +110,7 @@ async def lifespan(app: FastAPI):
         logger.info("Khaya: ✓ key set (%s...)", kh_key[:8])
     else:
         logger.warning(
-            "Khaya: ✗ KHAYA_API_KEY not set - West African language translation unavailable.\n"
+            "Khaya: ✗ KHAYA_API_KEY not set - West African languages unavailable.\n"
             "  → Register at https://translation.ghananlp.org/signup"
         )
 
@@ -97,10 +128,10 @@ app = FastAPI(
         "30+ African languages, powered by Sunbird AI (Ugandan languages), "
         "Khaya AI (West African languages), and Helsinki-NLP (global fallback).\n\n"
         "## Authentication\n"
-        "All endpoints (except `POST /api/v1/auth/keys`) require an API key:\n"
+        "All endpoints require an API key:\n"
         "```\nAuthorization: Bearer fsri_<your-key>\n```\n\n"
         "## Quick start\n"
-        "1. Issue a key: `POST /api/v1/auth/keys`\n"
+        "1. Get a key at https://fasiri-ai.com\n"
         "2. Translate:   `POST /api/v1/translate`\n"
         "3. Batch:       `POST /api/v1/translate/batch`\n"
         "4. Speak:       `POST /api/v1/speech/tts`\n"
@@ -116,7 +147,7 @@ app = FastAPI(
 # ── CORS ──────────────────────────────────────────────────────────────────────
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],   # tighten in production
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -164,6 +195,7 @@ async def health():
     return {
         "status": "ok",
         "version": "1.0.0",
+        "key_store": "postgres" if db.is_available() else "memory",
         "providers": {
             "sunbird":     "live" if settings.sunbird_api_key else "stub",
             "khaya":       "live" if settings.khaya_api_key else "stub",

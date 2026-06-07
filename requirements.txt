@@ -19,6 +19,9 @@ python-multipart>=0.0.9
 # ── Language detection ─────────────────────────────────────────────────────────
 langdetect>=1.0.9
 
+# ── Database (Neon Postgres — persistent key storage) ─────────────────────────
+psycopg2-binary>=2.9.9
+
 # ── Production rate limiting ───────────────────────────────────────────────────
 redis>=5.0.0
 

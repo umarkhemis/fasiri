@@ -2,12 +2,13 @@
 Fasiri - API key security helpers.
 
 Keys are structured as:  fsri_<random_hex_40>
-We store only a SHA-256 hash of the key in the database (or in-memory store).
+We store only a SHA-256 hash of the key (never the plain text).
 
-IMPORTANT: The current store is in-memory. On Render free tier, the server
-sleeps and restarts, which wipes all in-memory keys. To fix this permanently,
-set FASIRI_DEMO_KEY in your environment - this key is always valid regardless
-of restarts.
+Storage priority:
+  1. PostgreSQL (DATABASE_URL set)  — keys survive restarts  ✓
+  2. In-memory dict (fallback)      — keys lost on restart   ✗
+
+Set DATABASE_URL in your environment to enable persistent storage.
 """
 from __future__ import annotations
 
@@ -18,9 +19,11 @@ import time
 from typing import Optional
 
 from app.core.config import settings
+from app.core import database as db
 
 
 PREFIX = "fsri_"
+
 
 # ── Key helpers ────────────────────────────────────────────────────────────────
 
@@ -41,41 +44,49 @@ def is_valid_key_format(key: str) -> bool:
     return key.startswith(PREFIX) and len(key) == len(PREFIX) + 40
 
 
-# ── In-memory key store ────────────────────────────────────────────────────────
-# { hashed_key: { name, created_at, expires_at (None = never), requests_total } }
-
+# ── In-memory fallback (used when DATABASE_URL is not set) ────────────────────
 _KEY_STORE: dict = {}
 
 
 def create_key(name: str, never_expire: bool = False) -> str:
-    """Issue a new API key. Pass never_expire=True for permanent keys."""
+    """Issue a new API key and persist it."""
     plain = generate_api_key()
     h = hash_api_key(plain)
-    _KEY_STORE[h] = {
-        "name": name,
-        "created_at": time.time(),
-        # None means the key never expires
-        "expires_at": None if never_expire else time.time() + settings.api_key_ttl_seconds,
-        "requests_total": 0,
-    }
+    expires_at = None if never_expire else time.time() + settings.api_key_ttl_seconds
+
+    if db.is_available():
+        db.db_create_key(h, name, expires_at)
+    else:
+        _KEY_STORE[h] = {
+            "name": name,
+            "created_at": time.time(),
+            "expires_at": expires_at,
+            "requests_total": 0,
+        }
+
     return plain
 
 
 def register_permanent_key(plain_key: str, name: str) -> None:
     """
-    Register an existing key as permanent in the store.
-    Used to load keys from environment variables so they survive restarts.
+    Register an existing key as permanent.
+    Used to load FASIRI_DEMO_KEY / FASIRI_ADMIN_KEY from env on startup
+    so they survive restarts in both DB and memory modes.
     """
     if not is_valid_key_format(plain_key):
         return
     h = hash_api_key(plain_key)
-    if h not in _KEY_STORE:
-        _KEY_STORE[h] = {
-            "name": name,
-            "created_at": time.time(),
-            "expires_at": None,   # permanent
-            "requests_total": 0,
-        }
+
+    if db.is_available():
+        db.db_register_permanent_key(h, name)
+    else:
+        if h not in _KEY_STORE:
+            _KEY_STORE[h] = {
+                "name": name,
+                "created_at": time.time(),
+                "expires_at": None,
+                "requests_total": 0,
+            }
 
 
 def lookup_key(plain_key: str) -> Optional[dict]:
@@ -83,37 +94,46 @@ def lookup_key(plain_key: str) -> Optional[dict]:
     if not is_valid_key_format(plain_key):
         return None
 
-    # Check environment-pinned demo key first (survives restarts)
-    demo_key = settings.fasiri_demo_key
-    if demo_key and plain_key == demo_key:
-        return {
-            "name": "demo",
-            "created_at": 0.0,
-            "expires_at": None,
-            "requests_total": 0,
-        }
+    # Always check env-pinned special keys first (works in both modes)
+    for env_key, label in [
+        (settings.fasiri_demo_key,  "demo"),
+        (settings.fasiri_admin_key, "admin"),
+    ]:
+        if env_key and plain_key == env_key:
+            return {
+                "name": label,
+                "created_at": 0.0,
+                "expires_at": None,
+                "requests_total": 0,
+            }
 
     h = hash_api_key(plain_key)
+
+    if db.is_available():
+        return db.db_lookup_key(h)
+
+    # In-memory fallback
     record = _KEY_STORE.get(h)
     if record is None:
         return None
-
-    # None expires_at means permanent
     if record["expires_at"] is not None and time.time() > record["expires_at"]:
         return None
-
     return record
 
 
 def increment_key_counter(plain_key: str) -> None:
     h = hash_api_key(plain_key)
-    if h in _KEY_STORE:
-        _KEY_STORE[h]["requests_total"] += 1
+
+    if db.is_available():
+        db.db_increment_counter(h)
+    else:
+        if h in _KEY_STORE:
+            _KEY_STORE[h]["requests_total"] += 1
 
 
-# ── Dev key ────────────────────────────────────────────────────────────────────
-# Pre-seeded at startup so the server works out of the box.
-# This key is lost on restart - use FASIRI_DEMO_KEY env var for a permanent key.
+# ── Dev key (local development only) ──────────────────────────────────────────
+# Pre-seeded so the server works out of the box without any env vars.
+# In production use FASIRI_DEMO_KEY and FASIRI_ADMIN_KEY env vars instead.
 
 _DEV_KEY = create_key("dev-default", never_expire=True)
 
