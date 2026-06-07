@@ -1,4 +1,3 @@
-
 """
 Fasiri - PostgreSQL key store.
 

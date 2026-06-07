@@ -1,4 +1,3 @@
-
 """
 Fasiri - API key management endpoints.
 
