@@ -1,3 +1,4 @@
+
 """
 Fasiri - API key management endpoints.
 
@@ -6,6 +7,8 @@ GET  /api/v1/auth/keys/me       - inspect the current key's metadata
 """
 from __future__ import annotations
 
+import time
+from collections import defaultdict
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
@@ -24,8 +27,6 @@ def _ts(epoch):
 
 
 # ── IP rate limiting for key creation (simple in-memory) ─────────────────────
-import time
-from collections import defaultdict
 
 _ip_key_creation: dict[str, list[float]] = defaultdict(list)
 _KEY_CREATION_LIMIT = 5      # max 5 keys per IP
