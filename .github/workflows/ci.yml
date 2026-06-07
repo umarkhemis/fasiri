@@ -1,3 +1,4 @@
+
 # ============================================================
 # Fasiri - GitHub Actions CI/CD Pipeline
 #
@@ -64,6 +65,7 @@ jobs:
       - name: Lint check
         run: |
           pip install ruff
+          ruff check app/ --fix
           ruff check app/ --select E,F,W --ignore E501
 
   # ============================================================
@@ -154,3 +156,185 @@ jobs:
           format: table
           exit-code: 0
           severity: HIGH,CRITICAL
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# # ============================================================
+# # Fasiri - GitHub Actions CI/CD Pipeline
+# #
+# # Triggers on:
+# #   push to main       - test + docs deploy
+# #   pull requests      - test only
+# #   tag push (v*)      - test + PyPI publish
+# #   manual trigger     - full pipeline
+# #
+# # Required GitHub Secrets (Settings -> Secrets -> Actions):
+# #   PYPI_API_TOKEN     - PyPI token for publishing (when ready)
+# #
+# # Render deployment is automatic via Render's GitHub integration.
+# # No SSH secrets needed.
+# # ============================================================
+
+# name: CI/CD
+
+# on:
+#   push:
+#     branches: [main]
+#     tags:
+#       - "v*"
+#   pull_request:
+#     branches: [main]
+#   workflow_dispatch:
+
+# jobs:
+
+#   # ============================================================
+#   # JOB 1: Test
+#   # ============================================================
+#   test:
+#     name: Run Test Suite
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
+
+#       - name: Set up Python 3.12
+#         uses: actions/setup-python@v5
+#         with:
+#           python-version: "3.12"
+#           cache: pip
+
+#       - name: Install API dependencies
+#         run: |
+#           pip install --upgrade pip
+#           pip install -r requirements.txt
+#           pip install python-multipart pytest pytest-asyncio
+
+#       - name: Install Fasiri SDK
+#         run: pip install -e .
+
+#       - name: Run unit tests
+#         run: pytest tests/ -v --tb=short -q
+#         env:
+#           FASIRI_SECRET_KEY: test-secret-key-for-ci
+#           HUGGINGFACE_API_KEY: ""
+#           SUNBIRD_API_KEY: ""
+#           KHAYA_API_KEY: ""
+
+#       - name: Lint check
+#         run: |
+#           pip install ruff
+#           ruff check app/ --select E,F,W --ignore E501
+
+#   # ============================================================
+#   # JOB 2: Deploy Docs to GitHub Pages
+#   # Runs on every push to main (not PRs)
+#   # ============================================================
+#   docs:
+#     name: Deploy Docs
+#     runs-on: ubuntu-latest
+#     needs: test
+#     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+
+#     permissions:
+#       contents: write   # required for gh-pages push
+
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
+#         with:
+#           fetch-depth: 0
+
+#       - name: Set up Python 3.12
+#         uses: actions/setup-python@v5
+#         with:
+#           python-version: "3.12"
+
+#       - name: Install docs dependencies
+#         run: pip install mkdocs-material mkdocstrings[python]
+
+#       - name: Configure git for gh-pages push
+#         run: |
+#           git config user.name  "github-actions[bot]"
+#           git config user.email "github-actions[bot]@users.noreply.github.com"
+
+#       - name: Deploy to GitHub Pages
+#         run: mkdocs gh-deploy --force
+
+#   # ============================================================
+#   # JOB 3: Publish SDK to PyPI
+#   # Only runs on version tags like v1.0.0
+#   # ============================================================
+#   publish:
+#     name: Publish to PyPI
+#     runs-on: ubuntu-latest
+#     needs: test
+#     if: startsWith(github.ref, 'refs/tags/v')
+
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
+
+#       - name: Set up Python 3.12
+#         uses: actions/setup-python@v5
+#         with:
+#           python-version: "3.12"
+
+#       - name: Install build tools
+#         run: pip install build twine
+
+#       - name: Build package
+#         run: python -m build
+
+#       - name: Publish to PyPI
+#         env:
+#           TWINE_USERNAME: __token__
+#           TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+#         run: twine upload dist/*
+
+#   # ============================================================
+#   # JOB 4: Security Scan
+#   # Runs on pushes to main only
+#   # ============================================================
+#   security:
+#     name: Security Scan
+#     runs-on: ubuntu-latest
+#     needs: test
+#     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
+
+#       - name: Run Trivy vulnerability scanner
+#         uses: aquasecurity/trivy-action@master
+#         with:
+#           scan-type: fs
+#           scan-ref: .
+#           format: table
+#           exit-code: 0
+#           severity: HIGH,CRITICAL
